@@ -128,7 +128,7 @@ const SpeechToText = () => {
       <div className="text-center space-y-4">
         <button
           onClick={handleNextQuestion}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition"
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition"
         >
           {currentIndex === 0 ? 'Start' : currentIndex === questions.length - 1 ? 'Submit' : 'Next Question'}
         </button>
