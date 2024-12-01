@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router';
 const SpeechToText = () => {
   const [transcript, setTranscript] = useState(''); // Stores the transcribed text
   const [isListening, setIsListening] = useState(false); // Tracks listening state
-  const [error, setError] = useState(''); // Tracks errors
   const videoRef = useRef(null); // Reference to the video element
-  const [isVideoReady, setIsVideoReady] = useState(false); // Tracks video readiness
   const mediaStreamRef = useRef(null); // Reference to the video stream
   const recognitionRef = useRef(null); // Reference to SpeechRecognition instance
   const [currentIndex, setCurrentIndex] = useState(0); // Tracks the current question index
@@ -39,7 +37,6 @@ const SpeechToText = () => {
   // Start listening
   const startListening = () => {
     if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      setError('Speech recognition is not supported in this browser.');
       return;
     }
     if (recognitionRef.current) {
@@ -54,7 +51,6 @@ const SpeechToText = () => {
     recognition.lang = 'en-IN'; // Use Indian English
 
     recognition.onstart = () => {
-      setError('');
       setIsListening(true);
     };
 
@@ -71,7 +67,6 @@ const SpeechToText = () => {
     };
 
     recognition.onerror = (event) => {
-      setError(`Speech recognition error: ${event.error}`);
       setIsListening(false);
     };
 
@@ -103,10 +98,8 @@ const SpeechToText = () => {
           videoRef.current.muted = true; // Ensure the video is muted
           videoRef.current.playsInline = true; // Important for mobile browsers
           await videoRef.current.play(); // Explicitly play the video
-          setIsVideoReady(true);
         }
       } catch (err) {
-        setError('Unable to access the camera. Please allow camera permissions.');
         console.error(err);
       }
     };
@@ -141,11 +134,7 @@ const SpeechToText = () => {
         </button>
       </div>
       <div className="relative w-full h-64 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
-        {isVideoReady ? (
-          <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
-        ) : (
-          <p className="text-gray-500">Loading video...</p>
-        )}
+        <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
       </div>
 
       <div className="space-y-4">
@@ -175,7 +164,6 @@ const SpeechToText = () => {
           value={transcript}
           readOnly
         />
-        {error && <p className="text-red-500 text-center">{error}</p>}
       </div>
     </div>
   );
