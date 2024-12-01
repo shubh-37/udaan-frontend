@@ -42,13 +42,16 @@ const SpeechToText = () => {
       setError('Speech recognition is not supported in this browser.');
       return;
     }
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
     const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
+
+    recognition.continuous = true; // Enable continuous listening
+    recognition.interimResults = true; // Get real-time transcription
+    recognition.lang = 'en-IN'; // Use Indian English
 
     recognition.onstart = () => {
       setError('');
@@ -74,13 +77,13 @@ const SpeechToText = () => {
 
     recognition.onend = () => {
       setIsListening(false);
+      recognitionRef.current = null;
     };
 
     recognition.start();
     recognitionRef.current = recognition;
   };
 
-  // Stop listening
   const stopListening = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
@@ -89,7 +92,6 @@ const SpeechToText = () => {
     }
   };
 
-  // Initialize dummy video stream
   useEffect(() => {
     const initializeVideo = async () => {
       try {
@@ -98,18 +100,18 @@ const SpeechToText = () => {
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          videoRef.current.onloadedmetadata = () => {
-            videoRef.current.play();
-            setIsVideoReady(true);
-          };
+          videoRef.current.muted = true; // Ensure the video is muted
+          videoRef.current.playsInline = true; // Important for mobile browsers
+          await videoRef.current.play(); // Explicitly play the video
+          setIsVideoReady(true);
         }
       } catch (err) {
         setError('Unable to access the camera. Please allow camera permissions.');
+        console.error(err);
       }
     };
 
     initializeVideo();
-
     return () => {
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -130,8 +132,14 @@ const SpeechToText = () => {
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-8">
       <h1 className="text-3xl font-bold text-center text-gray-800">Mock Interview</h1>
-
-      {/* Video Section */}
+      <div className="text-center space-y-4">
+        <button
+          onClick={handleNextQuestion}
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition"
+        >
+          {currentIndex === 0 ? 'Start' : currentIndex === questions.length - 1 ? 'Submit' : 'Next Question'}
+        </button>
+      </div>
       <div className="relative w-full h-64 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
         {isVideoReady ? (
           <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
@@ -162,21 +170,12 @@ const SpeechToText = () => {
         </div>
         <textarea
           rows="6"
-          className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full h-28 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Your speech will appear here..."
           value={transcript}
           readOnly
         />
         {error && <p className="text-red-500 text-center">{error}</p>}
-      </div>
-
-      <div className="text-center space-y-4">
-        <button
-          onClick={handleNextQuestion}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition"
-        >
-          {currentIndex === 0 ? 'Start' : currentIndex === questions.length - 1 ? 'Submit' : 'Next Question'}
-        </button>
       </div>
     </div>
   );
