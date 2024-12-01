@@ -4,7 +4,7 @@ import KeyFeatures from '../shared/KeyFeatures';
 
 const LandingPage = () => {
   return (
-    <div className="bg-gradient-to-b from-white to-blue-50 min-h-screen">
+    <div className="bg-gradient-to-b from-white to-blue-50 min-h-screen pb-4">
       <Header />
       <main className="text-center px-6 py-10">
         <section>

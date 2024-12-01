@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
+
 const SpeechToText = () => {
   const [transcript, setTranscript] = useState(''); // Stores the transcribed text
   const [isListening, setIsListening] = useState(false); // Tracks listening state
@@ -94,10 +95,13 @@ const SpeechToText = () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         mediaStreamRef.current = stream;
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          videoRef.current.play(); // Play the video explicitly
-          setIsVideoReady(true);
+          videoRef.current.onloadedmetadata = () => {
+            videoRef.current.play();
+            setIsVideoReady(true);
+          };
         }
       } catch (err) {
         setError('Unable to access the camera. Please allow camera permissions.');
@@ -107,17 +111,11 @@ const SpeechToText = () => {
     initializeVideo();
 
     return () => {
-      // Cleanup video stream on unmount
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
-
-  //   // Speak the first question when the page loads
-  //   useEffect(() => {
-  //     speakQuestion();
-  //   }, []);
 
   // Handle "Next Question" button click
   const handleNextQuestion = () => {
@@ -136,13 +134,12 @@ const SpeechToText = () => {
       {/* Video Section */}
       <div className="relative w-full h-64 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
         {isVideoReady ? (
-          <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay />
+          <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
         ) : (
           <p className="text-gray-500">Loading video...</p>
         )}
       </div>
 
-      {/* Speech-to-Text Section */}
       <div className="space-y-4">
         <p className="text-lg text-center text-gray-700">
           {isListening ? 'Listening...' : "Click 'Start Listening' to begin."}

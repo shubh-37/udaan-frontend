@@ -145,13 +145,13 @@ export default function Header() {
   );
 
   return (
-    <header className="flex justify-between items-center px-8 py-6 bg-white shadow-md">
-      <h1 className="text-4xl font-bold">Project UDAAN</h1>
+    <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">
+      <h1 className="text-3xl font-bold">Project UDAAN</h1>
 
       {isSmallScreen ? (
         <Drawer>
           <DrawerTrigger>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            <button className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition">
               Get Started
             </button>
           </DrawerTrigger>
