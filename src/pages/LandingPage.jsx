@@ -6,7 +6,7 @@ const LandingPage = () => {
   return (
     <div className="bg-gradient-to-b from-white to-blue-50 min-h-screen pb-4">
       <Header />
-      <main className="text-center px-6 py-10">
+      <main className="text-center px-6 pt-10">
         <section>
           <h2 className="text-3xl font-bold italic text-gray-600 mb-2">
             Ace Your Interview with AI-Powered Mock Sessions
