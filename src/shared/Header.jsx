@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
+import logo from '../assets/logo.png';
 import {
   Dialog,
   DialogContent,
@@ -8,11 +11,15 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
-import { Link } from 'react-router-dom';
+import Loader from './Loader';
 
 export default function Header() {
+  const navigate = useNavigate();
   const [resume, setResume] = useState(null);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // Controls Dialog visibility
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Controls Drawer visibility
   const [formData, setFormData] = useState({
     jobRole: '',
     industry: '',
@@ -55,9 +62,13 @@ export default function Header() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsDialogOpen(false);
+    setIsDrawerOpen(false);
+
+    setIsLoading(true);
 
     const submissionData = new FormData();
-    submissionData.append('jobRole', formData.jobRole);
+    submissionData.append('job_role', formData.jobRole);
     submissionData.append('industry', formData.industry);
     submissionData.append('location', formData.location);
 
@@ -66,10 +77,21 @@ export default function Header() {
     }
 
     try {
-      console.log('Form submitted successfully');
-      // API call logic here
+      const response = await axios.post('https://992d-223-233-85-66.ngrok-free.app/submit_user_data', submissionData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(response);
+      if (response.status === 200) {
+        console.log('Form submitted successfully:', response.data);
+        setIsLoading(false);
+        navigate('/interview');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setIsLoading(false);
+      alert('Interview cannot be schedule right now. Please try again later.');
     }
   };
 
@@ -139,19 +161,23 @@ export default function Header() {
         className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
         disabled={!resume || error}
       >
-        <Link to="/interview">Start Interview</Link>
+        Start Interview
       </button>
     </form>
   );
 
   return (
     <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">
-      <h1 className="text-3xl font-bold">Project UDAAN</h1>
+      {isLoading && <Loader />}
+      {isSmallScreen ? <img src={logo} alt="logo" /> : <h1 className="text-3xl font-bold text-gray-600">Project UDAAN</h1>}
 
       {isSmallScreen ? (
-        <Drawer>
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerTrigger>
-            <button className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition">
+            <button
+              onClick={() => setIsDrawerOpen(true)}
+              className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition"
+            >
               Get Started
             </button>
           </DrawerTrigger>
@@ -163,9 +189,12 @@ export default function Header() {
           </DrawerContent>
         </Drawer>
       ) : (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            <button
+              onClick={() => setIsDialogOpen(true)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+            >
               Get Started
             </button>
           </DialogTrigger>
