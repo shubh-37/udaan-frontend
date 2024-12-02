@@ -1,22 +1,37 @@
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import preparation from '../assets/preparation.png';
+import feedback from '../assets/feedback.png';
+import flexible from '../assets/flexible.png';
 export default function KeyFeatures() {
+  const content = [
+    {
+      heading: 'Role-Specific Preparation',
+      description: 'Mock interviews to reflect the actual roles',
+      img: preparation
+    },
+    { heading: 'Personalized Feedback', description: 'Detailed analysis on technical knowledge', img: feedback },
+    { heading: 'Flexible Scheduling', description: 'Practice anytime, anywhere, at your convenience', img: flexible }
+  ];
   return (
     <>
-      <div className="rounded-2xl shadow-lg p-6 lg:w-1/3 border-8 border-white">
-        <h3 className="text-2xl font-semibold mb-4 text-center text-gray-600 italic">Key Features</h3>
-        <ul className="text-gray-600 text-left space-y-2">
-          <li>
-            <strong>Role-Specific Preparation:</strong> Mock interviews to reflect the actual roles.
-          </li>
-          <li>
-            <strong>Communication Insights:</strong> AI evaluates your body language to improve delivery.
-          </li>
-          <li>
-            <strong>Personalized Feedback:</strong> Detailed analysis on technical knowledge.
-          </li>
-          <li>
-            <strong>Flexible Scheduling:</strong> Practice anytime, anywhere, at your convenience.
-          </li>
-        </ul>
+      <div className="flex w-full justify-around flex-wrap gap-4">
+        {content.map((item) => (
+          <>
+            <Card className="flex flex-col items-center justify-between">
+              <CardHeader>
+                <CardDescription>
+                  <div>
+                    <img src={item.img} width={200} height={200} />
+                  </div>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center justify-center gap-2">
+                <p className="text-xl text-gray-600 font-bold">{item.heading}</p>
+                <p className="text-gray-500 font-semibold">{item.description}</p>
+              </CardContent>
+            </Card>
+          </>
+        ))}
       </div>
     </>
   );
