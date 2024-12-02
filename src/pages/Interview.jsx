@@ -1,24 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa'; // Import icons
+import InterviewInstructions from '../shared/Instructions';
 
 const SpeechToText = () => {
-  const [transcript, setTranscript] = useState(''); // Stores the transcribed text
-  const [isListening, setIsListening] = useState(false); // Tracks listening state
-  const videoRef = useRef(null); // Reference to the video element
-  const mediaStreamRef = useRef(null); // Reference to the video stream
-  const recognitionRef = useRef(null); // Reference to SpeechRecognition instance
-  const [currentIndex, setCurrentIndex] = useState(0); // Tracks the current question index
-  const speechSynthesisRef = useRef(window.speechSynthesis); // Reference to speech synthesis
+  const [transcript, setTranscript] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const videoRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const speechSynthesisRef = useRef(window.speechSynthesis);
   const navigate = useNavigate();
-
-  // Dummy array of questions
-  const questions = [
-    'What are your strengths?',
-    'Why do you want this job?',
-    'Can you describe a challenging situation and how you handled it?',
-    'What are your long-term career goals?',
-    'How do you handle stress or pressure?'
-  ];
 
   // Speak the current question
   const speakQuestion = () => {
@@ -26,8 +19,8 @@ const SpeechToText = () => {
       return; // Prevent overlapping speech
     }
 
-    const utterance = new SpeechSynthesisUtterance(questions[currentIndex]);
-    utterance.lang = 'en-US';
+    const utterance = new SpeechSynthesisUtterance('Hello friend');
+    utterance.lang = 'en-IN';
     utterance.onend = () => {
       console.log('Finished speaking');
     };
@@ -46,9 +39,9 @@ const SpeechToText = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
 
-    recognition.continuous = true; // Enable continuous listening
-    recognition.interimResults = true; // Get real-time transcription
-    recognition.lang = 'en-IN'; // Use Indian English
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN';
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -66,7 +59,7 @@ const SpeechToText = () => {
       }
     };
 
-    recognition.onerror = (event) => {
+    recognition.onerror = () => {
       setIsListening(false);
     };
 
@@ -95,9 +88,9 @@ const SpeechToText = () => {
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          videoRef.current.muted = true; // Ensure the video is muted
-          videoRef.current.playsInline = true; // Important for mobile browsers
-          await videoRef.current.play(); // Explicitly play the video
+          videoRef.current.muted = true;
+          videoRef.current.playsInline = true;
+          await videoRef.current.play();
         }
       } catch (err) {
         console.error(err);
@@ -112,59 +105,37 @@ const SpeechToText = () => {
     };
   }, []);
 
-  // Handle "Next Question" button click
-  const handleNextQuestion = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      speakQuestion();
-    } else {
-      navigate('/review');
-    }
-  };
-
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800">Mock Interview</h1>
-      <div className="text-center space-y-4">
-        <button
-          onClick={handleNextQuestion}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition"
-        >
-          {currentIndex === 0 ? 'Start' : currentIndex === questions.length - 1 ? 'Submit' : 'Next Question'}
-        </button>
-      </div>
+      <InterviewInstructions />
+      <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
       <div className="relative w-full h-64 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
         <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
       </div>
 
-      <div className="space-y-4">
-        <p className="text-lg text-center text-gray-700">
-          {isListening ? 'Listening...' : "Click 'Start Listening' to begin."}
-        </p>
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={startListening}
-            className="bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600 transition"
-            disabled={isListening}
-          >
-            Start Listening
-          </button>
-          <button
-            onClick={stopListening}
-            className="bg-red-500 text-white px-6 py-2 rounded-lg shadow hover:bg-red-600 transition"
-            disabled={!isListening}
-          >
-            Stop Listening
-          </button>
-        </div>
-        <textarea
-          rows="6"
-          className="w-full h-28 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Your speech will appear here..."
-          value={transcript}
-          readOnly
-        />
+      <div className="flex flex-col items-center gap-2">
+        <button
+          onClick={isListening ? stopListening : startListening}
+          className={`w-16 h-16 flex items-center justify-center rounded-full shadow-lg transition ${
+            isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+          }`}
+        >
+          {isListening ? (
+            <FaMicrophoneSlash className="text-white text-2xl" />
+          ) : (
+            <FaMicrophone className="text-white text-2xl" />
+          )}
+        </button>
+        <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
       </div>
+
+      <textarea
+        rows="6"
+        className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Your speech will appear here..."
+        value={transcript}
+        readOnly
+      />
     </div>
   );
 };
