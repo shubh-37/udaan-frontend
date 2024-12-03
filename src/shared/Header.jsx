@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import https from 'https';
 import { useNavigate } from 'react-router';
 import logo from '../assets/logo.png';
 import {
@@ -17,11 +16,6 @@ import BottomSheet from './Bottomsheet';
 import FormContent from './FormContent';
 
 export default function Header() {
-  const axiosInstance = axios.create({
-    httpsAgent: new https.Agent({
-      rejectUnauthorized: false // Disable SSL certificate validation
-    })
-  });
   const navigate = useNavigate();
   const [resume, setResume] = useState(null);
   const [error, setError] = useState('');
@@ -85,7 +79,7 @@ export default function Header() {
     }
 
     try {
-      const response = await axiosInstance.post(
+      const response = await axios.post(
         'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/submit_user_data',
         submissionData,
         {
