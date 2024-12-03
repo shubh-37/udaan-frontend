@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import https from 'https';
 import { useNavigate } from 'react-router';
 import logo from '../assets/logo.png';
 import {
@@ -12,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import Loader from './Loader';
+import BottomSheet from './Bottomsheet';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -77,13 +79,17 @@ export default function Header() {
     }
 
     try {
+      const agent = new https.Agent({
+        rejectUnauthorized: false
+      });
       const response = await axios.post(
         'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/submit_user_data',
         submissionData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
-          }
+          },
+          httpsAgent: agent
         }
       );
 
@@ -180,22 +186,33 @@ export default function Header() {
       )}
 
       {isSmallScreen ? (
-        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-          <DrawerTrigger>
-            <button
-              onClick={() => setIsDrawerOpen(true)}
-              className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition"
-            >
-              Get Started
-            </button>
-          </DrawerTrigger>
-          <DrawerContent className="bg-white p-6 rounded-lg">
-            <DrawerHeader>
-              <DrawerTitle>Fill Your Details</DrawerTitle>
-            </DrawerHeader>
-            {FormContent()}
-          </DrawerContent>
-        </Drawer>
+        // <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        //   <DrawerTrigger>
+        //     <button
+        //       onClick={() => setIsDrawerOpen(true)}
+        //       className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition"
+        //     >
+        //       Get Started
+        //     </button>
+        //   </DrawerTrigger>
+        //   <DrawerContent className="bg-white p-6 rounded-lg">
+        //     <DrawerHeader>
+        //       <DrawerTitle>Fill Your Details</DrawerTitle>
+        //     </DrawerHeader>
+        //     {FormContent()}
+        //   </DrawerContent>
+        // </Drawer>
+        <>
+          <button
+            onClick={() => setIsDrawerOpen(true)}
+            className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition"
+          >
+            Get Started
+          </button>
+          <BottomSheet isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Fill Your Details">
+            <FormContent />
+          </BottomSheet>
+        </>
       ) : (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger>
