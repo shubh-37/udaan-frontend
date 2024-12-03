@@ -17,6 +17,11 @@ import BottomSheet from './Bottomsheet';
 import FormContent from './FormContent';
 
 export default function Header() {
+  const axiosInstance = axios.create({
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: false // Disable SSL certificate validation
+    })
+  });
   const navigate = useNavigate();
   const [resume, setResume] = useState(null);
   const [error, setError] = useState('');
@@ -80,17 +85,13 @@ export default function Header() {
     }
 
     try {
-      const agent = new https.Agent({
-        rejectUnauthorized: false
-      });
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/submit_user_data',
         submissionData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
-          },
-          httpsAgent: agent
+          }
         }
       );
 
