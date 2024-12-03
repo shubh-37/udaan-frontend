@@ -1,35 +1,38 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
 import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa'; // Import icons
 import InterviewInstructions from '../shared/Instructions';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../shared/Loader';
 
 const SpeechToText = () => {
   const [transcript, setTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isStart, setIsStart] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes timer in seconds
+  const timerRef = useRef(null); // Timer reference
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
   const speechSynthesisRef = useRef(window.speechSynthesis);
   const navigate = useNavigate();
+
   const thread_id = localStorage.getItem('thread_id');
 
-  // Speak the current question
   const speakQuestion = (text) => {
     if (speechSynthesisRef.current.speaking) {
       return; // Prevent overlapping speech
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-IN';
+    utterance.lang = 'en-US';
     utterance.onend = () => {
       console.log('Finished speaking');
     };
     speechSynthesisRef.current.speak(utterance);
   };
 
-  // Start listening
   const startListening = () => {
     if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       return;
@@ -74,16 +77,23 @@ const SpeechToText = () => {
     recognitionRef.current = recognition;
   };
 
-  const stopListening = () => {
+  const stopListening = async () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
       setIsListening(false);
+
+      if (transcript.trim()) {
+        await convoWithAI();
+      } else {
+        console.log('Transcript is empty, not calling convoWithAI');
+      }
     }
   };
 
   async function askFirstQuestion() {
     setIsStart(true);
+    startTimer();
     try {
       const response = await axios.get(
         'http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/start_interview',
@@ -102,22 +112,24 @@ const SpeechToText = () => {
   async function convoWithAI() {
     try {
       const response = await axios.post(
-        `http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/start_interview`,
-        { response: 'my name is shubh' },
+        `http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_convo`,
+        { response: transcript },
         {
           params: {
             thread_id
           }
         }
       );
+      setTranscript(''); // Clear the transcript for the next question
       speakQuestion(response.data.message);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
   }
 
   async function submitInterview() {
+    clearInterval(timerRef.current); // Stop the timer
+    setIsLoading(true); // Show loader
     try {
       const response = await axios.get(
         'http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_feedback',
@@ -127,11 +139,34 @@ const SpeechToText = () => {
           }
         }
       );
-      console.log(response);
+      localStorage.setItem('review', JSON.stringify(response.data.message)); // Save the review in local storage
+      navigate('/review'); // Route to the review page
     } catch (error) {
       console.error('Error submitting form:', error);
+    } finally {
+      setIsLoading(false); // Hide loader
     }
   }
+
+  const startTimer = () => {
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current); // Stop the timer
+          submitInterview(); // Auto-submit when time is up
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   useEffect(() => {
     const initializeVideo = async () => {
       try {
@@ -160,7 +195,9 @@ const SpeechToText = () => {
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-8">
       <InterviewInstructions />
+      {isLoading && <Loader text={'Processing Interview...'} />}
       <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
+      <div className="text-center text-xl font-semibold text-gray-700">Time Left: {formatTime(timeLeft)}</div>
       {!isStart && (
         <button
           onClick={askFirstQuestion}
