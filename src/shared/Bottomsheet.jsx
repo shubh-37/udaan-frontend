@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const BottomSheet = ({ isOpen, onClose, children, title = 'Bottom Sheet' }) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -37,6 +37,7 @@ const BottomSheet = ({ isOpen, onClose, children, title = 'Bottom Sheet' }) => {
         style={{
           maxHeight: '90%'
         }}
+        onClick={(e) => e.stopPropagation()} // Prevent clicks inside the sheet from closing it
       >
         {/* Header */}
         <div className="p-4 border-b flex justify-between items-center">

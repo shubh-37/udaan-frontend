@@ -11,9 +11,10 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+
 import Loader from './Loader';
 import BottomSheet from './Bottomsheet';
+import FormContent from './FormContent';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -105,76 +106,76 @@ export default function Header() {
     }
   };
 
-  const FormContent = () => (
-    <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-      <div>
-        <label className="block text-gray-600 font-medium mb-2">Upload Resume</label>
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={handleResumeUpload}
-          className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
-        {resume && (
-          <div className="mt-2 flex items-center gap-4">
-            <p className="text-sm text-gray-500">{resume.name}</p>
-            <button
-              type="button"
-              onClick={handleRemoveFile}
-              className="text-red-500 text-sm font-medium underline hover:text-red-700"
-            >
-              Remove
-            </button>
-          </div>
-        )}
-      </div>
+  // const FormContent = () => (
+  //   <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
+  //     <div>
+  //       <label className="block text-gray-600 font-medium mb-2">Upload Resume</label>
+  //       <input
+  //         type="file"
+  //         accept=".pdf"
+  //         onChange={handleResumeUpload}
+  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+  //       />
+  //       {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+  //       {resume && (
+  //         <div className="mt-2 flex items-center gap-4">
+  //           <p className="text-sm text-gray-500">{resume.name}</p>
+  //           <button
+  //             type="button"
+  //             onClick={handleRemoveFile}
+  //             className="text-red-500 text-sm font-medium underline hover:text-red-700"
+  //           >
+  //             Remove
+  //           </button>
+  //         </div>
+  //       )}
+  //     </div>
 
-      <div>
-        <label className="block text-gray-600 font-medium mb-2">Job Role</label>
-        <input
-          type="text"
-          name="jobRole"
-          value={formData.jobRole}
-          onChange={handleInputChange}
-          placeholder="Enter Job Role"
-          className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+  //     <div>
+  //       <label className="block text-gray-600 font-medium mb-2">Job Role</label>
+  //       <input
+  //         type="text"
+  //         name="jobRole"
+  //         value={formData.jobRole}
+  //         onChange={handleInputChange}
+  //         placeholder="Enter Job Role"
+  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+  //       />
+  //     </div>
 
-      <div>
-        <label className="block text-gray-600 font-medium mb-2">Industry</label>
-        <input
-          type="text"
-          name="industry"
-          value={formData.industry}
-          onChange={handleInputChange}
-          placeholder="Enter Industry"
-          className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+  //     <div>
+  //       <label className="block text-gray-600 font-medium mb-2">Industry</label>
+  //       <input
+  //         type="text"
+  //         name="industry"
+  //         value={formData.industry}
+  //         onChange={handleInputChange}
+  //         placeholder="Enter Industry"
+  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+  //       />
+  //     </div>
 
-      <div>
-        <label className="block text-gray-600 font-medium mb-2">Location</label>
-        <input
-          type="text"
-          name="location"
-          value={formData.location}
-          onChange={handleInputChange}
-          placeholder="Enter Location"
-          className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+  //     <div>
+  //       <label className="block text-gray-600 font-medium mb-2">Location</label>
+  //       <input
+  //         type="text"
+  //         name="location"
+  //         value={formData.location}
+  //         onChange={handleInputChange}
+  //         placeholder="Enter Location"
+  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+  //       />
+  //     </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
-        disabled={!resume || error}
-      >
-        Start Interview
-      </button>
-    </form>
-  );
+  //     <button
+  //       type="submit"
+  //       className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+  //       disabled={!resume || error}
+  //     >
+  //       Start Interview
+  //     </button>
+  //   </form>
+  // );
 
   return (
     <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">
@@ -186,22 +187,6 @@ export default function Header() {
       )}
 
       {isSmallScreen ? (
-        // <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        //   <DrawerTrigger>
-        //     <button
-        //       onClick={() => setIsDrawerOpen(true)}
-        //       className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition"
-        //     >
-        //       Get Started
-        //     </button>
-        //   </DrawerTrigger>
-        //   <DrawerContent className="bg-white p-6 rounded-lg">
-        //     <DrawerHeader>
-        //       <DrawerTitle>Fill Your Details</DrawerTitle>
-        //     </DrawerHeader>
-        //     {FormContent()}
-        //   </DrawerContent>
-        // </Drawer>
         <>
           <button
             onClick={() => setIsDrawerOpen(true)}
@@ -210,7 +195,15 @@ export default function Header() {
             Get Started
           </button>
           <BottomSheet isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Fill Your Details">
-            <FormContent />
+            <FormContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleResumeUpload={handleResumeUpload}
+              handleRemoveFile={handleRemoveFile}
+              handleSubmit={handleSubmit}
+              resume={resume}
+              error={error}
+            />
           </BottomSheet>
         </>
       ) : (
@@ -230,7 +223,15 @@ export default function Header() {
                 Upload your resume and provide basic details to get started with your interview preparation.
               </DialogDescription>
             </DialogHeader>
-            {FormContent()}
+            <FormContent
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleResumeUpload={handleResumeUpload}
+              handleRemoveFile={handleRemoveFile}
+              handleSubmit={handleSubmit}
+              resume={resume}
+              error={error}
+            />
           </DialogContent>
         </Dialog>
       )}
