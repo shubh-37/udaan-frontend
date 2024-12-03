@@ -96,7 +96,7 @@ const SpeechToText = () => {
     startTimer();
     try {
       const response = await axios.get(
-        'http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/start_interview',
+        'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/start_interview',
         {
           params: {
             thread_id
@@ -112,7 +112,7 @@ const SpeechToText = () => {
   async function convoWithAI() {
     try {
       const response = await axios.post(
-        `http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_convo`,
+        `https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_convo`,
         { response: transcript },
         {
           params: {
@@ -132,7 +132,7 @@ const SpeechToText = () => {
     setIsLoading(true); // Show loader
     try {
       const response = await axios.get(
-        'http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_feedback',
+        'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_feedback',
         {
           params: {
             thread_id
