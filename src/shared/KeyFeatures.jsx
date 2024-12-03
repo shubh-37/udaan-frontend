@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import preparation from '../assets/preparation.png';
 import feedback from '../assets/feedback.png';
 import flexible from '../assets/flexible.png';
@@ -15,9 +15,9 @@ export default function KeyFeatures() {
   return (
     <>
       <div className="flex w-full justify-around flex-wrap gap-4">
-        {content.map((item) => (
+        {content.map((item, index) => (
           <>
-            <Card className="flex flex-col items-center justify-between">
+            <Card key={index} className="flex flex-col items-center justify-between">
               <CardHeader>
                 <CardDescription>
                   <div>
