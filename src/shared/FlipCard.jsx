@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FlipCard = ({ frontContent, backContent, bgColor }) => {
+const FlipCard = ({ frontContent, backContent, bgColor, fontSize }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -28,18 +28,13 @@ const FlipCard = ({ frontContent, backContent, bgColor }) => {
           style={{
             backfaceVisibility: 'hidden',
             position: 'absolute',
-            width: '100%',
-            height: '100%',
             backgroundColor: bgColor,
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '0.5rem',
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}
+          className="flex items-center justify-center flex-col rounded-lg w-full h-full text-white"
         >
           {frontContent}
+          <p>Click to see the results</p>
         </div>
 
         <div
@@ -47,16 +42,22 @@ const FlipCard = ({ frontContent, backContent, bgColor }) => {
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)', // Flip this side
             position: 'absolute',
-            width: '100%',
+
             height: '100%',
             backgroundColor: '#2C2C2C',
             color: '#fff',
             borderRadius: '0.5rem',
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}
-          className="text-center p-2 flex flex-col justify-around items-center "
+          className="text-center p-2 flex flex-col justify-around items-center w-full object-fit"
         >
-          <h3 className="text-2xl">{backContent}</h3>
+          <h3
+            style={{
+              fontSize: fontSize
+            }}
+          >
+            {backContent}
+          </h3>
           <button className="bg-white text-gray-600 w-fit p-2 rounded-lg shadow ">Download report</button>
         </div>
       </div>
