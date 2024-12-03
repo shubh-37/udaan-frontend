@@ -77,14 +77,18 @@ export default function Header() {
     }
 
     try {
-      const response = await axios.post('https://992d-223-233-85-66.ngrok-free.app/submit_user_data', submissionData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      const response = await axios.post(
+        'http://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/submit_user_data',
+        submissionData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }
-      });
-      console.log(response);
+      );
+
       if (response.status === 200) {
-        console.log('Form submitted successfully:', response.data);
+        localStorage.setItem('thread_id', response.data.thread_id);
         setIsLoading(false);
         navigate('/interview');
       }
@@ -168,8 +172,12 @@ export default function Header() {
 
   return (
     <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">
-      {isLoading && <Loader />}
-      {isSmallScreen ? <img src={logo} alt="logo" /> : <h1 className="text-3xl font-bold text-gray-600">Project UDAAN</h1>}
+      {isLoading && <Loader text={'Preparing Interview...'} />}
+      {isSmallScreen ? (
+        <img src={logo} alt="logo" />
+      ) : (
+        <h1 className="text-3xl font-bold text-gray-600">Project UDAAN</h1>
+      )}
 
       {isSmallScreen ? (
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
