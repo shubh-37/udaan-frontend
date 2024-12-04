@@ -4,6 +4,19 @@ import { useEffect, useState } from 'react';
 
 const InterviewReview = () => {
   const [review, setReview] = useState({ score: 0, criteria: [] });
+  const [quote, setQuote] = useState('');
+
+  const quotes = [
+    'Your preparation defines your future.',
+    'Success is where preparation meets opportunity. – Bobby Unser',
+    'Every interview is a chance to write your success story.',
+    'Dream big, prepare bigger, and achieve the biggest.',
+    'The best investment you can make is in yourself.',
+    'Your journey to success starts with a single well-prepared step.',
+    'In the middle of every difficulty lies opportunity. – Albert Einstein',
+    'Confidence comes from preparation. Ace every step.'
+  ];
+
   function parseFeedback(obj) {
     const text = JSON.parse(obj);
     const feedback = JSON.parse(text);
@@ -16,21 +29,44 @@ const InterviewReview = () => {
     setReview({
       score: overallScore * 10,
       criteria: [
-        { heading: 'Speech', score: `${speechScore}/10`, bgColor: '#00A4CC', fontSize: 'x-large' },
-        { heading: 'Confidence', score: `${confidenceScore}/10`, bgColor: '#FFC107', fontSize: 'x-large' },
-        { heading: 'Technical Skills', score: `${technicalSkillsScore}/10`, bgColor: '#8BC34A', fontSize: 'x-large' },
+        {
+          heading: 'Speech',
+          score: `${speechScore}/10`,
+          bgColor: '#9ca3af',
+          fontSize: 'x-large',
+          scoreNum: speechScore
+        },
+        {
+          heading: 'Confidence',
+          score: `${confidenceScore}/10`,
+          bgColor: '#9ca3af',
+          fontSize: 'x-large',
+          scoreNum: confidenceScore
+        },
+        {
+          heading: 'Technical Skills',
+          score: `${technicalSkillsScore}/10`,
+          bgColor: '#9ca3af',
+          fontSize: 'x-large',
+          scoreNum: technicalSkillsScore
+        },
         {
           heading: 'Areas of Improvement',
           score: areasOfImprovement,
-          bgColor: '#673AB7',
-          fontSize: 'small'
+          bgColor: '#9ca3af',
+          fontSize: 'medium'
         }
       ]
     });
   }
+
   useEffect(() => {
     const review = localStorage.getItem('review');
     parseFeedback(review);
+
+    // Set a random quote
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    setQuote(randomQuote);
   }, []);
 
   return (
@@ -48,17 +84,20 @@ const InterviewReview = () => {
         </div>
       </div>
 
+      <div className="bg-gray-100 rounded-lg shadow p-4 text-center text-xl font-semibold text-gray-600 italic">
+        {quote}
+      </div>
+
       <div className="flex justify-around w-full flex-wrap gap-4">
         {review.criteria.map((item, index) => (
-          <>
-            <FlipCard
-              key={index}
-              bgColor={item.bgColor}
-              fontSize={item.fontSize}
-              frontContent={<div className="font-bold">{item.heading}</div>}
-              backContent={<div> {item.score}</div>}
-            />
-          </>
+          <FlipCard
+            key={index}
+            bgColor={item.bgColor}
+            fontSize={item.fontSize}
+            frontContent={<div className="font-bold">{item.heading}</div>}
+            backContent={<div> {item.score}</div>}
+            rating={item?.scoreNum ? parseInt(item.scoreNum) / 2 : null}
+          />
         ))}
       </div>
     </div>
