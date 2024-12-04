@@ -15,22 +15,39 @@ const SpeechToText = () => {
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
-  const speechSynthesisRef = useRef(window.speechSynthesis);
   const navigate = useNavigate();
 
   const thread_id = localStorage.getItem('thread_id');
 
-  const speakQuestion = (text) => {
-    if (speechSynthesisRef.current.speaking) {
-      return; // Prevent overlapping speech
-    }
+  const speakQuestion = async (text) => {
+    const apiKey = 'sk_48b91956819fd998c19873b905715d27733f9dbf090478fd';
+    const voiceId = 'P1bg08DkjqiVEzOn76yG';
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.onend = () => {
-      console.log('Finished speaking');
-    };
-    speechSynthesisRef.current.speak(utterance);
+    try {
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'xi-api-key': apiKey
+        },
+        body: JSON.stringify({
+          text,
+          model_id: 'eleven_multilingual_v2'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch audio data from ElevenLabs API');
+      }
+
+      const audioBlob = await response.blob();
+
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (error) {
+      console.error('Error in speakQuestion:', error);
+    }
   };
 
   const startListening = () => {
@@ -199,12 +216,17 @@ const SpeechToText = () => {
       <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
       <div className="text-center text-xl font-semibold text-gray-700">Time Left: {formatTime(timeLeft)}</div>
       {!isStart && (
-        <button
-          onClick={askFirstQuestion}
-          className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
-        >
-          Start
-        </button>
+        <>
+          <button
+            onClick={askFirstQuestion}
+            className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
+          >
+            Start
+          </button>
+          <p className="flex justify-between w-full items-center p-2 bg-gray-100 rounded-md text-gray-600">
+            It takes 5-6 secs to get the interview started, we're currently working on making your experience seamless.
+          </p>
+        </>
       )}
       {isStart && (
         <button
@@ -232,6 +254,10 @@ const SpeechToText = () => {
           )}
         </button>
         <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
+        <p className="flex justify-between w-full items-center p-2 bg-gray-100 rounded-md text-gray-600">
+          Please mute the mic only once the transcription is done. It takes 2-3 secs to get the response, your patience
+          is appreciated.
+        </p>
       </div>
 
       <textarea
