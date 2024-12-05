@@ -24,8 +24,7 @@ export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Controls Drawer visibility
   const [formData, setFormData] = useState({
     jobRole: '',
-    industry: '',
-    location: ''
+    industry: ''
   });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -72,7 +71,6 @@ export default function Header() {
     const submissionData = new FormData();
     submissionData.append('job_role', formData.jobRole);
     submissionData.append('industry', formData.industry);
-    submissionData.append('location', formData.location);
 
     if (resume) {
       submissionData.append('resume', resume);
@@ -100,77 +98,6 @@ export default function Header() {
       alert('Interview cannot be schedule right now. Please try again later.');
     }
   };
-
-  // const FormContent = () => (
-  //   <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-  //     <div>
-  //       <label className="block text-gray-600 font-medium mb-2">Upload Resume</label>
-  //       <input
-  //         type="file"
-  //         accept=".pdf"
-  //         onChange={handleResumeUpload}
-  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-  //       />
-  //       {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
-  //       {resume && (
-  //         <div className="mt-2 flex items-center gap-4">
-  //           <p className="text-sm text-gray-500">{resume.name}</p>
-  //           <button
-  //             type="button"
-  //             onClick={handleRemoveFile}
-  //             className="text-red-500 text-sm font-medium underline hover:text-red-700"
-  //           >
-  //             Remove
-  //           </button>
-  //         </div>
-  //       )}
-  //     </div>
-
-  //     <div>
-  //       <label className="block text-gray-600 font-medium mb-2">Job Role</label>
-  //       <input
-  //         type="text"
-  //         name="jobRole"
-  //         value={formData.jobRole}
-  //         onChange={handleInputChange}
-  //         placeholder="Enter Job Role"
-  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-  //       />
-  //     </div>
-
-  //     <div>
-  //       <label className="block text-gray-600 font-medium mb-2">Industry</label>
-  //       <input
-  //         type="text"
-  //         name="industry"
-  //         value={formData.industry}
-  //         onChange={handleInputChange}
-  //         placeholder="Enter Industry"
-  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-  //       />
-  //     </div>
-
-  //     <div>
-  //       <label className="block text-gray-600 font-medium mb-2">Location</label>
-  //       <input
-  //         type="text"
-  //         name="location"
-  //         value={formData.location}
-  //         onChange={handleInputChange}
-  //         placeholder="Enter Location"
-  //         className="block w-full p-2 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-  //       />
-  //     </div>
-
-  //     <button
-  //       type="submit"
-  //       className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
-  //       disabled={!resume || error}
-  //     >
-  //       Start Interview
-  //     </button>
-  //   </form>
-  // );
 
   return (
     <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">

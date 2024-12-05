@@ -27,7 +27,7 @@ const FormContent = memo(
         )}
       </div>
 
-      {['Job Role', 'Industry', 'Location'].map((field) => (
+      {['Job Role', 'Industry'].map((field) => (
         <div key={field}>
           <label className="block text-gray-600 font-medium mb-2">{field}</label>
           <input

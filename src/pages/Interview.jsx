@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa'; // Import icons
+import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 import InterviewInstructions from '../shared/Instructions';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
@@ -11,7 +11,9 @@ const SpeechToText = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isStart, setIsStart] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes timer in seconds
-  const timerRef = useRef(null); // Timer reference
+  const [siriLoader, setSiriLoader] = useState(false); // Controls Siri-like loader
+  const [firstQuestion, setFirstQuestion] = useState(''); // Store the first question
+  const timerRef = useRef(null);
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -41,7 +43,6 @@ const SpeechToText = () => {
       }
 
       const audioBlob = await response.blob();
-
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
       audio.play();
@@ -101,6 +102,7 @@ const SpeechToText = () => {
       setIsListening(false);
 
       if (transcript.trim()) {
+        setSiriLoader(true); // Show Siri-like loader
         await convoWithAI();
       } else {
         console.log('Transcript is empty, not calling convoWithAI');
@@ -109,8 +111,6 @@ const SpeechToText = () => {
   };
 
   async function askFirstQuestion() {
-    setIsStart(true);
-    startTimer();
     try {
       const response = await axios.get(
         'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/start_interview',
@@ -120,12 +120,16 @@ const SpeechToText = () => {
           }
         }
       );
-      speakQuestion(response.data.message);
+      setFirstQuestion(response.data.message); // Store the first question
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error fetching first question:', error);
     }
   }
-
+  function speakFirstQuestion() {
+    setIsStart(true);
+    startTimer();
+    speakQuestion(firstQuestion);
+  }
   async function convoWithAI() {
     try {
       const response = await axios.post(
@@ -141,6 +145,8 @@ const SpeechToText = () => {
       speakQuestion(response.data.message);
     } catch (error) {
       console.log(error);
+    } finally {
+      setSiriLoader(false); // Hide Siri-like loader when done
     }
   }
 
@@ -202,6 +208,7 @@ const SpeechToText = () => {
     };
 
     initializeVideo();
+    askFirstQuestion();
     return () => {
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -218,7 +225,8 @@ const SpeechToText = () => {
       {!isStart && (
         <>
           <button
-            onClick={askFirstQuestion}
+            onClick={speakFirstQuestion}
+            disabled={firstQuestion.length <= 0}
             className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
           >
             Start
@@ -238,8 +246,23 @@ const SpeechToText = () => {
       )}
       <div className="relative w-full h-64 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
         <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
+        {siriLoader && (
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-8">
+            <div className="w-full h-full flex items-center justify-around">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-3 h-full bg-blue-600 rounded animate-pulse"
+                  style={{
+                    animationDelay: `${i * 0.2}s`,
+                    animationDuration: '1s'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-
       <div className="flex flex-col items-center gap-2">
         <button
           onClick={isListening ? stopListening : startListening}
@@ -259,7 +282,6 @@ const SpeechToText = () => {
           is appreciated.
         </p>
       </div>
-
       <textarea
         rows="6"
         className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
