@@ -229,10 +229,14 @@ const SpeechToText = () => {
             disabled={firstQuestion.length <= 0}
             className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
           >
-            Start
+            {firstQuestion.length <= 0 ? (
+              <div className="loader border-t-4 border-white border-solid rounded-full w-6 h-6 animate-spin mx-auto"></div>
+            ) : (
+              'Start'
+            )}
           </button>
           <p className="flex justify-between w-full items-center p-2 bg-gray-100 rounded-md text-gray-600">
-            It takes 5-6 secs to get the interview started, we're currently working on making your experience seamless.
+            It takes 2-3 secs to get the interview started, we're currently working on making your experience seamless.
           </p>
         </>
       )}
