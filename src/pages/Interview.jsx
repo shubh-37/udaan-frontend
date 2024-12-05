@@ -112,14 +112,11 @@ const SpeechToText = () => {
 
   async function askFirstQuestion() {
     try {
-      const response = await axios.get(
-        'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/start_interview',
-        {
-          params: {
-            thread_id
-          }
+      const response = await axios.get('https://ec2-65-0-27-159.ap-south-1.compute.amazonaws.com/start_interview', {
+        params: {
+          thread_id
         }
-      );
+      });
       setFirstQuestion(response.data.message); // Store the first question
     } catch (error) {
       console.error('Error fetching first question:', error);
@@ -133,7 +130,7 @@ const SpeechToText = () => {
   async function convoWithAI() {
     try {
       const response = await axios.post(
-        `https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_convo`,
+        `https://ec2-65-0-27-159.ap-south-1.compute.amazonaws.com/interview_convo`,
         { response: transcript },
         {
           params: {
@@ -154,14 +151,11 @@ const SpeechToText = () => {
     clearInterval(timerRef.current); // Stop the timer
     setIsLoading(true); // Show loader
     try {
-      const response = await axios.get(
-        'https://ec2-3-110-37-239.ap-south-1.compute.amazonaws.com:8000/interview_feedback',
-        {
-          params: {
-            thread_id
-          }
+      const response = await axios.get('https://ec2-65-0-27-159.ap-south-1.compute.amazonaws.com/interview_feedback', {
+        params: {
+          thread_id
         }
-      );
+      });
       localStorage.setItem('review', JSON.stringify(response.data.message)); // Save the review in local storage
       navigate('/review'); // Route to the review page
     } catch (error) {
@@ -235,8 +229,8 @@ const SpeechToText = () => {
               'Start'
             )}
           </button>
-          <p className="flex justify-between w-full items-center p-2 bg-gray-100 rounded-md text-gray-600">
-            It takes 2-3 secs to get the interview started, we're currently working on making your experience seamless.
+          <p className="p-2 bg-gray-100 rounded-md text-gray-600">
+            Hope you're ready, we wish you all the best! Give us a moment before we begin!
           </p>
         </>
       )}
