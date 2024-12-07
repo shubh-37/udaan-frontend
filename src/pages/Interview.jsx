@@ -242,7 +242,7 @@ const SpeechToText = () => {
           Submit Interview
         </button>
       )}
-      <div className="relative w-full h-64 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
+      <div className="relative w-full h-80 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
         <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
         {siriLoader && (
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-8">
@@ -275,9 +275,10 @@ const SpeechToText = () => {
           )}
         </button>
         <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
-        <p className="flex justify-between w-full items-center p-2 bg-gray-100 rounded-md text-gray-600">
-          Please mute the mic only once the transcription is done. It takes 2-3 secs to get the response, your patience
-          is appreciated.
+
+        <p className="w-full p-2 bg-gray-100 rounded-md text-gray-600 ">
+          <span className="font-bold">Important: </span> Please mute the mic only once the transcription is done. It
+          takes 2-3 secs to get the response, your patience is appreciated.
         </p>
       </div>
       <textarea
