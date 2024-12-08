@@ -78,7 +78,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        'https://ec2-65-0-27-159.ap-south-1.compute.amazonaws.com/submit_user_data',
+        'https://ec2-13-200-60-158.ap-south-1.compute.amazonaws.com/submit_user_data',
         submissionData,
         {
           headers: {
