@@ -18,13 +18,12 @@ const InterviewReview = () => {
   ];
 
   function parseFeedback(obj) {
-    const text = JSON.parse(obj);
-    const feedback = JSON.parse(text);
-    const overallScore = feedback['Overall score'];
-    const speechScore = feedback['Speech'];
-    const confidenceScore = feedback['Confidence'];
-    const technicalSkillsScore = feedback['Technical skills'];
-    const areasOfImprovement = feedback['Areas of improvement'];
+    const feedback = JSON.parse(obj);
+    const overallScore = feedback['overall_score'];
+    const speechScore = feedback['speech'];
+    const confidenceScore = feedback['confidence'];
+    const technicalSkillsScore = feedback['technical_skills'];
+    const areasOfImprovement = feedback['areas_of_improvement'];
 
     setReview({
       score: overallScore * 10,
