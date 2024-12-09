@@ -77,15 +77,11 @@ export default function Header() {
     }
 
     try {
-      const response = await axios.post(
-        'https://ec2-13-200-60-158.ap-south-1.compute.amazonaws.com/submit_user_data',
-        submissionData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+      const response = await axios.post('https://udaan-backend.ip-dynamic.org/submit_user_data', submissionData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
 
       if (response.status === 200) {
         localStorage.setItem('thread_id', response.data.thread_id);

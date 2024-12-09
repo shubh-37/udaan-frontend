@@ -112,7 +112,7 @@ const SpeechToText = () => {
 
   async function askFirstQuestion() {
     try {
-      const response = await axios.get('https://ec2-13-200-60-158.ap-south-1.compute.amazonaws.com/start_interview', {
+      const response = await axios.get('https://udaan-backend.ip-dynamic.org/start_interview', {
         params: {
           thread_id
         }
@@ -130,7 +130,7 @@ const SpeechToText = () => {
   async function convoWithAI() {
     try {
       const response = await axios.post(
-        `https://ec2-13-200-60-158.ap-south-1.compute.amazonaws.com/interview_convo`,
+        `https://udaan-backend.ip-dynamic.org/interview_convo`,
         { response: transcript },
         {
           params: {
@@ -151,14 +151,11 @@ const SpeechToText = () => {
     clearInterval(timerRef.current); // Stop the timer
     setIsLoading(true); // Show loader
     try {
-      const response = await axios.get(
-        'https://ec2-13-200-60-158.ap-south-1.compute.amazonaws.com/interview_feedback',
-        {
-          params: {
-            thread_id
-          }
+      const response = await axios.get('https://udaan-backend.ip-dynamic.org/interview_feedback', {
+        params: {
+          thread_id
         }
-      );
+      });
       localStorage.setItem('review', JSON.stringify(response.data.message)); // Save the review in local storage
       navigate('/review'); // Route to the review page
     } catch (error) {
