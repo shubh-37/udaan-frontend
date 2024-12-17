@@ -75,7 +75,7 @@ const FlipCard = ({ frontContent, backContent, fontSize, rating }) => {
           </h3>
           {/* Render the stars */}
           {rating && renderStars(rating)}
-          <button className="bg-white text-gray-600 w-fit p-2 rounded-lg shadow mt-2">Download report</button>
+          {/* <button className="bg-white text-gray-600 w-fit p-2 rounded-lg shadow mt-2">Download report</button> */}
         </div>
       </div>
     </div>
