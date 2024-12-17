@@ -10,7 +10,9 @@ export default function LandingPage() {
       <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6" />
-          <span className="ml-2 text-2xl font-bold">PrepSOM</span>
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-slate-900 via-zinc-500 to-slate-800 text-transparent bg-clip-text">
+            PrepSOM
+          </span>
         </Link>
         {username && <p>Hey {username}!</p>}
         {!username && (
@@ -20,7 +22,7 @@ export default function LandingPage() {
         )}
       </header>
       <main className="flex-1 flex flex-col items-center">
-        <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-blue-50 to-white">
+        <section className="w-full flex justify-center py-12 md:py-24 lg:py-12 xl:py-20 bg-gradient-to-b from-blue-50 to-white">
           <div className="container px-4 md:px-6 max-w-[1200px]">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
@@ -87,7 +89,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section id="how-it-works" className="w-full flex justify-center py-12 md:py-24 lg:py-32 bg-gray-50">
+        <section id="how-it-works" className="w-full flex justify-center py-6 md:py-12 lg:py-24 bg-gray-50">
           <div className="container px-4 md:px-6 max-w-[1200px]">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
               How It Works
@@ -117,7 +119,48 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 bg-blue-600 text-white">
+        <section className="w-full flex justify-center py-12 md:py-24 bg-white">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
+              Model Trained by Professionals From:
+            </h2>
+            <div className="flex flex-wrap justify-around items-center">
+              <img src={`https://upload.wikimedia.org/wikipedia/en/9/9c/AXA_logo.svg`} alt="" width={120} height={60} />
+              <img
+                src={`https://upload.wikimedia.org/wikipedia/commons/2/22/Milliman_logo.svg`}
+                alt=""
+                width={120}
+                height={60}
+              />
+              <img
+                src={`https://upload.wikimedia.org/wikipedia/commons/7/7e/Mercer_h_rgb_c.svg`}
+                alt=""
+                width={120}
+                height={60}
+              />
+              <img
+                src={`https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg`}
+                alt=""
+                width={120}
+                height={60}
+              />
+              <img
+                src={`https://upload.wikimedia.org/wikipedia/commons/3/39/Marsh_%26_McLennan_Companies_logo.svg`}
+                alt=""
+                width={120}
+                height={60}
+              />
+              <img
+                src={`https://upload.wikimedia.org/wikipedia/commons/0/05/PricewaterhouseCoopers_Logo.svg`}
+                alt=""
+                width={120}
+                height={60}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="w-full flex justify-center py-12 md:py-12 lg:py-20 bg-blue-600 text-white">
           <div className="container px-4 md:px-6 max-w-[1200px] text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
               Ready to Ace Your Next Interview?

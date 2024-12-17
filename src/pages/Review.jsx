@@ -33,20 +33,6 @@ const InterviewReview = () => {
       score: overallScore * 10,
       criteria: [
         {
-          heading: 'Speech',
-          score: `${speechScore}/10`,
-          bgColor: '#9ca3af',
-          fontSize: 'x-large',
-          scoreNum: speechScore
-        },
-        {
-          heading: 'Confidence',
-          score: `${confidenceScore}/10`,
-          bgColor: '#9ca3af',
-          fontSize: 'x-large',
-          scoreNum: confidenceScore
-        },
-        {
           heading: 'Technical Skills',
           score: `${technicalSkillsScore}/10`,
           bgColor: '#9ca3af',
@@ -54,10 +40,22 @@ const InterviewReview = () => {
           scoreNum: technicalSkillsScore
         },
         {
-          heading: 'Areas of Improvement',
+          heading: 'Overall Feedback',
           score: areasOfImprovement,
           bgColor: '#9ca3af',
           fontSize: 'medium'
+        },
+        {
+          heading: 'Speech',
+          score: 'Currently under development! Available very soon',
+          bgColor: '#9ca3af',
+          fontSize: 'x-large'
+        },
+        {
+          heading: 'Confidence',
+          score: 'Currently under development! Available very soon',
+          bgColor: '#9ca3af',
+          fontSize: 'x-large'
         }
       ]
     });
@@ -70,7 +68,9 @@ const InterviewReview = () => {
     // Set a random quote
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     setQuote(randomQuote);
-    setShowFeedbackForm(true);
+    setTimeout(() => {
+      setShowFeedbackForm(true);
+    }, 3000);
   }, []);
 
   return (
@@ -85,15 +85,14 @@ const InterviewReview = () => {
         </div>
       </header>
       <p className="text-3xl font-bold text-center text-gray-600">Interview Review</p>
-
-      <div className="bg-white shadow-lg p-6 rounded-lg border border-gray-200 text-center">
+      <div className="bg-white flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold text-gray-600 mb-4">Your Score</h2>
-        <div className="flex justify-center items-center space-x-4">
-          <p className="text-3xl font-bold text-blue-500">{review.score}%</p>
+        <div className="border-2 border-blue-500 rounded-full w-min p-2">
+          <p className="text-3xl  font-bold text-blue-500">{review.score}%</p>
         </div>
       </div>
 
-      <div className="bg-gray-100 rounded-lg shadow p-4 text-center text-xl font-semibold text-gray-600 italic">
+      <div className="bg-gray-100 rounded-lg shadow p-4 text-center text-xl font-semibold text-gray-600 italic mx-2">
         {quote}
       </div>
 

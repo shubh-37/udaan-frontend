@@ -47,10 +47,9 @@ const FlipCard = ({ frontContent, backContent, fontSize, rating }) => {
           style={{
             backfaceVisibility: 'hidden',
             position: 'absolute',
-            backgroundColor: '#929292',
-            border: '3px solid #919191'
+            border: '2px solid #919191'
           }}
-          className="flex items-center shadow-md justify-center flex-col rounded-3xl w-full h-full text-white text-2xl text-center"
+          className="flex items-center shadow-md justify-center flex-col rounded-3xl w-full h-full text-white text-2xl text-center bg-gradient-to-br from-slate-900 via-zinc-500 to-slate-800"
         >
           {frontContent}
           <p className="text-base">Click to see the results</p>
