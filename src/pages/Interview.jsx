@@ -19,10 +19,10 @@ const SpeechToText = () => {
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
 
-  const thread_id = localStorage.getItem('thread_id');
+  const token = localStorage.getItem('token');
 
   const speakQuestion = async (text) => {
-    const apiKey = 'sk_48b91956819fd998c19873b905715d27733f9dbf090478fd';
+    const apiKey = 'sk_06c135765482c5e50ba6196783694edf11611a2c3220c61e';
     const voiceId = 'P1bg08DkjqiVEzOn76yG';
 
     try {
@@ -113,13 +113,18 @@ const SpeechToText = () => {
   async function askFirstQuestion() {
     try {
       const response = await axios.get('https://udaan-backend.ip-dynamic.org/start_interview', {
-        params: {
-          thread_id
+        headers: {
+          Authorization: `Bearer ${token}`
         }
       });
       setFirstQuestion(response.data.message); // Store the first question
     } catch (error) {
-      console.error('Error fetching first question:', error);
+      if (error.response.status === 422) {
+        navigate('/login');
+      } else {
+        alert('Currently facing some issue, sorry for the inconvenience');
+        navigate('/');
+      }
     }
   }
   function speakFirstQuestion() {
@@ -133,8 +138,8 @@ const SpeechToText = () => {
         `https://udaan-backend.ip-dynamic.org/interview_convo`,
         { response: transcript },
         {
-          params: {
-            thread_id
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -152,8 +157,8 @@ const SpeechToText = () => {
     setIsLoading(true); // Show loader
     try {
       const response = await axios.get('https://udaan-backend.ip-dynamic.org/interview_feedback', {
-        params: {
-          thread_id
+        headers: {
+          Authorization: `Bearer ${token}`
         }
       });
       localStorage.setItem('review', JSON.stringify(response.data.message)); // Save the review in local storage
