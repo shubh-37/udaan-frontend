@@ -11,16 +11,16 @@ const FormContent = memo(({ formData, handleSliderChange, handleSwitchChange, ha
   <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-lg">
     {/* Overall Experience */}
     <div className="space-y-2">
-      <Label htmlFor="overall_experince" className="text-sm font-medium">
+      <Label htmlFor="overall_experience" className="text-sm font-medium">
         Overall Experience
       </Label>
       <Slider
-        id="overall_experince"
+        id="overall_experience"
         min={1}
         max={10}
         step={1}
-        value={[formData.overall_experince]}
-        onValueChange={(value) => handleSliderChange('overall_experince', value[0])}
+        value={[formData.overall_experience]}
+        onValueChange={(value) => handleSliderChange('overall_experience', value[0])}
         className="w-full"
       />
       <p className="text-sm text-gray-500">Rate your overall experience from 1 to 10</p>

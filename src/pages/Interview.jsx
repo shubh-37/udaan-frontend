@@ -161,7 +161,7 @@ const SpeechToText = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      localStorage.setItem('review', JSON.stringify(response.data.message)); // Save the review in local storage
+      localStorage.setItem('review', JSON.stringify(response.data)); // Save the review in local storage
       navigate('/review'); // Route to the review page
     } catch (error) {
       console.error('Error submitting form:', error);

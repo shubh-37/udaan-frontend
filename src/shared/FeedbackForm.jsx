@@ -19,7 +19,7 @@ export function FeedbackForm({ isOpen, onOpenChange }) {
   }, []);
 
   const [formData, setFormData] = useState({
-    overall_experince: 5,
+    overall_experience: 5,
     recommend_score: 5,
     pay_for_report: false,
     pay_price: 0,
