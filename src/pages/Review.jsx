@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom';
-import FlipCard from '../shared/FlipCard';
 import { useEffect, useState } from 'react';
+import FlipCard from '../shared/FlipCard';
+import { FeedbackForm } from '../shared/FeedbackForm';
+import { Button } from '@/components/ui/button';
+import { Video } from 'lucide-react';
 
 const InterviewReview = () => {
   const [review, setReview] = useState({ score: 0, criteria: [] });
   const [quote, setQuote] = useState('');
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
 
   const quotes = [
     'Your preparation defines your future.',
@@ -66,20 +70,26 @@ const InterviewReview = () => {
     // Set a random quote
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     setQuote(randomQuote);
+    setShowFeedbackForm(true);
   }, []);
 
   return (
-    <div className="p-8 mx-auto space-y-8">
-      <Link to="/" className="bg-blue-600 text-white p-3 rounded-lg shadow hover:bg-blue-700 transition">
-        Back to home
-      </Link>
+    <div className="mx-auto space-y-8">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between border-b">
+        <Link className="flex items-center justify-center" to="/">
+          <Video className="h-6 w-6" />
+          <span className="ml-2 text-2xl font-bold">Prepsom</span>
+        </Link>
+        <div className="flex justify-center">
+          <Button onClick={() => setShowFeedbackForm(true)}>Submit Feedback</Button>
+        </div>
+      </header>
       <p className="text-3xl font-bold text-center text-gray-600">Interview Review</p>
 
       <div className="bg-white shadow-lg p-6 rounded-lg border border-gray-200 text-center">
         <h2 className="text-2xl font-bold text-gray-600 mb-4">Your Score</h2>
         <div className="flex justify-center items-center space-x-4">
           <p className="text-3xl font-bold text-blue-500">{review.score}%</p>
-          <p className="text-lg text-gray-600">You performed above average. Great job!</p>
         </div>
       </div>
 
@@ -99,6 +109,8 @@ const InterviewReview = () => {
           />
         ))}
       </div>
+
+      {showFeedbackForm && <FeedbackForm isOpen={showFeedbackForm} onOpenChange={setShowFeedbackForm} />}
     </div>
   );
 };
