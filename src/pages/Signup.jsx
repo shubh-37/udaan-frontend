@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authContext } from '../context/AuthContextProvider';
 import Loader from '../shared/Loader';
+import { Video } from 'lucide-react';
 
 const SignupForm = () => {
   const { signUpUser } = useContext(authContext);
@@ -57,9 +58,14 @@ const SignupForm = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {isLoading && <Loader text={'Signing Up...'} />}
-      <header className="bg-blue-600 text-white py-4 px-6 flex justify-between items-center">
-        <h1 className="text-xl font-bold">PrepSOM</h1>
-        <Link className="bg-white text-blue-600 px-4 py-2 rounded-md font-medium hover:bg-gray-200" to="/login">
+      <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between bg-white">
+        <Link className="flex items-center justify-center" to="/">
+          <Video className="h-6 w-6 text-blue-600" />
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
+            PrepSOM
+          </span>
+        </Link>
+        <Link to="/login" className="bg-gray-100 text-blue-600 px-4 py-2 rounded-md font-medium hover:bg-gray-200">
           Login
         </Link>
       </header>
@@ -168,6 +174,12 @@ const SignupForm = () => {
           <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
             Sign Up
           </button>
+          <h5 className="text-center mt-4">
+            Already have an account ?{' '}
+            <Link className="text-blue-500" to="/login">
+              Login
+            </Link>
+          </h5>
         </form>
       </div>
     </div>
