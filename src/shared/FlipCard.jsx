@@ -61,9 +61,11 @@ const FlipCard = ({ frontContent, backContent, fontSize, rating }) => {
             transform: 'rotateY(180deg)', // Flip this side
             position: 'absolute',
             height: '100%',
-            backgroundColor: '#2C2C2C'
+            backgroundColor: '#2C2C2C',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
           }}
-          className="text-center p-2 flex shadow-md flex-col justify-around items-center w-full object-fit rounded-3xl text-white"
+          className="text-center p-2 flex shadow-md flex-col justify-around items-center w-full object-fit rounded-3xl text-white overflow-auto"
         >
           <h3
             style={{
