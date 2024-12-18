@@ -33,18 +33,19 @@ const InterviewReview = () => {
       score: overallScore * 10,
       criteria: [
         {
+          heading: 'Overall Feedback',
+          score: areasOfImprovement,
+          bgColor: '#9ca3af',
+          fontSize: 'medium'
+        },
+        {
           heading: 'Technical Skills',
           score: `${technicalSkillsScore}/10`,
           bgColor: '#9ca3af',
           fontSize: 'x-large',
           scoreNum: technicalSkillsScore
         },
-        {
-          heading: 'Overall Feedback',
-          score: areasOfImprovement,
-          bgColor: '#9ca3af',
-          fontSize: 'medium'
-        },
+
         {
           heading: 'Speech',
           score: 'Currently under development! Available very soon',
