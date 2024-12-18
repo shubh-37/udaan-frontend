@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Video, BarChart, Briefcase, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import bhartiAXA from '../assets/bhartiAXA.svg';
 
 export default function LandingPage() {
   const username = localStorage.getItem('username');
@@ -9,8 +10,8 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
         <Link className="flex items-center justify-center" to="/">
-          <Video className="h-6 w-6" />
-          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-slate-900 via-zinc-500 to-slate-800 text-transparent bg-clip-text">
+          <Video className="h-6 w-6 text-blue-600" />
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
             PrepSOM
           </span>
         </Link>
@@ -22,7 +23,7 @@ export default function LandingPage() {
         )}
       </header>
       <main className="flex-1 flex flex-col items-center">
-        <section className="w-full flex justify-center py-12 md:py-24 lg:py-12 xl:py-20 bg-gradient-to-b from-blue-50 to-white">
+        <section className="w-full flex justify-center py-12 md:py-24 lg:py-20 xl:py-36 bg-gradient-to-b from-blue-50 to-white">
           <div className="container px-4 md:px-6 max-w-[1200px]">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
@@ -33,7 +34,7 @@ export default function LandingPage() {
                   Practice makes perfect. Simulate real interviews, get AI-powered feedback, and land your dream job.
                 </p>
               </div>
-              <div className="space-x-4">
+              <div className="space-x-4 space-y-2">
                 <Button size="lg" className="bg-black text-white">
                   <Link to="/interview">Start Practicing Now</Link>
                 </Button>
@@ -44,7 +45,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section id="features" className="w-full flex justify-center">
+        <section id="features" className="w-full flex justify-center py-12">
           <div className="container px-4 md:px-6 max-w-[1200px]">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
               Key Features
@@ -89,43 +90,13 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section id="how-it-works" className="w-full flex justify-center py-6 md:py-12 lg:py-24 bg-gray-50">
-          <div className="container px-4 md:px-6 max-w-[1200px]">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
-              How It Works
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">
-                  1
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Choose Your Interview</h3>
-                <p>Select from various job roles and difficulty levels to tailor your practice session.</p>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">
-                  2
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Practice with AI</h3>
-                <p>Engage in a realistic interview with our AI-powered virtual interviewer.</p>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">
-                  3
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Get Instant Feedback</h3>
-                <p>Receive detailed analysis and suggestions to improve your interview skills.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="w-full flex justify-center py-12 md:py-24 bg-white">
+        <section className="w-full flex justify-center py-12 md:py-24 bg-gray-100">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
               Model Trained by Professionals From:
             </h2>
-            <div className="flex flex-wrap justify-around items-center">
-              <img src={`https://upload.wikimedia.org/wikipedia/en/9/9c/AXA_logo.svg`} alt="" width={120} height={60} />
+            <div className="flex flex-wrap justify-around items-center gap-4">
+              <img src={bhartiAXA} alt="" width={120} height={60} />
               <img
                 src={`https://upload.wikimedia.org/wikipedia/commons/2/22/Milliman_logo.svg`}
                 alt=""
@@ -156,6 +127,36 @@ export default function LandingPage() {
                 width={120}
                 height={60}
               />
+            </div>
+          </div>
+        </section>
+        <section id="how-it-works" className="w-full flex justify-center py-6 md:py-12 lg:py-24 ">
+          <div className="container px-4 md:px-6 max-w-[1200px]">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
+              How It Works
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">
+                  1
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Choose Your Interview</h3>
+                <p>Select from various job roles and difficulty levels to tailor your practice session.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">
+                  2
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Practice with AI</h3>
+                <p>Engage in a realistic interview with our AI-powered virtual interviewer.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-4">
+                  3
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Get Instant Feedback</h3>
+                <p>Receive detailed analysis and suggestions to improve your interview skills.</p>
+              </div>
             </div>
           </div>
         </section>
