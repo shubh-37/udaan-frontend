@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 import InterviewInstructions from '../shared/Instructions';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
+import { Video } from 'lucide-react';
+import { Button } from '../components/ui/button';
 
 const SpeechToText = () => {
   const [transcript, setTranscript] = useState('');
@@ -18,6 +20,7 @@ const SpeechToText = () => {
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
+  const username = localStorage.getItem('username');
 
   const token = localStorage.getItem('token');
 
@@ -119,7 +122,7 @@ const SpeechToText = () => {
       });
       setFirstQuestion(response.data.message); // Store the first question
     } catch (error) {
-      if (error.response.status === 422) {
+      if (error.response.status === 422 || error.response.status === 401) {
         navigate('/login');
       } else {
         alert('Currently facing some issue, sorry for the inconvenience');
@@ -216,83 +219,89 @@ const SpeechToText = () => {
   }, []);
 
   return (
-    <div className="p-8 max-w-3xl mx-auto space-y-8">
+    <div className="">
       <InterviewInstructions />
       {isLoading && <Loader text={'Processing Interview...'} />}
-      <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
-      <div className="text-center text-xl font-semibold text-gray-700">Time Left: {formatTime(timeLeft)}</div>
-      {!isStart && (
-        <>
-          <button
-            onClick={speakFirstQuestion}
-            disabled={firstQuestion.length <= 0}
-            className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
-          >
-            {firstQuestion.length <= 0 ? (
-              <div className="loader border-t-4 border-white border-solid rounded-full w-6 h-6 animate-spin mx-auto"></div>
-            ) : (
-              'Start'
-            )}
-          </button>
-          <p className="p-2 bg-gray-100 rounded-md text-gray-600">
-            Hope you're ready, we wish you all the best! Give us a moment before we begin!
-          </p>
-        </>
-      )}
-      {isStart && (
-        <button
-          onClick={submitInterview}
-          className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
-        >
-          Submit Interview
-        </button>
-      )}
-      <div className="relative w-full h-80 bg-gray-200 border-2 border-gray-300 rounded-lg flex justify-center items-center">
-        <video ref={videoRef} className="absolute w-full h-full object-cover rounded-lg" muted autoPlay playsInline />
-        {siriLoader && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-8">
-            <div className="w-full h-full flex items-center justify-around">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-3 h-full bg-blue-600 rounded animate-pulse"
-                  style={{
-                    animationDelay: `${i * 0.2}s`,
-                    animationDuration: '1s'
-                  }}
-                />
-              ))}
-            </div>
+      <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
+        <Link className="flex items-center justify-center" to="/">
+          <Video className="h-6 w-6 text-blue-600" />
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
+            PrepSOM
+          </span>
+        </Link>
+        {username && <p>Hey {username}!</p>}
+        {!username && (
+          <Button size="lg" className="bg-black text-white">
+            <Link to="/interview">Login</Link>
+          </Button>
+        )}
+      </header>
+      <main className="px-4 py-2">
+        <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
+        <div className="text-center text-xl font-semibold text-gray-700">Time Left: {formatTime(timeLeft)}</div>
+
+        {!isStart && (
+          <div className="flex flex-col items-center gap-4 mt-6">
+            <button
+              onClick={speakFirstQuestion}
+              disabled={firstQuestion.length <= 0}
+              className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
+            >
+              {firstQuestion.length <= 0 ? (
+                <div className="loader border-t-4 border-white border-solid rounded-full w-6 h-6 animate-spin mx-auto"></div>
+              ) : (
+                'Start'
+              )}
+            </button>
+            <p className="p-2 bg-gray-100 rounded-md text-gray-600">
+              Hope you're ready, we wish you all the best! Give us a moment before we begin!
+            </p>
           </div>
         )}
-      </div>
-      <div className="flex flex-col items-center gap-2">
-        <button
-          onClick={isListening ? stopListening : startListening}
-          className={`w-16 h-16 flex items-center justify-center rounded-full shadow-lg transition ${
-            isListening ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
-          }`}
-        >
-          {isListening ? (
-            <FaMicrophone className="text-white text-2xl" />
-          ) : (
-            <FaMicrophoneSlash className="text-white text-2xl" />
-          )}
-        </button>
-        <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
 
-        <p className="w-full p-2 bg-gray-100 rounded-md text-gray-600 ">
-          <span className="font-bold">Important: </span> Please mute the mic only once the transcription is done. It
-          takes 2-3 secs to get the response, your patience is appreciated.
-        </p>
-      </div>
-      <textarea
-        rows="6"
-        className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Your speech will appear here..."
-        value={transcript}
-        readOnly
-      />
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+          {/* Video Section with Mic */}
+          <div className="flex flex-col items-center gap-4">
+            {/* Video */}
+            <div className="relative w-full h-80 bg-gray-200 border-2 border-gray-300 rounded-lg overflow-hidden">
+              <video ref={videoRef} className="absolute w-full h-full object-cover" muted autoPlay playsInline />
+            </div>
+
+            {/* Mic Button */}
+            <div className="flex flex-col items-center mt-4">
+              <button
+                onClick={isListening ? stopListening : startListening}
+                className={`w-16 h-16 flex items-center justify-center rounded-full shadow-lg transition ${
+                  isListening ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                {isListening ? (
+                  <FaMicrophone className="text-white text-2xl" />
+                ) : (
+                  <FaMicrophoneSlash className="text-white text-2xl" />
+                )}
+              </button>
+              <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
+            </div>
+          </div>
+
+          {/* Transcript Section */}
+          <div className="flex flex-col justify-start">
+            <textarea
+              rows="12"
+              className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your speech will appear here..."
+              value={transcript}
+              readOnly
+            />
+            <p className="mt-4 p-2 bg-gray-100 rounded-md text-gray-600">
+              <span className="font-bold">Important: </span> Please mute the mic only once the transcription is done. It
+              takes 2-3 secs to get the response, your patience is appreciated.
+            </p>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
