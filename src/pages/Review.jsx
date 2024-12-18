@@ -77,8 +77,10 @@ const InterviewReview = () => {
     <div className="mx-auto space-y-8">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between border-b">
         <Link className="flex items-center justify-center" to="/">
-          <Video className="h-6 w-6" />
-          <span className="ml-2 text-2xl font-bold">Prepsom</span>
+          <Video className="h-6 w-6 text-blue-600" />
+          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
+            PrepSOM
+          </span>
         </Link>
         <div className="flex justify-center">
           <Button onClick={() => setShowFeedbackForm(true)}>Submit Feedback</Button>
