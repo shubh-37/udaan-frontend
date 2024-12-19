@@ -12,10 +12,8 @@ const SpeechToText = () => {
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isStart, setIsStart] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes timer in seconds
-  const [siriLoader, setSiriLoader] = useState(false); // Controls Siri-like loader
-  const [firstQuestion, setFirstQuestion] = useState(''); // Store the first question
-  const timerRef = useRef(null);
+  const [siriLoader, setSiriLoader] = useState(false);
+  const [firstQuestion, setFirstQuestion] = useState('');
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -105,7 +103,7 @@ const SpeechToText = () => {
       setIsListening(false);
 
       if (transcript.trim()) {
-        setSiriLoader(true); // Show Siri-like loader
+        setSiriLoader(true);
         await convoWithAI();
       } else {
         console.log('Transcript is empty, not calling convoWithAI');
@@ -120,7 +118,7 @@ const SpeechToText = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setFirstQuestion(response.data.message); // Store the first question
+      setFirstQuestion(response.data.message);
     } catch (error) {
       if (error.response.status === 422 || error.response.status === 401) {
         navigate('/login');
@@ -132,7 +130,6 @@ const SpeechToText = () => {
   }
   function speakFirstQuestion() {
     setIsStart(true);
-    startTimer();
     speakQuestion(firstQuestion);
   }
   async function convoWithAI() {
@@ -146,51 +143,31 @@ const SpeechToText = () => {
           }
         }
       );
-      setTranscript(''); // Clear the transcript for the next question
+      setTranscript('');
       speakQuestion(response.data.message);
     } catch (error) {
       console.log(error);
     } finally {
-      setSiriLoader(false); // Hide Siri-like loader when done
+      setSiriLoader(false);
     }
   }
 
   async function submitInterview() {
-    clearInterval(timerRef.current); // Stop the timer
-    setIsLoading(true); // Show loader
+    setIsLoading(true);
     try {
       const response = await axios.get('https://udaan-backend.ip-dynamic.org/interview_feedback', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      localStorage.setItem('review', JSON.stringify(response.data)); // Save the review in local storage
-      navigate('/review'); // Route to the review page
+      localStorage.setItem('review', JSON.stringify(response.data));
+      navigate('/review');
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
-      setIsLoading(false); // Hide loader
+      setIsLoading(false);
     }
   }
-
-  const startTimer = () => {
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current); // Stop the timer
-          submitInterview(); // Auto-submit when time is up
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
 
   useEffect(() => {
     const initializeVideo = async () => {
@@ -238,10 +215,8 @@ const SpeechToText = () => {
       </header>
       <main className="px-4 py-2">
         <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
-        <div className="text-center text-xl font-semibold text-gray-700">Time Left: {formatTime(timeLeft)}</div>
-
-        {!isStart && (
-          <div className="flex flex-col items-center gap-4 mt-6">
+        <div className="flex flex-col items-center gap-4 mt-6">
+          {!isStart && (
             <button
               onClick={speakFirstQuestion}
               disabled={firstQuestion.length <= 0}
@@ -253,22 +228,42 @@ const SpeechToText = () => {
                 'Start'
               )}
             </button>
-            <p className="p-2 bg-gray-100 rounded-md text-gray-600">
-              Hope you're ready, we wish you all the best! Give us a moment before we begin!
-            </p>
-          </div>
-        )}
+          )}
+          {isStart && (
+            <button
+              onClick={submitInterview}
+              className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
+            >
+              Submit Interview
+            </button>
+          )}
+          <p className="p-2 bg-gray-100 rounded-md text-gray-600">
+            Hope you're ready, we wish you all the best! Give us a moment before we begin!
+          </p>
+        </div>
 
-        {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-          {/* Video Section with Mic */}
           <div className="flex flex-col items-center gap-4">
-            {/* Video */}
             <div className="relative w-full h-80 bg-gray-200 border-2 border-gray-300 rounded-lg overflow-hidden">
               <video ref={videoRef} className="absolute w-full h-full object-cover" muted autoPlay playsInline />
+              {siriLoader && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-8">
+                  <div className="w-full h-full flex items-center justify-around">
+                    {[...Array(5)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-3 h-full bg-blue-600 rounded animate-pulse"
+                        style={{
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: '1s'
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Mic Button */}
             <div className="flex flex-col items-center mt-4">
               <button
                 onClick={isListening ? stopListening : startListening}
@@ -285,8 +280,6 @@ const SpeechToText = () => {
               <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
             </div>
           </div>
-
-          {/* Transcript Section */}
           <div className="flex flex-col justify-start">
             <textarea
               rows="12"
