@@ -9,7 +9,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: ''
   });
 
@@ -22,7 +22,6 @@ const LoginForm = () => {
     setIsLoading(true);
     e.preventDefault();
     const response = await loginUser(formData);
-    console.log(response);
     if (response === 'success') {
       setIsLoading(false);
       navigate('/');
@@ -52,11 +51,11 @@ const LoginForm = () => {
         <form className="bg-white shadow-md rounded-lg p-8 w-full max-w-md" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Login</h2>
           <div className="mb-4">
-            <label className="block text-gray-700">Username *</label>
+            <label className="block text-gray-700">Email Id *</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               required
