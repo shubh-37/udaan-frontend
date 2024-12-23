@@ -3,11 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Video, BarChart, Briefcase, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import bhartiAXA from '../assets/bhartiAXA.svg';
+import { useState } from 'react';
+import InterviewForm from '../shared/InterviewForm';
+import Loader from '../shared/Loader';
 
 export default function LandingPage() {
-  const username = localStorage.getItem('username');
+  const token = localStorage.getItem('token');
+  function logout() {
+    localStorage.removeItem('token');
+  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Controls Drawer visibility
   return (
     <div className="flex flex-col min-h-screen">
+      {isOpen && <InterviewForm isOpen={isOpen} setIsOpen={setIsOpen} setIsLoading={setIsLoading} />}
+      {isLoading && <Loader text={'Preparing Interview...'} />}
       <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6 text-blue-600" />
@@ -15,8 +25,8 @@ export default function LandingPage() {
             PrepSOM
           </span>
         </Link>
-        {username && <p>Hey {username}!</p>}
-        {!username && (
+        {token && <Button onClick={logout}>Log out</Button>}
+        {!token && (
           <Button size="lg" className="bg-black text-white">
             <Link to="/interview">Login</Link>
           </Button>
@@ -35,9 +45,15 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="space-x-4 space-y-2">
-                <Button size="lg" className="bg-black text-white">
-                  <Link to="/interview">Start Practicing Now</Link>
-                </Button>
+                {token ? (
+                  <Button size="lg" className="bg-black text-white" onClick={() => setIsOpen(true)}>
+                    Start Practicing Now
+                  </Button>
+                ) : (
+                  <Button size="lg" className="bg-black text-white">
+                    <Link to="/login">Start Practicing Now</Link>
+                  </Button>
+                )}
                 <Button variant="outline" size="lg" className="text-white">
                   Watch Demo
                 </Button>
