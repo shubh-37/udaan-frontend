@@ -9,15 +9,12 @@ const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
+    full_name: '',
     email: '',
     password: '',
     institute: '',
     mobile_number: '',
-    job_role: '',
-    industry: '',
-    resume: null,
-    overall_experience_yrs: 0
+    resume: null
   });
 
   const handleChange = (e) => {
@@ -33,15 +30,12 @@ const SignupForm = () => {
     setIsLoading(true);
     e.preventDefault();
     const submissionData = new FormData();
-    submissionData.append('username', formData.username);
+    submissionData.append('full_name', formData.full_name);
     submissionData.append('email', formData.email);
     submissionData.append('password', formData.password);
     submissionData.append('institute', formData.institute);
     submissionData.append('mobile_number', formData.mobile_number);
-    submissionData.append('job_role', formData.job_role);
-    submissionData.append('industry', formData.industry);
     submissionData.append('resume', formData.resume); // File
-    submissionData.append('overall_experience_yrs', formData.overall_experience_yrs);
     const response = await signUpUser(submissionData);
     if (response === 'success') {
       setIsLoading(false);
@@ -51,7 +45,7 @@ const SignupForm = () => {
       alert('Error signing up, please try again.');
     } else {
       setIsLoading(false);
-      alert('Username/EmailId/Phone number exists, please try again.');
+      alert('EmailId/Phone number exists, please try again.');
     }
   };
 
@@ -73,11 +67,11 @@ const SignupForm = () => {
         <form className="bg-white shadow-md rounded-lg p-8 w-full max-w-lg" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Sign Up</h2>
           <div className="mb-4">
-            <label className="block text-gray-700">Username *</label>
+            <label className="block text-gray-700">Name *</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="full_name"
+              value={formData.full_name}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               required
@@ -128,44 +122,10 @@ const SignupForm = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Job Role *</label>
-            <input
-              type="text"
-              name="job_role"
-              value={formData.job_role}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Industry *</label>
-            <input
-              type="text"
-              name="industry"
-              value={formData.industry}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div className="mb-4">
             <label className="block text-gray-700">Resume *</label>
             <input
               type="file"
               name="resume"
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Overall Experience (years) *</label>
-            <input
-              type="number"
-              name="overall_experience_yrs"
-              min={0}
-              value={formData.overall_experience_yrs}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               required
