@@ -8,6 +8,7 @@ import axios from 'axios';
 export function FeedbackForm({ isOpen, onOpenChange }) {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const token = localStorage.getItem('token');
+  const interview_id = localStorage.getItem('interview_id');
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.matchMedia('(max-width: 430px)').matches);
@@ -52,6 +53,9 @@ export function FeedbackForm({ isOpen, onOpenChange }) {
       const response = await axios.post('https://udaan-backend.ip-dynamic.org/user_feedback', formData, {
         headers: {
           Authorization: `Bearer ${token}`
+        },
+        params: {
+          interview_id
         }
       });
       if (response.status === 200) {
