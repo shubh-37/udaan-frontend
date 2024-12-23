@@ -5,7 +5,6 @@ import InterviewInstructions from '../shared/Instructions';
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { Video } from 'lucide-react';
-import { Button } from '../components/ui/button';
 
 const SpeechToText = () => {
   const [transcript, setTranscript] = useState('');
@@ -18,10 +17,9 @@ const SpeechToText = () => {
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
-  const username = localStorage.getItem('username');
 
   const token = localStorage.getItem('token');
-
+  const interview_id = localStorage.getItem('interview_id');
   const speakQuestion = async (text) => {
     const apiKey = 'sk_06c135765482c5e50ba6196783694edf11611a2c3220c61e';
     const voiceId = 'P1bg08DkjqiVEzOn76yG';
@@ -158,6 +156,9 @@ const SpeechToText = () => {
       const response = await axios.get('https://udaan-backend.ip-dynamic.org/interview_feedback', {
         headers: {
           Authorization: `Bearer ${token}`
+        },
+        params: {
+          interview_id
         }
       });
       localStorage.setItem('review', JSON.stringify(response.data));
@@ -206,12 +207,6 @@ const SpeechToText = () => {
             PrepSOM
           </span>
         </Link>
-        {username && <p>Hey {username}!</p>}
-        {!username && (
-          <Button size="lg" className="bg-black text-white">
-            <Link to="/interview">Login</Link>
-          </Button>
-        )}
       </header>
       <main className="px-4 py-2">
         <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
