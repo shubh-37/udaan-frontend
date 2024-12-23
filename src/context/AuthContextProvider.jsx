@@ -15,7 +15,6 @@ export default function AuthProvider({ children }) {
       if (response.status === 200) {
         if (response.data.message) {
           localStorage.setItem('token', response.data.message);
-          localStorage.setItem('username', response.data.username);
           return 'success';
         }
       }
@@ -35,7 +34,6 @@ export default function AuthProvider({ children }) {
       if (response.status === 200) {
         if (response.data.message) {
           localStorage.setItem('token', response.data.message);
-          localStorage.setItem('username', response.data.username);
           return 'success';
         }
       }
