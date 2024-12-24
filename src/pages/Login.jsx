@@ -33,7 +33,7 @@ const LoginForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {isLoading && <Loader text={'Signing Up...'} />}
+      {isLoading && <Loader text={'Logging Up...'} />}
 
       <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between bg-white">
         <Link className="flex items-center justify-center" to="/">

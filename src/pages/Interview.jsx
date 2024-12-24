@@ -21,8 +21,8 @@ const SpeechToText = () => {
   const token = localStorage.getItem('token');
   const interview_id = localStorage.getItem('interview_id');
   const speakQuestion = async (text) => {
-    const apiKey = 'sk_06c135765482c5e50ba6196783694edf11611a2c3220c61e';
-    const voiceId = 'P1bg08DkjqiVEzOn76yG';
+    const apiKey = 'sk_051fea9ca0ff140f99b89d38bfd776703e3c1ed0bf9d0ca8';
+    const voiceId = 'tSVwqkJGEKjLklhiN0Nx';
 
     try {
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
