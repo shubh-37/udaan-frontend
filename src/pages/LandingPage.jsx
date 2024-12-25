@@ -54,9 +54,11 @@ export default function LandingPage() {
                     <Link to="/login">Start Practicing Now</Link>
                   </Button>
                 )}
-                <Button variant="outline" size="lg" className="text-white">
-                  Watch Demo
-                </Button>
+                <a href="https://youtu.be/F-UwrlXrsqM" target="_blank">
+                  <Button variant="outline" size="lg" className="text-white">
+                    Watch Demo
+                  </Button>
+                </a>
               </div>
             </div>
           </div>
