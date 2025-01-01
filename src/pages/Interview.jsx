@@ -262,17 +262,13 @@ const SpeechToText = () => {
             <div className="flex flex-col items-center mt-4">
               <button
                 onClick={isListening ? stopListening : startListening}
-                className={`w-16 h-16 flex items-center justify-center rounded-full shadow-lg transition ${
-                  isListening ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                className={` flex items-center justify-center shadow-lg transition text-white rounded p-2 ${
+                  isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
                 }`}
               >
-                {isListening ? (
-                  <FaMicrophone className="text-white text-2xl" />
-                ) : (
-                  <FaMicrophoneSlash className="text-white text-2xl" />
-                )}
+                {isListening ? 'Submit': 'Respond'}
               </button>
-              <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Tap the mic to start answering.'}</p>
+              <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Click to start answering.'}</p>
             </div>
           </div>
           <div className="flex flex-col justify-start">
@@ -284,7 +280,7 @@ const SpeechToText = () => {
               readOnly
             />
             <p className="mt-4 p-2 bg-gray-100 rounded-md text-gray-600">
-              <span className="font-bold">Important: </span> Please mute the mic only once the transcription is done. It
+              <span className="font-bold">Important: </span> Please click on <b>Submit</b> only once the transcription is done. It
               takes 2-3 secs to get the response, your patience is appreciated.
             </p>
           </div>

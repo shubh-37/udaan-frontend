@@ -30,7 +30,6 @@ export default function AuthProvider({ children }) {
   async function loginUser(user) {
     try {
       const response = await axios.post('https://udaan-backend.ip-dynamic.org/login', user);
-      console.log(response);
       if (response.status === 200) {
         if (response.data.message) {
           localStorage.setItem('token', response.data.message);
@@ -40,6 +39,8 @@ export default function AuthProvider({ children }) {
     } catch (error) {
       if (error.response.status === 500) {
         return 'failure';
+      } else if (error.response.status === 401) {
+        return 'invalid';
       }
     }
   }

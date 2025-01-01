@@ -28,6 +28,9 @@ const LoginForm = () => {
     } else if (response === 'failure') {
       setIsLoading(false);
       alert('Error signing up, please try again.');
+    } else if (response === 'invalid') {
+      setIsLoading(false);
+      alert('Invalid credentials, please try again.');
     }
   };
 
