@@ -27,25 +27,29 @@ const SignupForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true);
-    e.preventDefault();
-    const submissionData = new FormData();
-    submissionData.append('full_name', formData.full_name);
-    submissionData.append('email', formData.email);
-    submissionData.append('password', formData.password);
-    submissionData.append('institute', formData.institute);
-    submissionData.append('mobile_number', formData.mobile_number);
-    submissionData.append('resume', formData.resume); // File
-    const response = await signUpUser(submissionData);
-    if (response === 'success') {
+    try {
+      setIsLoading(true);
+      e.preventDefault();
+      const submissionData = new FormData();
+      submissionData.append('full_name', formData.full_name);
+      submissionData.append('email', formData.email);
+      submissionData.append('password', formData.password);
+      submissionData.append('institute', formData.institute);
+      submissionData.append('mobile_number', formData.mobile_number);
+      submissionData.append('resume', formData.resume); // File
+      const response = await signUpUser(submissionData);
+      if (response === 'success') {
+        navigate('/');
+      } else if (response === 'failure') {
+        alert('Error signing up, please try again.');
+      } else {
+        alert('EmailId/Phone number exists, please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred, please try again later.');
+    } finally {
       setIsLoading(false);
-      navigate('/');
-    } else if (response === 'failure') {
-      setIsLoading(false);
-      alert('Error signing up, please try again.');
-    } else {
-      setIsLoading(false);
-      alert('EmailId/Phone number exists, please try again.');
     }
   };
 

@@ -8,6 +8,7 @@ export default function AuthProvider({ children }) {
   async function signUpUser(user) {
     try {
       const response = await axios.post('https://udaan-backend.ip-dynamic.org/signup', user, {
+        timeout: 10000,
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -29,7 +30,9 @@ export default function AuthProvider({ children }) {
 
   async function loginUser(user) {
     try {
-      const response = await axios.post('https://udaan-backend.ip-dynamic.org/login', user);
+      const response = await axios.post('https://udaan-backend.ip-dynamic.org/login', user, {
+        timeout: 10000
+      });
       if (response.status === 200) {
         if (response.data.message) {
           localStorage.setItem('token', response.data.message);

@@ -19,18 +19,23 @@ const LoginForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true);
-    e.preventDefault();
-    const response = await loginUser(formData);
-    if (response === 'success') {
+    try {
+      e.preventDefault();
+      setIsLoading(true);
+      const response = await loginUser(formData);
+      console.log(response);
+      if (response === 'success') {
+        navigate('/');
+      } else if (response === 'failure') {
+        alert('Error signing up, please try again.');
+      } else if (response === 'invalid') {
+        alert('Invalid credentials, please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred, please try again later.');
+    } finally {
       setIsLoading(false);
-      navigate('/');
-    } else if (response === 'failure') {
-      setIsLoading(false);
-      alert('Error signing up, please try again.');
-    } else if (response === 'invalid') {
-      setIsLoading(false);
-      alert('Invalid credentials, please try again.');
     }
   };
 
