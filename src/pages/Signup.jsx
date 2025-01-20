@@ -5,16 +5,13 @@ import Loader from '../shared/Loader';
 import { Video } from 'lucide-react';
 
 const SignupForm = () => {
-  const { signUpUser } = useContext(authContext);
+  const { signUpUser, setUpdateProfile } = useContext(authContext);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
-    password: '',
-    institute: '',
-    mobile_number: '',
-    resume: null
+    password: ''
   });
 
   const handleChange = (e) => {
@@ -34,12 +31,10 @@ const SignupForm = () => {
       submissionData.append('full_name', formData.full_name);
       submissionData.append('email', formData.email);
       submissionData.append('password', formData.password);
-      submissionData.append('institute', formData.institute);
-      submissionData.append('mobile_number', formData.mobile_number);
-      submissionData.append('resume', formData.resume); // File
       const response = await signUpUser(submissionData);
       if (response === 'success') {
         navigate('/');
+        setUpdateProfile(true);
       } else if (response === 'failure') {
         alert('Error signing up, please try again.');
       } else {
@@ -98,38 +93,6 @@ const SignupForm = () => {
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Institute *</label>
-            <input
-              type="text"
-              name="institute"
-              value={formData.institute}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Mobile Number *</label>
-            <input
-              type="text"
-              name="mobile_number"
-              value={formData.mobile_number}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Resume *</label>
-            <input
-              type="file"
-              name="resume"
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               required
