@@ -1,18 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 import InterviewInstructions from '../shared/Instructions';
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { Video } from 'lucide-react';
 
 const SpeechToText = () => {
+  const { API_URL } = import.meta.env;
+  console.log(import.meta.env);
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState([]);
   const [transcript, setTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isStart, setIsStart] = useState(false);
   const [siriLoader, setSiriLoader] = useState(false);
-  const [firstQuestion, setFirstQuestion] = useState('');
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -102,21 +105,40 @@ const SpeechToText = () => {
 
       if (transcript.trim()) {
         setSiriLoader(true);
-        await convoWithAI();
+        saveAnswer();
       } else {
         console.log('Transcript is empty, not calling convoWithAI');
       }
     }
   };
+  const saveAnswer = () => {
+    const currentQuestion = questions[currentQuestionIndex];
+    setAnswers((prev) => [...prev, { question: currentQuestion, answer: transcript }]);
+    setTranscript('');
+    askNextQuestion();
+  };
 
-  async function askFirstQuestion() {
+  const askNextQuestion = () => {
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < questions.length) {
+      setCurrentQuestionIndex(nextIndex);
+      speakQuestion(questions[nextIndex]);
+    }
+  };
+
+  const getQuestions = async () => {
     try {
-      const response = await axios.get('https://udaan-backend.ip-dynamic.org/start_interview', {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.get(
+        `https://a3f4-2401-4900-1c7e-256e-88f6-5352-a501-18df.ngrok-free.app/start_interview`,
+        {
+          headers: {
+            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
-      setFirstQuestion(response.data.message);
+      );
+      setQuestions(response.data.questions);
+      setIsStart(true);
     } catch (error) {
       if (error.response.status === 422 || error.response.status === 401) {
         navigate('/login');
@@ -125,42 +147,20 @@ const SpeechToText = () => {
         navigate('/');
       }
     }
-  }
-  function speakFirstQuestion() {
-    setIsStart(true);
-    speakQuestion(firstQuestion);
-  }
-  async function convoWithAI() {
+  };
+
+  async function submitInterview() {
+    setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://udaan-backend.ip-dynamic.org/interview_convo`,
-        { response: transcript },
+        'https://udaan-backend.ip-dynamic.org/interview_feedback',
+        { interview_id, qaa: answers },
         {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }
       );
-      setTranscript('');
-      speakQuestion(response.data.message);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSiriLoader(false);
-    }
-  }
-
-  async function submitInterview() {
-    setIsLoading(true);
-    try {
-      const response = await axios.get('https://udaan-backend.ip-dynamic.org/interview_feedback', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        params: {
-          interview_id
-        }
-      });
       localStorage.setItem('review', JSON.stringify(response.data));
       navigate('/review');
     } catch (error) {
@@ -171,6 +171,7 @@ const SpeechToText = () => {
   }
 
   useEffect(() => {
+    getQuestions();
     const initializeVideo = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -188,7 +189,6 @@ const SpeechToText = () => {
     };
 
     initializeVideo();
-    askFirstQuestion();
     return () => {
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -213,11 +213,11 @@ const SpeechToText = () => {
         <div className="flex flex-col items-center gap-4 mt-6">
           {!isStart && (
             <button
-              onClick={speakFirstQuestion}
-              disabled={firstQuestion.length <= 0}
+              onClick={askNextQuestion}
+              disabled={questions.length <= 0}
               className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
             >
-              {firstQuestion.length <= 0 ? (
+              {questions.length <= 0 ? (
                 <div className="loader border-t-4 border-white border-solid rounded-full w-6 h-6 animate-spin mx-auto"></div>
               ) : (
                 'Start'
@@ -266,7 +266,7 @@ const SpeechToText = () => {
                   isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
                 }`}
               >
-                {isListening ? 'Submit': 'Respond'}
+                {isListening ? 'Submit' : 'Respond'}
               </button>
               <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Click to start answering.'}</p>
             </div>
@@ -280,8 +280,8 @@ const SpeechToText = () => {
               readOnly
             />
             <p className="mt-4 p-2 bg-gray-100 rounded-md text-gray-600">
-              <span className="font-bold">Important: </span> Please click on <b>Submit</b> only once the transcription is done. It
-              takes 2-3 secs to get the response, your patience is appreciated.
+              <span className="font-bold">Important: </span> Please click on <b>Submit</b> only once the transcription
+              is done. It takes 2-3 secs to get the response, your patience is appreciated.
             </p>
           </div>
         </div>
