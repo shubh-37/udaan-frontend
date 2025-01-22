@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Video, BarChart, Briefcase, Users, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Marquee } from '@/components/ui/marquee';
 import bhartiAXA from '../assets/bhartiAXA.svg';
 import { useContext, useState } from 'react';
 import InterviewForm from '../shared/InterviewForm';
@@ -35,9 +36,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             {' '}
             <Button onClick={logout}>Log out</Button>
-            <Button onClick={() => setUpdateProfile(true)}>
-              <User className="h-6 w-6 text-white" />
-            </Button>{' '}
+            <User onClick={() => setUpdateProfile(true)} className="h-6 w-6 text-blue-600 cursor-pointer" />
           </div>
         )}
         {!token && (
@@ -127,39 +126,34 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
               Model Trained by Professionals From:
             </h2>
-            <div className="flex flex-wrap justify-around items-center gap-4">
+            <Marquee pauseOnHover className="[--duration:10s] flex gap-5">
               <img src={bhartiAXA} alt="" width={120} height={60} />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Milliman_logo.svg" alt="" />
               <img
-                src={`https://upload.wikimedia.org/wikipedia/commons/2/22/Milliman_logo.svg`}
+                src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Mercer_h_rgb_c.svg"
                 alt=""
                 width={120}
                 height={60}
               />
               <img
-                src={`https://upload.wikimedia.org/wikipedia/commons/7/7e/Mercer_h_rgb_c.svg`}
+                src="https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg"
                 alt=""
                 width={120}
                 height={60}
               />
               <img
-                src={`https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg`}
+                src="https://upload.wikimedia.org/wikipedia/commons/3/39/Marsh_%26_McLennan_Companies_logo.svg"
                 alt=""
                 width={120}
                 height={60}
               />
               <img
-                src={`https://upload.wikimedia.org/wikipedia/commons/3/39/Marsh_%26_McLennan_Companies_logo.svg`}
+                src="https://upload.wikimedia.org/wikipedia/commons/0/05/PricewaterhouseCoopers_Logo.svg"
                 alt=""
                 width={120}
                 height={60}
               />
-              <img
-                src={`https://upload.wikimedia.org/wikipedia/commons/0/05/PricewaterhouseCoopers_Logo.svg`}
-                alt=""
-                width={120}
-                height={60}
-              />
-            </div>
+            </Marquee>
           </div>
         </section>
         <section id="how-it-works" className="w-full flex justify-center py-6 md:py-12 lg:py-24 ">
