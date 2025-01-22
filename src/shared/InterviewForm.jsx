@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import {
@@ -11,13 +11,16 @@ import {
 } from '@/components/ui/dialog';
 import InterviewFormContent from './InterviewFormContent';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
-export default function InterviewForm({ isOpen, setIsOpen, setIsLoading }) {
+import { authContext } from '../context/AuthContextProvider';
+export default function InterviewForm({ isOpen, setIsOpen }) {
+  const { VITE_API_URL } = import.meta.env;
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const { setUpdateProfile } = useContext(authContext);
   const [formData, setFormData] = useState({
     job_role: '',
-    industry: '',
-    overall_experience_yrs: 0
+    institute: '',
+    yrs_of_exp: 0
   });
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   useEffect(() => {
@@ -28,31 +31,37 @@ export default function InterviewForm({ isOpen, setIsOpen, setIsLoading }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setIsOpen(false);
-    try {
-      const response = await axios.post('https://udaan-backend.ip-dynamic.org/interview_input', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${VITE_API_URL}/profile`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.status === 200) {
+          const { job_role, institute, yrs_of_exp } = response.data;
+          setFormData({ job_role, institute, yrs_of_exp });
         }
-      });
-      if (response.status === 200) {
-        localStorage.setItem('interview_id', response.data.interview_id);
-        setIsLoading(false);
-        navigate('/interview');
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+        alert('Interview cannot be schedule right now. Please try again later.');
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setIsLoading(false);
-      alert('Interview cannot be schedule right now. Please try again later.');
-    }
+    };
+
+    fetchData();
+  }, [VITE_API_URL, token]);
+
+  const startInterview = () => {
+    navigate('/interview');
   };
+
+  const editDetails = () => {
+    setUpdateProfile(true);
+  };
+
   return (
     <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">
       {isSmallScreen ? (
@@ -60,17 +69,19 @@ export default function InterviewForm({ isOpen, setIsOpen, setIsLoading }) {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetContent side="bottom" className=" bg-gray-50">
               <SheetHeader>
-                <SheetTitle>Fill Your Details</SheetTitle>
-                <SheetDescription>
-                  Provide basic details to get started with your interview preparation.
-                </SheetDescription>
+                <SheetTitle>Review Your Details</SheetTitle>
+                <SheetDescription>Review your details or update them before starting your interview.</SheetDescription>
               </SheetHeader>
               <div className="mt-4 overflow-y-auto h-[calc(100%-80px)]">
-                <InterviewFormContent
-                  formData={formData}
-                  handleSubmit={handleSubmit}
-                  handleInputChange={handleInputChange}
-                />
+                <InterviewFormContent formData={formData} readOnly={true} />
+                <div className="flex justify-between mt-4">
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={startInterview}>
+                    Start Interview
+                  </button>
+                  <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={editDetails}>
+                    Edit Details
+                  </button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -80,16 +91,18 @@ export default function InterviewForm({ isOpen, setIsOpen, setIsLoading }) {
           <DialogTrigger></DialogTrigger>
           <DialogContent className="bg-white max-w-lg p-6 rounded-lg">
             <DialogHeader>
-              <DialogTitle>Fill Your Details</DialogTitle>
-              <DialogDescription>
-                Provide basic details to get started with your interview preparation.
-              </DialogDescription>
+              <DialogTitle>Review Your Details</DialogTitle>
+              <DialogDescription>Review your details or update them before starting your interview.</DialogDescription>
             </DialogHeader>
-            <InterviewFormContent
-              formData={formData}
-              handleInputChange={handleInputChange}
-              handleSubmit={handleSubmit}
-            />
+            <InterviewFormContent formData={formData} readOnly={true} />
+            <div className="flex justify-between mt-4">
+              <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={editDetails}>
+                Edit Details
+              </button>
+              <button className="bg-blue-700 text-white px-4 py-2 rounded" onClick={startInterview}>
+                Start Interview
+              </button>
+            </div>
           </DialogContent>
         </Dialog>
       )}
