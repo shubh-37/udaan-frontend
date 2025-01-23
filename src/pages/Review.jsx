@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import FlipCard from '../shared/FlipCard';
 import { FeedbackForm } from '../shared/FeedbackForm';
-import { Button } from '@/components/ui/button';
 import { Video } from 'lucide-react';
 
 const InterviewReview = () => {
   const [review, setReview] = useState({ score: 0, criteria: [] });
   const [quote, setQuote] = useState('');
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
-
+  const { VITE_API_URL } = import.meta.env;
+  const token = localStorage.getItem('token');
+  const interviewId = localStorage.getItem('interview_id');
   const quotes = [
     'Your preparation defines your future.',
     'Success is where preparation meets opportunity. – Bobby Unser',
@@ -21,8 +23,7 @@ const InterviewReview = () => {
     'Confidence comes from preparation. Ace every step.'
   ];
 
-  function parseFeedback(obj) {
-    const feedback = JSON.parse(obj);
+  function parseFeedback(feedback) {
     const overallScore = feedback['overall_score'];
     const speechScore = feedback['speech'];
     const confidenceScore = feedback['confidence'];
@@ -61,12 +62,25 @@ const InterviewReview = () => {
       ]
     });
   }
+  async function getReview() {
+    try {
+      const response = await axios.get(`${VITE_API_URL}/interview_feedback`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
+          Authorization: `Bearer ${token}`
+        },
+        params: {
+          interview_id: interviewId
+        }
+      });
+      parseFeedback(response.data);
+    } catch (error) {
+      alert('An error occurred while fetching the review. Please try again later.');
+    }
+  }
 
   useEffect(() => {
-    const review = localStorage.getItem('review');
-    parseFeedback(review);
-
-    // Set a random quote
+    getReview();
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     setQuote(randomQuote);
     setTimeout(() => {
@@ -83,9 +97,6 @@ const InterviewReview = () => {
             PrepSOM
           </span>
         </Link>
-        <div className="flex justify-center">
-          <Button onClick={() => setShowFeedbackForm(true)}>Submit Feedback</Button>
-        </div>
       </header>
       <p className="text-3xl font-bold text-center text-gray-600">Interview Review</p>
       <div className="bg-white flex flex-col items-center justify-center">
