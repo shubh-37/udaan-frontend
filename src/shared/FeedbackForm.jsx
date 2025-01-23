@@ -7,8 +7,10 @@ import axios from 'axios';
 
 export function FeedbackForm({ isOpen, onOpenChange }) {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track if the form is being submitted
   const token = localStorage.getItem('token');
   const interview_id = localStorage.getItem('interview_id');
+  const { VITE_API_URL } = import.meta.env;
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.matchMedia('(max-width: 430px)').matches);
@@ -49,8 +51,9 @@ export function FeedbackForm({ isOpen, onOpenChange }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Disable closing during submission
     try {
-      const response = await axios.post('https://udaan-backend.ip-dynamic.org/user_feedback', formData, {
+      const response = await axios.post(`${VITE_API_URL}/user_feedback`, formData, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -60,20 +63,20 @@ export function FeedbackForm({ isOpen, onOpenChange }) {
       });
       if (response.status === 200) {
         alert(response.data.message);
+        onOpenChange(false); // Allow closing after submission
       }
     } catch (error) {
-      console.log(error);
       alert('Error submitting form');
     } finally {
-      onOpenChange(false);
+      setIsSubmitting(false); // Re-enable closing
     }
   };
 
   return (
     <>
       {!isSmallScreen ? (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[425px] bg-gray-50">
+        <Dialog open={isOpen} onOpenChange={(open) => isSubmitting || open}>
+          <DialogContent className="sm:max-w-[425px] bg-gray-50" onClick={(e) => e.stopPropagation()}>
             <DialogHeader>
               <DialogTitle>Feedback Form</DialogTitle>
               <DialogDescription>
@@ -90,8 +93,8 @@ export function FeedbackForm({ isOpen, onOpenChange }) {
           </DialogContent>
         </Dialog>
       ) : (
-        <Sheet open={isOpen} onOpenChange={onOpenChange}>
-          <SheetContent side="bottom" className="h-[90vh] bg-gray-50">
+        <Sheet open={isOpen} onOpenChange={(open) => isSubmitting || open}>
+          <SheetContent side="bottom" className="h-[90vh] bg-gray-50" onClick={(e) => e.stopPropagation()}>
             <SheetHeader>
               <SheetTitle>Feedback Form</SheetTitle>
               <SheetDescription>We value your feedback. Please fill out this form to help us improve.</SheetDescription>
