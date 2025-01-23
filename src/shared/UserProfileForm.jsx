@@ -3,10 +3,12 @@ import axios from 'axios';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
 import { FormContent } from './ProfileFormContent';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserProfileForm({ isOpen, setIsOpen }) {
   const { VITE_API_URL } = import.meta.env;
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     institute: '',
     mobile_number: '',
@@ -45,8 +47,11 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
           setFormData({ ...otherData, resume: null });
         }
       } catch (error) {
-        console.error('Error fetching user info:', error);
-        alert('Unable to fetch user information. Please try again later.');
+        if (error.response.status === 422 || error.response.status === 401) {
+          navigate('/login');
+        } else {
+          alert('Unable to fetch user information. Please try again later.');
+        }
       }
     };
     fetchUserInfo();
@@ -67,23 +72,22 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
     });
 
     try {
-      const response = await axios.patch(
-        `${VITE_API_URL}/profile`,
-        formDataToSubmit,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
+      const response = await axios.patch(`${VITE_API_URL}/profile`, formDataToSubmit, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       if (response.status === 200) {
-        alert('Profile updated successfully!');
         setIsOpen(false);
+        alert('Profile updated successfully!');
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Unable to update profile. Please try again later.');
+      if (error.response.status === 422 || error.response.status === 401) {
+        navigate('/login');
+      } else {
+        alert('Unable to update profile. Please try again later.');
+      }
     }
   };
 
