@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-export const FormContent = ({ formData, handleFileChange, handleInputChange, handleSubmit }) => {
+export const FormContent = ({ formData, handleFileChange, handleInputChange, handleSubmit, isResume }) => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const { VITE_API_URL } = import.meta.env;
@@ -110,7 +110,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
           accept=".pdf,.doc,.docx"
           onChange={handleFileChange}
           className="w-full border rounded p-2"
-          required
+          required={isResume}
         />
         {formData.resume && <p className="mt-1 text-sm text-gray-500">{formData.resume.name}</p>}
       </div>

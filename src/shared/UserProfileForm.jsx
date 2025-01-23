@@ -9,6 +9,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
   const { VITE_API_URL } = import.meta.env;
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const [isResume, setIsResume] = useState(true);
   const [formData, setFormData] = useState({
     institute: '',
     mobile_number: '',
@@ -44,10 +45,11 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
         });
         if (response.status === 200) {
           const { resume, ...otherData } = response.data;
+          setIsResume(resume);
           setFormData({ ...otherData, resume: null });
         }
       } catch (error) {
-        if (error.response.status === 422 || error.response.status === 401) {
+        if (error.response.status === 401) {
           navigate('/login');
         } else {
           alert('Unable to fetch user information. Please try again later.');
@@ -83,7 +85,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
         alert('Profile updated successfully!');
       }
     } catch (error) {
-      if (error.response.status === 422 || error.response.status === 401) {
+      if (error.response.status === 401) {
         navigate('/login');
       } else {
         alert('Unable to update profile. Please try again later.');
@@ -119,6 +121,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
                 handleFileChange={handleFileChange}
                 handleSubmit={handleSubmit}
                 handleInputChange={handleInputChange}
+                isResume={isResume}
               />
             </div>
           </SheetContent>
@@ -135,6 +138,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
               handleFileChange={handleFileChange}
               handleSubmit={handleSubmit}
               handleInputChange={handleInputChange}
+              isResume={isResume}
             />
           </DialogContent>
         </Dialog>

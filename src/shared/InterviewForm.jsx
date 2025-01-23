@@ -46,7 +46,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
           setFormData({ job_role, institute, yrs_of_exp });
         }
       } catch (error) {
-        if (error.response.status === 422 || error.response.status === 401) {
+        if (error.response.status === 401) {
           navigate('/login');
         } else {
           alert('Interview cannot be schedule right now. Please try again later.');

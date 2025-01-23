@@ -145,7 +145,7 @@ const SpeechToText = () => {
       setQuestions(response.data.questions);
       setInterviewId(response.data.interview_id);
     } catch (error) {
-      if (error.response.status === 422 || error.response.status === 401) {
+      if (error.response.status === 401) {
         navigate('/login');
       } else {
         alert('Currently facing some issue, sorry for the inconvenience');
