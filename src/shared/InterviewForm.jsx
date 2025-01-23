@@ -49,7 +49,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
         if (error.response.status === 401) {
           navigate('/login');
         } else if (error.response.status === 422) {
-          alert(error.response.message);
+          alert(error.response.data.detail);
         } else {
           alert('Interview cannot be schedule right now. Please try again later.');
         }

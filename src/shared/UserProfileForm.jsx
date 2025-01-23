@@ -52,7 +52,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
         if (error.response.status === 401) {
           navigate('/login');
         } else if (error.response.status === 422) {
-          alert(error.response.message);
+          alert(error.response.data.detail);
         } else {
           alert('Unable to fetch user information. Please try again later.');
         }
@@ -76,7 +76,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
         formDataToSubmit.append(key, formData[key]);
       }
     });
-
+    console.log(formDataToSubmit);
     try {
       const response = await axios.patch(`${VITE_API_URL}/profile`, formDataToSubmit, {
         headers: {
@@ -92,7 +92,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
       if (error.response.status === 401) {
         navigate('/login');
       } else if (error.response.status === 422) {
-        alert(error.response.message);
+        alert(error.response.data.detail);
       } else {
         alert('Unable to update profile. Please try again later.');
       }
