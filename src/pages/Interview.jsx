@@ -6,8 +6,7 @@ import Loader from '../shared/Loader';
 import { Video } from 'lucide-react';
 
 const SpeechToText = () => {
-  const { API_URL } = import.meta.env;
-  console.log(import.meta.env);
+  const { VITE_API_URL } = import.meta.env;
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -16,13 +15,14 @@ const SpeechToText = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isStart, setIsStart] = useState(false);
   const [siriLoader, setSiriLoader] = useState(false);
+  const [interviewId, setInterviewId] = useState('');
+  const [imageLink, setImageLink] = useState(null);
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
-  const interview_id = localStorage.getItem('interview_id');
   const speakQuestion = async (text) => {
     const apiKey = 'sk_051fea9ca0ff140f99b89d38bfd776703e3c1ed0bf9d0ca8';
     const voiceId = 'tSVwqkJGEKjLklhiN0Nx';
@@ -48,6 +48,7 @@ const SpeechToText = () => {
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
       audio.play();
+      setSiriLoader(false);
     } catch (error) {
       console.error('Error in speakQuestion:', error);
     }
@@ -119,6 +120,12 @@ const SpeechToText = () => {
   };
 
   const askNextQuestion = () => {
+    if (currentQuestionIndex === 0 && !isStart) {
+      setIsStart(true);
+      setCurrentQuestionIndex(0);
+      speakQuestion(questions[0]);
+      return;
+    }
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questions.length) {
       setCurrentQuestionIndex(nextIndex);
@@ -128,17 +135,15 @@ const SpeechToText = () => {
 
   const getQuestions = async () => {
     try {
-      const response = await axios.get(
-        `https://a3f4-2401-4900-1c7e-256e-88f6-5352-a501-18df.ngrok-free.app/start_interview`,
-        {
-          headers: {
-            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
-            Authorization: `Bearer ${token}`
-          }
+      const response = await axios.get(`${VITE_API_URL}/start_interview`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
+      setImageLink(response.data.company_logo);
       setQuestions(response.data.questions);
-      setIsStart(true);
+      setInterviewId(response.data.interview_id);
     } catch (error) {
       if (error.response.status === 422 || error.response.status === 401) {
         navigate('/login');
@@ -152,16 +157,16 @@ const SpeechToText = () => {
   async function submitInterview() {
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        'https://udaan-backend.ip-dynamic.org/interview_feedback',
-        { interview_id, qaa: answers },
+      await axios.post(
+        `${VITE_API_URL}/submit_interview`,
+        { interview_id: interviewId, qaa: answers },
         {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }
       );
-      localStorage.setItem('review', JSON.stringify(response.data));
+      localStorage.setItem('interview_id', interviewId);
       navigate('/review');
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -201,12 +206,16 @@ const SpeechToText = () => {
       <InterviewInstructions />
       {isLoading && <Loader text={'Processing Interview...'} />}
       <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
-        <Link className="flex items-center justify-center" to="/">
-          <Video className="h-6 w-6 text-blue-600" />
-          <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
-            PrepSOM
-          </span>
-        </Link>
+        {!imageLink ? (
+          <Link className="flex items-center justify-center" to="/">
+            <Video className="h-6 w-6 text-blue-600" />
+            <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
+              PrepSOM
+            </span>
+          </Link>
+        ) : (
+          <img src={imageLink} alt="" height={40} width={80} />
+        )}
       </header>
       <main className="px-4 py-2">
         <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
