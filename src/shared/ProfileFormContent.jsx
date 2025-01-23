@@ -110,7 +110,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
           accept=".pdf,.doc,.docx"
           onChange={handleFileChange}
           className="w-full border rounded p-2"
-          required={isResume}
+          required={!isResume}
         />
         {formData.resume && <p className="mt-1 text-sm text-gray-500">{formData.resume.name}</p>}
       </div>

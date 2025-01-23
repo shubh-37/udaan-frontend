@@ -51,6 +51,8 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
       } catch (error) {
         if (error.response.status === 401) {
           navigate('/login');
+        } else if (error.response.status === 422) {
+          alert(error.response.message);
         } else {
           alert('Unable to fetch user information. Please try again later.');
         }
@@ -68,9 +70,11 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
   // Submit updated profile
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataToSubmit = new FormData(); // Create FormData object for file upload
+    const formDataToSubmit = new FormData();
     Object.keys(formData).forEach((key) => {
-      formDataToSubmit.append(key, formData[key]);
+      if (formData[key] !== null && formData[key] !== undefined) {
+        formDataToSubmit.append(key, formData[key]);
+      }
     });
 
     try {
@@ -87,6 +91,8 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
     } catch (error) {
       if (error.response.status === 401) {
         navigate('/login');
+      } else if (error.response.status === 422) {
+        alert(error.response.message);
       } else {
         alert('Unable to update profile. Please try again later.');
       }

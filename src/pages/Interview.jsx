@@ -147,6 +147,8 @@ const SpeechToText = () => {
     } catch (error) {
       if (error.response.status === 401) {
         navigate('/login');
+      } else if (error.response.status === 422) {
+        alert(error.response.message);
       } else {
         alert('Currently facing some issue, sorry for the inconvenience');
         navigate('/');
