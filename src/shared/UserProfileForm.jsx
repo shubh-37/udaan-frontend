@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import { FormContent } from './ProfileFormContent';
 
 export default function UserProfileForm({ isOpen, setIsOpen }) {
+  const { VITE_API_URL } = import.meta.env;
   const token = localStorage.getItem('token');
   const [formData, setFormData] = useState({
     institute: '',
@@ -33,16 +34,12 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get(
-          'https://a3f4-2401-4900-1c7e-256e-88f6-5352-a501-18df.ngrok-free.app/profile',
-          {
-            headers: {
-              'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
-              Authorization: `Bearer ${token}`
-            }
+        const response = await axios.get(`${VITE_API_URL}/profile`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
+            Authorization: `Bearer ${token}`
           }
-        );
-        console.log(response);
+        });
         if (response.status === 200) {
           const { resume, ...otherData } = response.data;
           setFormData({ ...otherData, resume: null });
@@ -71,7 +68,7 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
 
     try {
       const response = await axios.patch(
-        'https://a3f4-2401-4900-1c7e-256e-88f6-5352-a501-18df.ngrok-free.app/profile',
+        `${VITE_API_URL}/profile`,
         formDataToSubmit,
         {
           headers: {
