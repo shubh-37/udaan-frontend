@@ -5,19 +5,16 @@ export const authContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export default function AuthProvider({ children }) {
+  const { VITE_API_URL } = import.meta.env;
   const [updateProfile, setUpdateProfile] = useState(false);
   async function signUpUser(user) {
     try {
-      const response = await axios.post(
-        'https://a3f4-2401-4900-1c7e-256e-88f6-5352-a501-18df.ngrok-free.app/signup',
-        user,
-        {
-          timeout: 10000,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+      const response = await axios.post(`${VITE_API_URL}/signup`, user, {
+        timeout: 10000,
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       if (response.status === 200) {
         if (response.data.message) {
           localStorage.setItem('token', response.data.message);
@@ -36,7 +33,7 @@ export default function AuthProvider({ children }) {
   async function loginUser(user) {
     try {
       const response = await axios.post(
-        'https://a3f4-2401-4900-1c7e-256e-88f6-5352-a501-18df.ngrok-free.app/login',
+       `${VITE_API_URL}/login`,
         user,
         {
           timeout: 10000
