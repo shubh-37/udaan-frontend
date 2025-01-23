@@ -40,9 +40,11 @@ export default function LandingPage() {
           </div>
         )}
         {!token && (
-          <Button size="lg" className="bg-black text-white">
-            <Link to="/interview">Login</Link>
-          </Button>
+          <Link to="/login">
+            <Button size="lg" className="bg-black text-white">
+              Login{' '}
+            </Button>
+          </Link>
         )}
       </header>
       <main className="flex-1 flex flex-col items-center">
@@ -63,9 +65,11 @@ export default function LandingPage() {
                     Start Practicing Now
                   </Button>
                 ) : (
-                  <Button size="lg" className="bg-black text-white">
-                    <Link to="/login">Start Practicing Now</Link>
-                  </Button>
+                  <Link to="/login">
+                    <Button size="lg" className="bg-black text-white">
+                      Start Practicing Now{' '}
+                    </Button>
+                  </Link>
                 )}
                 <a href="https://youtu.be/F-UwrlXrsqM" target="_blank">
                   <Button variant="outline" size="lg" className="text-white">
