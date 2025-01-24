@@ -43,7 +43,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
         });
         if (response.status === 200) {
           const { job_role, institute, yrs_of_exp, resume, company } = response.data;
-          setIsInterviewValid(job_role && institute && yrs_of_exp && resume && company);
+          setIsInterviewValid(job_role && institute && typeof yrs_of_exp === 'number' && resume && company);
           setFormData({ job_role, institute, yrs_of_exp });
         }
       } catch (error) {
