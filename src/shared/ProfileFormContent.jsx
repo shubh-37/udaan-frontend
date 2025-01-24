@@ -49,7 +49,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
         />
       </div>
       <div>
-        <label className="block text-sm font-medium">Institute</label>
+        <label className="block text-sm font-medium">Industry</label>
         <input
           type="text"
           name="institute"
