@@ -17,6 +17,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const { setUpdateProfile } = useContext(authContext);
+  const [isInterviewValid, setIsInterviewValid] = useState(false);
   const [formData, setFormData] = useState({
     job_role: '',
     institute: '',
@@ -37,12 +38,12 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
       try {
         const response = await axios.get(`${VITE_API_URL}/profile`, {
           headers: {
-            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
             Authorization: `Bearer ${token}`
           }
         });
         if (response.status === 200) {
-          const { job_role, institute, yrs_of_exp } = response.data;
+          const { job_role, institute, yrs_of_exp, resume, company } = response.data;
+          setIsInterviewValid(job_role && institute && yrs_of_exp && resume && company);
           setFormData({ job_role, institute, yrs_of_exp });
         }
       } catch (error) {
@@ -80,10 +81,18 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
               <div className="mt-4 overflow-y-auto h-[calc(100%-80px)]">
                 <InterviewFormContent formData={formData} readOnly={true} />
                 <div className="flex justify-between mt-4">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={startInterview}>
+                  <button
+                    className={
+                      isInterviewValid
+                        ? 'bg-blue-700 text-white px-4 py-2 rounded'
+                        : 'bg-blue-200 text-white px-4 py-2 rounded'
+                    }
+                    onClick={startInterview}
+                    disabled={!isInterviewValid}
+                  >
                     Start Interview
                   </button>
-                  <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={editDetails}>
+                  <button className="bg-blue-700 text-white px-4 py-2 rounded" onClick={editDetails}>
                     Edit Details
                   </button>
                 </div>
@@ -101,10 +110,18 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
             </DialogHeader>
             <InterviewFormContent formData={formData} readOnly={true} />
             <div className="flex justify-between mt-4">
-              <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={editDetails}>
+              <button className="bg-blue-700 text-white px-4 py-2 rounded" onClick={editDetails}>
                 Edit Details
               </button>
-              <button className="bg-blue-700 text-white px-4 py-2 rounded" onClick={startInterview}>
+              <button
+                className={
+                  isInterviewValid
+                    ? 'bg-blue-700 text-white px-4 py-2 rounded'
+                    : 'bg-blue-200 text-white px-4 py-2 rounded'
+                }
+                onClick={startInterview}
+                disabled={!isInterviewValid}
+              >
                 Start Interview
               </button>
             </div>

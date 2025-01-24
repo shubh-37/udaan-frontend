@@ -62,12 +62,12 @@ export default function LandingPage() {
               <div className="space-x-4 space-y-2">
                 {token ? (
                   <Button size="lg" className="bg-black text-white" onClick={() => setIsOpen(true)}>
-                    Start Practicing Now
+                    Start Interview
                   </Button>
                 ) : (
                   <Link to="/login">
                     <Button size="lg" className="bg-black text-white">
-                      Start Practicing Now{' '}
+                      Start Interview{' '}
                     </Button>
                   </Link>
                 )}

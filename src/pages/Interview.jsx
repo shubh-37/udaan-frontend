@@ -137,7 +137,6 @@ const SpeechToText = () => {
     try {
       const response = await axios.get(`${VITE_API_URL}/start_interview`, {
         headers: {
-          'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
           Authorization: `Bearer ${token}`
         }
       });
@@ -171,7 +170,7 @@ const SpeechToText = () => {
       localStorage.setItem('interview_id', interviewId);
       navigate('/review');
     } catch (error) {
-      console.error('Error submitting form:', error);
+      alert('An error occurred while submitting the interview. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -220,7 +219,7 @@ const SpeechToText = () => {
         )}
       </header>
       <main className="px-4 py-2">
-        <h1 className="text-3xl font-bold text-center text-gray-600">Mock Interview</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-600">AI Interview</h1>
         <div className="flex flex-col items-center gap-4 mt-6">
           {!isStart && (
             <button

@@ -66,7 +66,6 @@ const InterviewReview = () => {
     try {
       const response = await axios.get(`${VITE_API_URL}/interview_feedback`, {
         headers: {
-          'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
           Authorization: `Bearer ${token}`
         },
         params: {

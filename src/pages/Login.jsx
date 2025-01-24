@@ -23,7 +23,6 @@ const LoginForm = () => {
       e.preventDefault();
       setIsLoading(true);
       const response = await loginUser(formData);
-      console.log(response);
       if (response === 'success') {
         navigate('/');
       } else if (response === 'failure') {
@@ -32,7 +31,6 @@ const LoginForm = () => {
         alert('Invalid credentials, please try again.');
       }
     } catch (error) {
-      console.error(error);
       alert('An error occurred, please try again later.');
     } finally {
       setIsLoading(false);

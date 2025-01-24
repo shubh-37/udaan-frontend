@@ -9,9 +9,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
     const fetchCompanies = async () => {
       try {
         const response = await axios.get(`${VITE_API_URL}/companies`, {
-          headers: {
-            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning'
-          }
+          headers: {}
         });
         setCompanies([...response.data, 'Others']);
       } catch (error) {
@@ -92,6 +90,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
             value={formData.company}
             onChange={handleInputChange}
             className="w-full border rounded p-2"
+            required
           >
             <option value="">Select a company</option>
             {companies.map((company, index) => (

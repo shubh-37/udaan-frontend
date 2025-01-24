@@ -39,7 +39,6 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
       try {
         const response = await axios.get(`${VITE_API_URL}/profile`, {
           headers: {
-            'ngrok-skip-browser-warning': 'ngrok-skip-browser-warning',
             Authorization: `Bearer ${token}`
           }
         });
@@ -76,7 +75,6 @@ export default function UserProfileForm({ isOpen, setIsOpen }) {
         formDataToSubmit.append(key, formData[key]);
       }
     });
-    console.log(formDataToSubmit);
     try {
       const response = await axios.patch(`${VITE_API_URL}/profile`, formDataToSubmit, {
         headers: {

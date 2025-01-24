@@ -41,7 +41,6 @@ const SignupForm = () => {
         alert('EmailId/Phone number exists, please try again.');
       }
     } catch (error) {
-      console.error(error);
       alert('An error occurred, please try again later.');
     } finally {
       setIsLoading(false);
