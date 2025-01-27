@@ -65,6 +65,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
           name="yrs_of_exp"
           value={formData.yrs_of_exp}
           onChange={handleInputChange}
+          min={0}
           className="w-full border rounded p-2"
           required
         />
