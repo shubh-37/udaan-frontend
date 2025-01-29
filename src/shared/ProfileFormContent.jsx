@@ -82,7 +82,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
         />
       </div>
       <div>
-        <label className="block text-sm font-medium">Company</label>
+        <label className="block text-sm font-medium">Institute</label>
         {loading ? (
           <p>Loading companies...</p>
         ) : (
@@ -93,7 +93,7 @@ export const FormContent = ({ formData, handleFileChange, handleInputChange, han
             className="w-full border rounded p-2"
             required
           >
-            <option value="">Select a company</option>
+            <option value="">Select an Institute</option>
             {companies.map((company, index) => (
               <option key={index} value={company.name || company}>
                 {company.name || company}

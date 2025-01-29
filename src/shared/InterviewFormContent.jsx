@@ -45,6 +45,19 @@ const InterviewFormContent = memo(({ formData, readOnly }) => (
         className={`w-full ${readOnly ? 'bg-gray-100' : 'bg-white'} border border-gray-200`}
       />
     </div>
+    <div className="space-y-2">
+      <Label htmlFor="company" className="text-sm font-medium">
+        Institute
+      </Label>
+      <Input
+        id="company"
+        name="company"
+        type="string"
+        value={formData.company}
+        readOnly={readOnly}
+        className={`w-full ${readOnly ? 'bg-gray-100' : 'bg-white'} border border-gray-200`}
+      />
+    </div>
 
     {!readOnly && (
       <Button type="submit" className="w-full">

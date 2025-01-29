@@ -44,7 +44,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
         if (response.status === 200) {
           const { job_role, institute, yrs_of_exp, resume, company } = response.data;
           setIsInterviewValid(job_role && institute && typeof yrs_of_exp === 'number' && resume && company);
-          setFormData({ job_role, institute, yrs_of_exp });
+          setFormData({ job_role, institute, yrs_of_exp, company });
         }
       } catch (error) {
         if (error.response.status === 401) {
@@ -79,7 +79,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
                 <SheetDescription>
                   Review your details or update them before starting your interview.{' '}
                   <h5>
-                    <b>(Overall experience, company, job role and resume is mandatory for interview to start**)</b>
+                    <b>(Overall experience, institute, job role and resume is mandatory for interview to start**)</b>
                   </h5>
                 </SheetDescription>
               </SheetHeader>
