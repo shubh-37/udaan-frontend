@@ -9,6 +9,15 @@ import InterviewForm from '../shared/InterviewForm';
 import Loader from '../shared/Loader';
 import { authContext } from '../context/AuthContextProvider';
 import UserProfileForm from '../shared/UserProfileForm';
+import companyLogo1 from '../assets/companylogo1.png';
+import companyLogo2 from '../assets/companyLogo2.png';
+import companyLogo3 from '../assets/companyLogo3.png';
+import companyLogo4 from '../assets/companyLogo4.png';
+import companyLogo5 from '../assets/companyLogo5.png';
+import companyLogo6 from '../assets/companyLogo6.png';
+import companyLogo7 from '../assets/companyLogo7.png';
+import companyLogo8 from '../assets/companyLogo8.png';
+import companyLogo9 from '../assets/companyLogo9.png';
 
 export default function LandingPage() {
   const token = localStorage.getItem('token');
@@ -157,6 +166,24 @@ export default function LandingPage() {
                 width={120}
                 height={60}
               />
+            </Marquee>
+          </div>
+        </section>
+        <section
+          id="partner institutes"
+          className="w-full flex flex-col justify-center flex-wrap items-center py-6 md:py-12 lg:py-24"
+        >
+          <div className="font-bold text-3xl sm:text-4xl md:text-5xl text-center mb-8">Partner Institutes</div>
+          <div className="flex flex-wrap items-center justify-center gap-8 container">
+            <Marquee pauseOnHover className="[--duration:10s] flex gap-5">
+              <img src={companyLogo2} alt="" width={120} height={60} />
+              <img src={companyLogo3} alt="" width={120} height={60} />
+              <img src={companyLogo4} alt="" width={120} height={60} />
+              <img src={companyLogo5} alt="" width={120} height={60} />
+              <img src={companyLogo6} alt="" width={120} height={60} />
+              <img src={companyLogo7} alt="" width={120} height={60} />
+              <img src={companyLogo8} alt="" width={120} height={60} />
+              <img src={companyLogo9} alt="" width={120} height={60} />
             </Marquee>
           </div>
         </section>
