@@ -41,6 +41,8 @@ export default function LandingPage() {
             PrepSOM
           </span>
         </Link>
+        <div className='flex items-center gap-4'>
+        <Link to = '/blogs' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Blogs</Link>
         {token && (
           <div className="flex items-center gap-3">
             {' '}
@@ -55,6 +57,7 @@ export default function LandingPage() {
             </Button>
           </Link>
         )}
+        </div>
       </header>
       <main className="flex-1 flex flex-col items-center">
         <section className="w-full flex justify-center py-12 md:py-24 lg:py-20 xl:py-36 bg-gradient-to-b from-blue-50 to-white">
