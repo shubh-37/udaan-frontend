@@ -5,6 +5,9 @@ import InterviewReview from './pages/Review';
 import SignupForm from './pages/Signup';
 import LoginForm from './pages/Login';
 import RequiresAuth from './shared/RequiresAuth';
+import Blogs from './pages/Blogs';
+import BlogPost from './pages/BlogPost';
+
 function App() {
   return (
     <div>
@@ -26,6 +29,8 @@ function App() {
             </RequiresAuth>
           }
         />
+        <Route path='/blogs' element={<Blogs/>}/>
+        <Route path="/blogs/:id" element={<BlogPost/>}/>
         <Route path="/sign-up" element={<SignupForm />} />
         <Route path="/login" element={<LoginForm />} />
       </Routes>
