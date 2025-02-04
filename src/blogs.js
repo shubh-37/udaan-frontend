@@ -96,5 +96,91 @@ export const blogs = [{
     "author": "PrepSOM Team",
     "datePublished": "2024-01-15",
     "lastUpdated": "2024-01-15"
+  },  {
+    "id": "2",
+    "title": "How to Answer 'Why Should We Hire You?' – Best Strategies & Sample Answers (2025)",
+    "introduction": "One of the most crucial questions in any job interview is: 'Why should we hire you?' This question gives you the perfect opportunity to sell yourself confidently and convince the interviewer that you’re the best fit for the role.",
+    "sections": [
+      {
+        "title": "Why Do Employers Ask 'Why Should We Hire You?'",
+        "content": "Interviewers ask this question to:",
+        "bulletPoints": [
+          "Assess Your Value – What unique skills and strengths do you bring?",
+          "Check Your Understanding of the Role – Do you know what the company is looking for?",
+          "Evaluate Your Confidence & Communication Skills – Can you articulate why you are the best fit?"
+        ]
+      },
+      {
+        "title": "How to Structure Your Answer",
+        "content": "A winning response should follow this 3-step formula:",
+        "steps": [
+          {
+            "title": "Highlight Your Key Strengths 🎯",
+            "details": [
+              "Focus on 2-3 strong skills, experiences, or qualities that make you unique.",
+              "Align your strengths with the job description."
+            ],
+            "example": "I have over five years of experience in digital marketing, with a proven track record of increasing website traffic by 150% through SEO strategies."
+          },
+          {
+            "title": "Connect with the Company’s Needs 🔍",
+            "details": [
+              "Show that you understand the company’s challenges and goals.",
+              "Explain how your skills directly address those needs."
+            ],
+            "example": "Your company is looking to expand its online presence, and with my expertise in SEO and content marketing, I can help drive targeted traffic and improve brand visibility."
+          },
+          {
+            "title": "Show Impact & Enthusiasm 🚀",
+            "details": [
+              "Provide real examples or results that prove your ability.",
+              "Express genuine enthusiasm for the role and company."
+            ],
+            "example": "I’m excited about the opportunity to bring my skills to your team and contribute to your growth. At my last job, I implemented an SEO strategy that boosted conversions by 40%, and I’m eager to achieve similar results here."
+          }
+        ]
+      },
+      {
+        "title": "Best Sample Answers for Different Candidates",
+        "examples": [
+          {
+            "role": "Freshers & Entry-Level Candidates 🎓",
+            "answer": "As a recent graduate in Computer Science, I have a strong foundation in programming and problem-solving. During my internship at XYZ Tech, I worked on a real-world machine learning project that improved efficiency by 20%. I’m eager to bring my analytical mindset and adaptability to your team, helping drive innovation."
+          },
+          {
+            "role": "Experienced Professionals 💼",
+            "answer": "With over eight years of experience in project management, I have successfully led cross-functional teams and delivered projects on time and within budget. At my previous company, I managed a $2M project that improved operational efficiency by 35%. I’m confident that my ability to streamline processes and lead teams effectively makes me the ideal candidate for this role."
+          },
+          {
+            "role": "Career Changers 🔄",
+            "answer": "Coming from a background in sales, I bring a unique perspective to digital marketing. My experience in understanding customer needs and communication has allowed me to create high-converting marketing campaigns. I recently completed a certification in digital marketing and implemented a social media strategy for a startup that increased engagement by 50%. My ability to combine sales insights with marketing strategies can bring valuable results to your team."
+          }
+        ]
+      },
+      {
+        "title": "Common Mistakes to Avoid ❌",
+        "mistakes": [
+          "Being Too Generic – Saying 'I’m a hard worker' or 'I’m passionate about this job' isn’t enough. Be specific.",
+          "Lack of Evidence – Back up your claims with quantifiable achievements.",
+          "Not Tailoring Your Answer – Customize your response for each job.",
+          "Talking Too Much – Keep it concise (around 1-2 minutes max)."
+        ]
+      },
+      {
+        "title": "Final Tips for a Winning Answer",
+        "tips": [
+          "Practice Out Loud – Say your answer until it feels natural and confident.",
+          "Align with Company Goals – Show how you fit into their bigger picture.",
+          "Use the STAR Method if Needed – Keep it structured and engaging."
+        ],
+        "proTip": "Record yourself answering this question and watch it back to improve clarity and delivery."
+      }
+    ],
+    "conclusion": "Your response to 'Why should we hire you?' is your chance to shine. A strong answer is clear, confident, and backed by examples. Follow this structure, tailor it to the role, and practice until you feel interview-ready.",
+    "callToAction": "Want more personalized feedback? Try a mock interview on Prepsom and get AI-driven insights to improve your responses!",
+    "tags": ["interview tips", "job search", "career advice"],
+    "author": "PrepSOM Team",
+    "datePublished": "2025-02-04",
+    "lastUpdated": "2025-02-04"
   }];
   
