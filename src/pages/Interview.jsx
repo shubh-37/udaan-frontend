@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import InterviewInstructions from '../shared/Instructions';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,42 +11,89 @@ const SpeechToText = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [transcript, setTranscript] = useState('');
-  const [isListening, setIsListening] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isStart, setIsStart] = useState(false);
   const [siriLoader, setSiriLoader] = useState(false);
   const [interviewId, setInterviewId] = useState('');
   const [imageLink, setImageLink] = useState(null);
   const videoRef = useRef(null);
-  const mediaStreamRef = useRef(null);
-  const recognitionRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef([]);
   const navigate = useNavigate();
-
   const token = localStorage.getItem('token');
-  const speakQuestion = async (text) => {
-    const apiKey = 'sk_051fea9ca0ff140f99b89d38bfd776703e3c1ed0bf9d0ca8';
-    const voiceId = 'tSVwqkJGEKjLklhiN0Nx';
 
+  const startRecording = async () => {
     try {
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'xi-api-key': apiKey
-        },
-        body: JSON.stringify({
-          text,
-          model_id: 'eleven_multilingual_v2'
-        })
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      recordedChunksRef.current = [];
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch audio data from ElevenLabs API');
-      }
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
 
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+    }
+  };
+  const stopRecording = async () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.onstop = async () => {
+        const audioBlob = new Blob(recordedChunksRef.current, { type: 'audio/webm' });
+        recordedChunksRef.current = [];
+
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'recording.webm');
+
+        try {
+          const response = await axios.post(`https://localhost:8000/transcribe`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setTranscript(response.data.transcript);
+        } catch (error) {
+          console.error('Error uploading audio:', error);
+        } finally {
+          setIsRecording(false);
+        }
+      };
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (!isRecording) {
+      console.log('Starting recording...');
+      startRecording();
+    } else {
+      console.log('Stopping recording and transcribing...');
+      stopRecording();
+    }
+  };
+  const speakQuestion = async (text) => {
+    try {
+      const response = await axios.post(
+        `https://localhost:8000/synthesize_speech`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          responseType: 'blob'
+        }
+      );
+
+      const audioUrl = URL.createObjectURL(response.data);
       const audio = new Audio(audioUrl);
+
+      // Play the audio
       audio.play();
       setSiriLoader(false);
     } catch (error) {
@@ -54,64 +101,6 @@ const SpeechToText = () => {
     }
   };
 
-  const startListening = () => {
-    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      return;
-    }
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-IN';
-
-    recognition.onstart = () => {
-      setIsListening(true);
-    };
-
-    recognition.onresult = (event) => {
-      let interimTranscript = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) {
-          setTranscript((prev) => prev + result[0].transcript + ' ');
-        } else {
-          interimTranscript += result[0].transcript;
-        }
-      }
-    };
-
-    recognition.onerror = () => {
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      recognitionRef.current = null;
-    };
-
-    recognition.start();
-    recognitionRef.current = recognition;
-  };
-
-  const stopListening = async () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
-      setIsListening(false);
-
-      if (transcript.trim()) {
-        setSiriLoader(true);
-        saveAnswer();
-      } else {
-        console.log('Transcript is empty, not calling convoWithAI');
-      }
-    }
-  };
   const saveAnswer = () => {
     const currentQuestion = questions[currentQuestionIndex];
     setAnswers((prev) => [...prev, { question: currentQuestion, answer: transcript }]);
@@ -155,7 +144,7 @@ const SpeechToText = () => {
     }
   };
 
-  async function submitInterview() {
+  const submitInterview = async () => {
     setIsLoading(true);
     try {
       await axios.post(
@@ -174,15 +163,14 @@ const SpeechToText = () => {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     getQuestions();
+    speakQuestion('Welcome to the AI Interview. Click on the start button to begin the interview.');
     const initializeVideo = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        mediaStreamRef.current = stream;
-
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.muted = true;
@@ -190,15 +178,14 @@ const SpeechToText = () => {
           await videoRef.current.play();
         }
       } catch (err) {
-        console.error(err);
+        console.error('Video initialization error:', err);
       }
     };
 
     initializeVideo();
+
     return () => {
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      }
+      // Clean up video stream if needed
     };
   }, []);
 
@@ -271,27 +258,29 @@ const SpeechToText = () => {
 
             <div className="flex flex-col items-center mt-4">
               <button
-                onClick={isListening ? stopListening : startListening}
+                onClick={handleButtonClick}
                 className={` flex items-center justify-center shadow-lg transition text-white rounded p-2 ${
-                  isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+                  isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
                 }`}
               >
-                {isListening ? 'Submit' : 'Respond'}
+                {isRecording ? 'Stop & Transcribe' : 'Record'}
               </button>
-              <p className="mt-2 text-gray-600">{isListening ? 'Listening...' : 'Click to start answering.'}</p>
+              <p className="mt-2 text-gray-600">
+                {isRecording ? 'Recording...' : 'Click to start recording your answer.'}
+              </p>
             </div>
           </div>
           <div className="flex flex-col justify-start">
             <textarea
               rows="12"
               className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Your speech will appear here..."
+              placeholder="Your transcription will appear here..."
               value={transcript}
               readOnly
             />
             <p className="mt-4 p-2 bg-gray-100 rounded-md text-gray-600">
               <span className="font-bold">Important: </span> Please click on <b>Submit</b> only once the transcription
-              is done. It takes 2-3 secs to get the response, your patience is appreciated.
+              is done. It takes a few seconds to get the response, your patience is appreciated.
             </p>
           </div>
         </div>
