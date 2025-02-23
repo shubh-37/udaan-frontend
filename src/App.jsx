@@ -9,6 +9,7 @@ import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost';
 import AptitudeExam from './pages/Aptitude';
 import InterviewReport from './pages/Report';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             </RequiresAuth>
           }
         />
+        <Route path='/profile' element={<Profile/>}/>
         <Route path='/aptitude' element={<AptitudeExam/>}/>
         <Route path='/blogs' element={<Blogs/>}/>
         <Route path="/blogs/:id" element={<BlogPost/>}/>
