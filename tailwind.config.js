@@ -36,7 +36,8 @@ export default {
   			primary: '#1D4ed8',
   			'primary-foreground': '#ffffff',
   			background: '#1D4ed8',
-  			ring: '#93C5FD'
+  			ring: '#93C5FD',
+        background3: '#fff',
   		}
   	}
   },
