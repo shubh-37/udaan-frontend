@@ -42,6 +42,7 @@ export default function LandingPage() {
           </span>
         </Link>
         <div className='flex items-center gap-4'>
+        <Link to = '/aptitude' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Aptitude</Link>
         <Link to = '/blogs' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Blogs</Link>
         {token && (
           <div className="flex items-center gap-3">
