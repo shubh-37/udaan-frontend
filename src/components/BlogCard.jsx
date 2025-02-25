@@ -26,7 +26,7 @@ export default function BlogCard({ blog }) {
         </div>
         <div>
           <p className="text-sm text-gray-400 mb-4">{new Date(blog.datePublished).toLocaleDateString()}</p>
-          <Button onClick={() => navigate(`/blogs/${blog.id}`)} className="w-full">
+          <Button onClick={() => navigate(`/blogs/${blog.id}`)} className="w-full bg-blue-600">
             Read More
           </Button>
         </div>
