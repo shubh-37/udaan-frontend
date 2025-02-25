@@ -79,7 +79,7 @@ export default function InterviewInstructions() {
           <DrawerTrigger asChild>
             <button className="hidden">Open Instructions</button>
           </DrawerTrigger>
-          <DrawerContent className="bg-white p-6 rounded-lg">
+          <DrawerContent className="bg-background p-6 rounded-lg">
             <DrawerHeader>
               <DrawerTitle>Interview Instructions</DrawerTitle>
             </DrawerHeader>
@@ -97,7 +97,7 @@ export default function InterviewInstructions() {
           <DialogTrigger asChild>
             <button className="hidden">Open Instructions</button>
           </DialogTrigger>
-          <DialogContent className="bg-white max-w-lg p-6 rounded-lg">
+          <DialogContent className="bg-background max-w-lg p-6 rounded-lg">
             <DialogHeader>
               <DialogTitle>Interview Instructions</DialogTitle>
               <DialogDescription>{instructions}</DialogDescription>
