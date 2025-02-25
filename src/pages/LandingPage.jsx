@@ -9,6 +9,7 @@ import InterviewForm from '../shared/InterviewForm';
 import Loader from '../shared/Loader';
 import { authContext } from '../context/AuthContextProvider';
 import UserProfileForm from '../shared/UserProfileForm';
+import { ModeToggle } from '@/components/mode-toggle';
 import companyLogo1 from '../assets/companylogo1.png';
 import companyLogo2 from '../assets/companyLogo2.png';
 import companyLogo3 from '../assets/companyLogo3.png';
@@ -30,11 +31,11 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // Controls Drawer visibility
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background">
       {isOpen && <InterviewForm isOpen={isOpen} setIsOpen={setIsOpen} setIsLoading={setIsLoading} />}
       {isLoading && <Loader text={'Preparing Interview...'} />}
       {updateProfile && <UserProfileForm isOpen={updateProfile} setIsOpen={setUpdateProfile} />}
-      <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
+      <header className="px-4 lg:px-6 h-14 flex items-center bg-background border-grey-500 justify-between">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6 text-blue-600" />
           <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
@@ -44,11 +45,12 @@ export default function LandingPage() {
         <div className='flex items-center gap-4'>
         <Link to = '/aptitude' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Aptitude</Link>
         <Link to = '/blogs' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Blogs</Link>
+        <ModeToggle />
         {token && (
           <div className="flex items-center gap-3">
             {' '}
             <Button onClick={logout}>Log out</Button>
-            <User onClick={() => setUpdateProfile(true)} className="h-6 w-6 text-blue-600 cursor-pointer" />
+            <User onClick={() => setUpdateProfile(true)} className="h-6 w-6 text-blue-back cursor-pointer" />
           </div>
         )}
         {!token && (
@@ -61,11 +63,11 @@ export default function LandingPage() {
         </div>
       </header>
       <main className="flex-1 flex flex-col items-center">
-        <section className="w-full flex justify-center py-12 md:py-24 lg:py-20 xl:py-36 bg-gradient-to-b from-blue-50 to-white">
+        <section className="w-full flex justify-center py-12 md:py-24 lg:py-20 xl:py-36 bg-gradient-to-b from-blue-50 to-white dark:from-background">
           <div className="container px-4 md:px-6 max-w-[1200px]">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-foreground">
                   Ace Your Next Interview with PrepSOM
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
@@ -74,18 +76,18 @@ export default function LandingPage() {
               </div>
               <div className="space-x-4 space-y-2">
                 {token ? (
-                  <Button size="lg" className="bg-black text-white" onClick={() => setIsOpen(true)}>
+                  <Button size="lg" className="bg-blue-600 text-white" onClick={() => setIsOpen(true)}>
                     Start Interview
                   </Button>
                 ) : (
                   <Link to="/login">
-                    <Button size="lg" className="bg-black text-white">
+                    <Button size="lg" className="bg-blue-600 text-white">
                       Start Interview{' '}
                     </Button>
                   </Link>
                 )}
                 <a href="https://youtu.be/F-UwrlXrsqM" target="_blank">
-                  <Button variant="outline" size="lg" className="text-white">
+                  <Button variant="outline" size="lg" className="text-white bg-black">
                     Watch Demo
                   </Button>
                 </a>
@@ -93,7 +95,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section id="features" className="w-full flex justify-center py-12">
+        <section id="features" className="w-full flex justify-center py-12 border-gray-50 bg-background">
           <div className="container px-4 md:px-6 max-w-[1200px]">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
               Key Features
@@ -138,7 +140,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full flex justify-center py-12 md:py-24 bg-gray-100">
+        <section className="w-full flex justify-center py-12 md:py-24 bg-background">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
               Model Trained by Professionals From:
