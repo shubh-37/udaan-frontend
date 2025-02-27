@@ -1,182 +1,153 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { Switch } from '@/components/ui/switch';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircularProgress } from '@/components/CircularProgress';
-import { ParameterScore } from '@/components/ParameterScore';
-import { DetailedBreakdown } from '@/components/DetailedBreakdown';
 import { InterviewSummary } from '@/components/InterviewSummary';
-import { DotPattern } from '@/components/magicui/dot-pattern';
+import ReportHeader from '@/components/InterviewReport/ReportHeader';
+import SkillAnalysis from '@/components/InterviewReport/InterviewSkillAnalysis';
+import { TestimonialsDemo } from '@/components/InterviewReport/InterviewTestimonials';
+import PerformanceMetrics from '@/components/InterviewReport/InterviewPerformanceMetrics';
+import { FaqComponent } from '@/components/InterviewReport/InterviewFaq';
+import Lenis from '@studio-freight/lenis';
+import CareerPathRecommendations from '@/components/InterviewReport/InterviewCareerPath';
+import StrengthAndWeakness from '@/components/InterviewReport/StrengthsAndWeakness';
+import PersonalizedImprovementPlan from '@/components/InterviewReport/ImprovementPlan';
 import { SparklesText } from '@/components/magicui/sparkles-text';
-import reportFemale from '@/assets/reportFemale.svg';
-import reportNotebook from '@/assets/reportNotebook.svg';
-import reportMale from '@/assets/reportMale.svg';
-import reportQuestion from '@/assets/reportQuestion.svg';
-import upArrow from '@/assets/upArrow.svg';
-import { cn } from '../lib/utils';
 
 export default function InterviewReport() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-
-  const floatAnimation = {
-    y: [0, -10, 0],
-    transition: {
-      duration: 2,
-      ease: 'easeInOut',
-      repeat: Infinity
-    }
-  };
+  const [isPremium, setIsPremium] = useState(false);
+  const containerRef = useRef(null);
 
   const parameters = [
     {
-      name: 'Technical Skills',
-      score: 85,
-      color: 'bg-blue-500',
-      strengths: ['Strong problem-solving abilities', 'Excellent coding practices', 'Good understanding of algorithms'],
-      weaknesses: ['Limited experience with cloud technologies', 'Need improvement in system design'],
-      improvements: ['Take online courses in cloud computing', 'Practice more system design questions']
+      title: 'Technical Proficiency',
+      color: '#ff7300',
+      skills: [
+        { name: 'Problem Solving', score: 85, showBar: true },
+        { name: 'Code Quality', score: 92, showBar: true },
+        { name: 'System Design', score: 78, showBar: true }
+      ]
     },
     {
-      name: 'Communication',
-      score: 78,
-      color: 'bg-green-500',
-      strengths: ['Clear articulation of ideas', 'Good listening skills'],
-      weaknesses: ['Sometimes too brief in explanations', 'Could improve technical terminology usage'],
-      improvements: ['Practice explaining complex concepts', 'Join technical discussion groups']
+      title: 'Communication Skills',
+      color: '#007bff',
+      skills: [
+        { name: 'Clarity', score: 88, showBar: true },
+        { name: 'Articulation', score: 90, showBar: true },
+        { name: 'Active Listening', score: 85, showBar: true }
+      ]
     },
     {
-      name: 'Problem Solving',
-      score: 92,
-      color: 'bg-purple-500',
-      strengths: ['Excellent analytical thinking', 'Creative solutions', 'Good time management'],
-      weaknesses: ['Could consider more edge cases', 'Sometimes jumps to conclusions'],
-      improvements: ['Practice more edge case analysis', 'Take time to evaluate multiple approaches']
+      title: 'Speech Analysis',
+      color: '#28a745',
+      skills: [
+        { name: 'Speaking Rate', score: 145, unit: 'WPM', showBar: false },
+        { name: 'Confidence Level', score: 'High', showBar: false },
+        { name: 'Voice Clarity', score: 92, showBar: true }
+      ]
     },
     {
-      name: 'Teamwork',
-      score: 88,
-      color: 'bg-orange-500',
-      strengths: ['Great collaboration skills', 'Open to feedback', 'Supportive attitude'],
-      weaknesses: ['Could be more proactive in leadership', 'Sometimes hesitant to disagree'],
-      improvements: ['Take initiative in team projects', 'Practice constructive disagreement']
+      title: 'Time Management',
+      color: '#a855f7',
+      skills: [
+        { name: 'Average Response Time', score: '2.5 mins', showBar: false },
+        { name: 'Average Filler Words', score: 5, showBar: false },
+        { name: 'Question Completion Rate', score: 95, showBar: true }
+      ]
     }
   ];
 
-  const overallScore = Math.round(parameters.reduce((acc, param) => acc + param.score, 0) / parameters.length);
+  const overallScore = Math.round(
+    parameters.reduce((total, category) => {
+      const numericScores = category.skills.map((skill) => Number(skill.score)).filter((score) => !isNaN(score)); // Remove non-numeric values
+
+      return total + numericScores.reduce((sum, score) => sum + score, 0);
+    }, 0) /
+      parameters.reduce((count, category) => {
+        return count + category.skills.filter((skill) => !isNaN(Number(skill.score))).length;
+      }, 0)
+  );
+
+  useEffect(() => {
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background2 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="relative h-[400px] w-full">
-          {/* Background pattern */}
-          <DotPattern
-            glow={true}
-            className={cn('[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]')}
-            style={{ height: '400px' }}
-          />
-
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative inline-block">
-              <SparklesText text="Interview Report" className="text-7xl font-bold text-center bg-clip-text" />
-
-              <motion.img
-                src={reportFemale}
-                alt="report-female"
-                width="250"
-                height="250"
-                className="absolute -top-40 -left-40 transform -translate-x-1/2 -translate-y-1/2 z-10"
-                animate={floatAnimation}
-              />
-              <motion.img
-                src={reportMale}
-                alt="report-male"
-                width="250"
-                height="250"
-                className="absolute -top-40 -right-40 transform translate-x-1/2 -translate-y-1/2 z-10"
-                animate={floatAnimation}
-              />
-              <motion.img
-                src={reportNotebook}
-                alt="report-notebook"
-                width="250"
-                height="250"
-                className="absolute -bottom-39 -right-40 transform translate-x-1/2 translate-y-1/2 z-10"
-                animate={floatAnimation}
-              />
-              <motion.img
-                src={reportQuestion}
-                alt="report-question"
-                width="250"
-                height="250"
-                className="absolute -bottom-39 -left-40 transform -translate-x-1/2 translate-y-1/2 z-10"
-                animate={floatAnimation}
-              />
+    <div className="min-h-screen bg-background px-4 sm:px-6 lg:px-8">
+      <ReportHeader isPremium={isPremium} setIsPremium={setIsPremium} />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        ref={containerRef}
+        className="max-w-7xl relative  mx-auto mt-12 sm:pt-12"
+      >
+        <div className="relative flex justify-center">
+          <div className="flex justify-between items-center w-full pb-4 border-b mb-8">
+            <div className="space-y-2">
+              <SparklesText text="Overall Score" className="text-4xl font-bold" />
+              <p className="test-gray-300 font-mono text-lg">Based on several parameters</p>
             </div>
+            <CircularProgress value={overallScore} />
           </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-7xl mx-auto mt-12"
-        >
-          <div className="relative flex justify-center my-20">
-            <CircularProgress value={overallScore} />
-            <motion.img
-              src={upArrow}
-              alt="up-arrow"
-              width="100"
-              height="100"
-              className="absolute left-[calc(50%+120px)] top-1/2 -translate-y-1/2 z-10"
-              animate={floatAnimation}
-            />
-            <div className="absolute left-[calc(50%+130px)] top-[calc(50%-40px)] -translate-y-1/2 text-center">
-              <p className="text-2xl font-mono">Your Overall Score</p>
-            </div>
-          </div>
+        <SkillAnalysis parameters={parameters} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {parameters.map((param, index) => (
-              <motion.div
-                key={param.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <ParameterScore parameter={param} />
-              </motion.div>
-            ))}
-          </div>
+        <Card className="mb-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <SparklesText text="Performanc Metrics" className="text-3xl font-bold pb-4" />
+          </CardHeader>
+          <CardContent>
+            <PerformanceMetrics isPremium={isPremium} />
+          </CardContent>
+        </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 w-full">
-            {parameters.map((param, index) => (
-              <motion.div
-                key={param.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="h-full w-full"
-              >
-                <DetailedBreakdown parameter={param} className="w-full flex flex-col h-full min-h-[300px]" />
-              </motion.div>
-            ))}
-          </div>
+        <Card className="mb-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <SparklesText text="Questions by Question Analysis" className="text-3xl font-bold pb-4" />
+          </CardHeader>
+          <CardContent>
+            <InterviewSummary isPremium={isPremium} />
+          </CardContent>
+        </Card>
 
-          <Card className="mb-8">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-2xl font-bold">Detailed Review</CardTitle>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">Unlock detailed review</span>
-                <Switch checked={isUnlocked} onCheckedChange={setIsUnlocked} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <InterviewSummary isUnlocked={isUnlocked} />
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="mb-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <SparklesText text="Career Path Recommendations" className="text-3xl font-bold pb-4" />
+          </CardHeader>
+          <CardContent>
+            <CareerPathRecommendations isPremium={isPremium} />
+          </CardContent>
+        </Card>
+
+        <Card className="mb-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <SparklesText text="Strengths And Weaknesses Breakdown" className="text-3xl font-bold pb-4" />
+          </CardHeader>
+          <CardContent>
+            <StrengthAndWeakness isPremium={isPremium} />
+          </CardContent>
+        </Card>
+
+        {/* <Card className="mb-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-2xl font-bold">Personalized Improvement Plan</CardTitle>
+          </CardHeader>
+          <CardContent>
+          <PersonalizedImprovementPlan isPremium={isPremium}/>
+          </CardContent>
+        </Card> */}
+        <TestimonialsDemo />
+        <FaqComponent />
+      </motion.div>
     </div>
   );
 }
