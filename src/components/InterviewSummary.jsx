@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lock } from "lucide-react"
 
-export function InterviewSummary({ isUnlocked }) {
+export function InterviewSummary({ isPremium }) {
   const questions = [
     {
       question: "Explain the concept of recursion and provide an example.",
@@ -12,32 +12,43 @@ export function InterviewSummary({ isUnlocked }) {
         "Recursion is when a function calls itself. For example, calculating factorial using recursion would involve multiplying a number by factorial of (n-1).",
       analysis:
         "The explanation was basic but correct. Could have provided more details about base cases and stack implications.",
-      correctParts: ["basic definition", "factorial example"],
-      incorrectParts: ["missing base case explanation", "no mention of stack overflow considerations"],
+      responseAnalysis: {
+        timeSpent: "3:20 mins",
+        confidenceLevel: "80%",
+      },
+      speechAnalysis: {
+        clarity: "90%",
+        speakingRate: "130 WPM",
+        technicalTerms: "10 used",
+      },
     },
     {
       question: "What are the benefits of using TypeScript over JavaScript?",
       answer: "TypeScript adds type safety and better IDE support. It helps catch errors during development.",
       analysis:
         "Good mention of key benefits but could have elaborated on interface support and other advanced features.",
-      correctParts: ["type safety", "IDE support"],
-      incorrectParts: ["no mention of interfaces", "missing compile-time checking benefits"],
+      responseAnalysis: {
+        timeSpent: "2:45 mins",
+        confidenceLevel: "85%",
+      },
+      speechAnalysis: {
+        clarity: "92%",
+        speakingRate: "140 WPM",
+        technicalTerms: "12 used",
+      },
     },
   ]
 
   return (
     <Card className="relative overflow-hidden">
-      <CardHeader>
-        <CardTitle>Question-by-Question Analysis</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 overflow-y-auto">
         <AnimatePresence>
-          {!isUnlocked && (
+          {!isPremium && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 backdrop-blur-sm bg-gray-100/80 z-10"
+              className="absolute inset-0 backdrop-blur-sm bg-card/80 z-10"
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <Lock className="w-12 h-12 text-muted-foreground" />
@@ -50,27 +61,29 @@ export function InterviewSummary({ isUnlocked }) {
           )}
         </AnimatePresence>
 
-        <div className={`space-y-6 ${!isUnlocked && "blur-sm"}`}>
+        <div className={`space-y-6 ${!isPremium && "blur-sm"} pt-6`}>
           {questions.map((q, i) => (
-            <div key={i} className="space-y-3">
-              <h3 className="font-semibold">Question {i + 1}:</h3>
-              <p className="text-sm">{q.question}</p>
-              <div className="pl-4 border-l-2 border-muted">
-                <p className="text-sm">Your Answer:</p>
-                <p className="text-sm text-muted-foreground">{q.answer}</p>
+            <div key={i} className="space-y-4 p-4 bg-card text-card-foreground border rounded-md">
+              <h3 className="font-semibold text-orange-400">Question {i + 1}: {q.question}</h3>
+              <p className="text-sm text-card-foreground">Your Answer:</p>
+              <p className="text-sm text-card-foreground bg-card p-2 rounded">{q.answer}</p>
+              <div className="border-l-4 border-green-500 pl-4 bg-gray-100 dark:bg-gray-900 rounded-md p-4">
+                <p className="text-sm text-green-400">Analysis:</p>
+                <p className="text-sm text-card-foreground">{q.analysis}</p>
               </div>
-              <div className="pl-4 border-l-2 border-primary">
-                <p className="text-sm">Analysis:</p>
-                <p className="text-sm text-muted-foreground">{q.analysis}</p>
-                <div className="mt-2 space-y-2">
-                  <div>
-                    <span className="text-sm font-medium text-green-500">Correct parts: </span>
-                    <span className="text-sm">{q.correctParts.join(", ")}</span>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-red-500">Areas to improve: </span>
-                    <span className="text-sm">{q.incorrectParts.join(", ")}</span>
-                  </div>
+
+              {/* Response & Speech Analysis */}
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-lg">
+                  <h4 className="text-green-400 font-medium">Response Analysis</h4>
+                  <p className="text-sm">Time Spent: {q.responseAnalysis.timeSpent}</p>
+                  <p className="text-sm">Confidence Level: {q.responseAnalysis.confidenceLevel}</p>
+                </div>
+                <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-lg">
+                  <h4 className="text-purple-400 font-medium">Speech Analysis</h4>
+                  <p className="text-sm">Clarity: {q.speechAnalysis.clarity}</p>
+                  <p className="text-sm">Speaking Rate: {q.speechAnalysis.speakingRate}</p>
+                  <p className="text-sm">Technical Terms: {q.speechAnalysis.technicalTerms}</p>
                 </div>
               </div>
             </div>
