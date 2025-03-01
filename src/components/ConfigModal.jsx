@@ -1,27 +1,24 @@
-"use client"
-
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 export default function ConfigModal({ onSubmit }) {
   const [subjects, setSubjects] = useState({
     verbal: false,
     quant: false,
-    logical: false,
-  })
-  const [acknowledged, setAcknowledged] = useState(false)
+    logical: false
+  });
+  const [acknowledged, setAcknowledged] = useState(false);
 
   const handleSubmit = () => {
     if (!Object.values(subjects).some(Boolean) || !acknowledged) {
-      return
+      return;
     }
-    onSubmit({subjects })
-  }
+    onSubmit({ subjects });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 min-h-screen">
@@ -32,14 +29,13 @@ export default function ConfigModal({ onSubmit }) {
             <CardDescription>Please select your subjects</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-
             <div className="space-y-4">
               <Label>Select Subjects</Label>
               <div className="grid gap-4">
                 {Object.entries({
-                  verbal: "Verbal Reasoning",
-                  quant: "Quantitative Reasoning",
-                  logical: "Logical Reasoning",
+                  verbal: 'Verbal & Reading Comprehension',
+                  quant: 'Numerical Reasoning',
+                  logical: 'Logical Reasoning'
                 }).map(([key, label]) => (
                   <div key={key} className="flex items-center space-x-2 rounded-md border p-4">
                     <Checkbox
@@ -55,7 +51,12 @@ export default function ConfigModal({ onSubmit }) {
             </div>
 
             <div className="flex items-center space-x-2 rounded-md border p-4 bg-muted">
-              <Checkbox id="acknowledge" checked={acknowledged} onCheckedChange={setAcknowledged} className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"/>
+              <Checkbox
+                id="acknowledge"
+                checked={acknowledged}
+                onCheckedChange={setAcknowledged}
+                className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+              />
               <Label htmlFor="acknowledge" className="text-sm">
                 I understand that once the test begins, I cannot pause or restart it. I will ensure I have a stable
                 internet connection and will not refresh the page during the test.
@@ -74,6 +75,5 @@ export default function ConfigModal({ onSubmit }) {
         </Card>
       </motion.div>
     </div>
-  )
+  );
 }
-
