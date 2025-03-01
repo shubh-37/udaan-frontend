@@ -9,70 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { BookmarkIcon, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 
-const dummyQuestions = {
-  verbal: [
-    {
-      id: 'v1',
-      text: "Choose the word that best completes the sentence: The scientist's ___ approach to research earned her widespread respect in the academic community.",
-      options: ['methodical', 'haphazard', 'careless', 'random'],
-      correct: 'methodical'
-    },
-    {
-      id: 'v2',
-      text: 'Select the pair of words that best expresses a relationship similar to that expressed in the original pair: CANVAS : PAINT',
-      options: ['paper : pencil', 'bread : butter', 'wall : brick', 'shoe : leather'],
-      correct: 'paper : pencil'
-    },
-    {
-      id: 'v3',
-      text: "Choose the word that is most nearly opposite in meaning to 'PROLIFIC':",
-      options: ['barren', 'fertile', 'productive', 'abundant'],
-      correct: 'barren'
-    }
-  ],
-  quant: [
-    {
-      id: 'q1',
-      text: 'If x + 2 = 5, what is the value of 2x + 4?',
-      options: ['6', '8', '10', '12'],
-      correct: '8'
-    },
-    {
-      id: 'q2',
-      text: 'A train travels 120 kilometers in 2 hours. What is its speed in meters per second?',
-      options: ['16.67', '20', '25', '30'],
-      correct: '16.67'
-    },
-    {
-      id: 'q3',
-      text: 'What is the area of a triangle with base 8 units and height 12 units?',
-      options: ['24', '48', '96', '108'],
-      correct: '48'
-    }
-  ],
-  logical: [
-    {
-      id: 'l1',
-      text: 'If all A are B, and all B are C, which of the following must be true?',
-      options: ['All A are C', 'All C are A', 'Some A are not C', 'None of the above'],
-      correct: 'All A are C'
-    },
-    {
-      id: 'l2',
-      text: 'In a row of children facing north, Rahul is 10th from the left and Amit is 10th from the right. If Rahul is 15th from the right, how many children are there in the row?',
-      options: ['24', '25', '26', '27'],
-      correct: '24'
-    },
-    {
-      id: 'l3',
-      text: "If 'FRIEND' is coded as 'HUMJTK', how is 'CANDLE' coded?",
-      options: ['EDRFNG', 'DCQIPG', 'ECPFNG', 'ECOFNG'],
-      correct: 'ECPFNG'
-    }
-  ]
-};
-
-export default function ExamInterface({ config, examType, onComplete }) {
+// eslint-disable-next-line react/prop-types
+export default function ExamInterface({ config, examType, onComplete, aptitudeQuestions }) {
   const selectedSubjects = Object.keys(config.subjects).filter((key) => config.subjects[key]);
   const [currentSection, setCurrentSection] = useState(selectedSubjects[0] || 'verbal');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -81,16 +19,31 @@ export default function ExamInterface({ config, examType, onComplete }) {
   const [timeLeft, setTimeLeft] = useState(examType === 'quick' ? 600 : 1200);
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-
+  const topicMapping = {
+    verbal: 'Verbal & Reading Comprehension',
+    quant: 'Numerical Reasoning',
+    logical: 'Logical Reasoning'
+  };
   const filteredQuestions = selectedSubjects.reduce((acc, subject) => {
-    acc[subject] = dummyQuestions[subject] || [];
+    const mappedTopic = topicMapping[subject];
+    acc[subject] = aptitudeQuestions.filter((q) => q.topic === mappedTopic);
     return acc;
   }, {});
 
   const totalQuestions = Object.values(filteredQuestions).reduce((sum, questions) => sum + questions.length, 0);
 
-  const handleAnswer = (questionId, answer) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answer }));
+  const handleAnswer = (questionId, selectedOption) => {
+    // Extract the letter (A, B, C, etc.) from the option string
+    const selectedLetter = selectedOption.match(/\((.)\)/)?.[1] || '';
+
+    // Check if the selected option matches the correct answer
+    const isCorrect =
+      selectedLetter === (filteredQuestions[currentSection].find((q) => q.id === questionId)?.answer || '');
+
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: { selectedOption, isCorrect }
+    }));
   };
 
   const toggleFlagged = (questionId) => {
@@ -124,9 +77,9 @@ export default function ExamInterface({ config, examType, onComplete }) {
   }, [answers, onComplete, showTimeWarning]);
 
   const handleSubmit = () => {
-    onComplete(answers)
-    setShowSubmitDialog(false)
-  }
+    onComplete(answers);
+    setShowSubmitDialog(false);
+  };
 
   const currentQuestions = filteredQuestions[currentSection] || [];
   const currentQuestion = currentQuestions[currentQuestionIndex] || {};
@@ -193,10 +146,7 @@ export default function ExamInterface({ config, examType, onComplete }) {
               <Clock className="inline-block mr-2" />
               {formatTime(timeLeft)}
             </motion.div>
-            <Progress
-              value={(Object.keys(answers).length / totalQuestions) * 100}
-              className="w-1/3"
-            />
+            <Progress value={(Object.keys(answers).length / totalQuestions) * 100} className="w-1/3" />
             <Button variant="destructive" onClick={() => setShowSubmitDialog(true)}>
               Submit Test
             </Button>
@@ -239,24 +189,18 @@ export default function ExamInterface({ config, examType, onComplete }) {
                 </div>
 
                 <div className="p-6 rounded-lg border bg-white dark:bg-gray-900 shadow-lg hover:shadow-xl transition-shadow duration-200">
-                  <p className="text-lg mb-6">{currentQuestion.text}</p>
+                  <p className="text-lg mb-6">{currentQuestion.question}</p>
                   <RadioGroup
-                    value={answers[currentQuestion.id] || ''}
+                    value={answers[currentQuestion.id]?.selectedOption || ''}
                     onValueChange={(value) => handleAnswer(currentQuestion.id, value)}
                   >
                     <div className="space-y-4">
                       {currentQuestion.options.map((option, index) => (
                         <div
                           key={index}
-                          className={`
-                            flex items-center space-x-2 rounded-lg border p-4
-                            transition-all duration-200
-                            ${
-                              answers[currentQuestion.id] === option
-                                ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
-                                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
-                            }
-                          `}
+                          className={`flex items-center space-x-2 rounded-lg border p-4 transition-all duration-200
+          ${answers[currentQuestion.id]?.selectedOption === option ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}
+        `}
                         >
                           <RadioGroupItem value={option} id={`option-${index}`} />
                           <Label htmlFor={`option-${index}`}>{option}</Label>
@@ -284,7 +228,7 @@ export default function ExamInterface({ config, examType, onComplete }) {
             </Button>
             <Button
               onClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
-              disabled={currentQuestionIndex === dummyQuestions[currentSection].length - 1}
+              disabled={currentQuestionIndex === filteredQuestions[currentSection].length - 1}
               className="bg-blue-500 hover:bg-blue-600 text-white"
             >
               Next <ChevronRight className="ml-2" />
@@ -312,7 +256,11 @@ export default function ExamInterface({ config, examType, onComplete }) {
                 Are you sure you want to submit the test? You have {formatTime(timeLeft)} remaining.
               </p>
               <div className="flex justify-end space-x-4">
-                <Button variant="secondary" className='border border-gray-200' onClick={() => setShowSubmitDialog(false)}>
+                <Button
+                  variant="secondary"
+                  className="border border-gray-200"
+                  onClick={() => setShowSubmitDialog(false)}
+                >
                   Cancel
                 </Button>
                 <Button variant="destructive" onClick={handleSubmit}>
