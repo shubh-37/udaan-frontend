@@ -55,5 +55,30 @@ export default function AptitudeProvider({ children }) {
     }
   }
 
-  return <aptitudeContext.Provider value={{ startQuickTest, startFullTest }}>{children}</aptitudeContext.Provider>;
+  async function submitTest(test) {
+    try {
+      const response = await axios.post(`${VITE_API_URL}/aptitude/submit`, test, {
+        timeout: 10000,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      if (error.response?.status === 500) {
+        return 'failure';
+      } else if (error.response?.status === 401) {
+        return 'invalid';
+      }
+    }
+  }
+
+  return (
+    <aptitudeContext.Provider value={{ startQuickTest, startFullTest, submitTest }}>
+      {children}
+    </aptitudeContext.Provider>
+  );
 }
