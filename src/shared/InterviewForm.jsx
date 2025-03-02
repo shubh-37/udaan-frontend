@@ -69,7 +69,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
   };
 
   return (
-    <header className="flex justify-between items-center px-4 py-6 bg-white shadow-md gap-2">
+    <header className="flex justify-between items-center px-4 py-6 bg-background shadow-md gap-2">
       {isSmallScreen ? (
         <>
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -108,7 +108,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
       ) : (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger></DialogTrigger>
-          <DialogContent className="bg-white max-w-lg p-6 rounded-lg">
+          <DialogContent className="bg-background max-w-lg p-6 rounded-lg">
             <DialogHeader>
               <DialogTitle>Review Your Details</DialogTitle>
               <DialogDescription>

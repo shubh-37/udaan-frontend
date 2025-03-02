@@ -16,7 +16,7 @@ const InterviewFormContent = memo(({ formData, readOnly }) => (
         type="string"
         value={formData.job_role}
         readOnly={readOnly}
-        className={`w-full ${readOnly ? 'bg-gray-100' : 'bg-white'} border border-gray-200`}
+        className={`w-full ${readOnly ? 'bg-background' : 'bg-background'} border border-gray-200`}
       />
     </div>
     <div className="space-y-2">
@@ -29,7 +29,7 @@ const InterviewFormContent = memo(({ formData, readOnly }) => (
         type="string"
         value={formData.institute}
         readOnly={readOnly}
-        className={`w-full ${readOnly ? 'bg-gray-100' : 'bg-white'} border border-gray-200`}
+        className={`w-full ${readOnly ? 'bg-background' : 'bg-background'} border border-gray-200`}
       />
     </div>
     <div className="space-y-2">
@@ -42,7 +42,7 @@ const InterviewFormContent = memo(({ formData, readOnly }) => (
         type="number"
         value={formData.yrs_of_exp}
         readOnly={readOnly}
-        className={`w-full ${readOnly ? 'bg-gray-100' : 'bg-white'} border border-gray-200`}
+        className={`w-full ${readOnly ? 'bg-background' : 'bg-background'} border border-gray-200`}
       />
     </div>
     <div className="space-y-2">
@@ -55,7 +55,7 @@ const InterviewFormContent = memo(({ formData, readOnly }) => (
         type="string"
         value={formData.company}
         readOnly={readOnly}
-        className={`w-full ${readOnly ? 'bg-gray-100' : 'bg-white'} border border-gray-200`}
+        className={`w-full ${readOnly ? 'bg-background' : 'bg-background'} border border-gray-200`}
       />
     </div>
 
