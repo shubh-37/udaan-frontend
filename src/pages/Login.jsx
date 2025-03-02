@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ModeToggle } from '@/components/mode-toggle';
 
 const LoginForm = () => {
   const { loginUser, verifyLoginOtp, resendOtp } = useContext(authContext);
@@ -149,10 +150,10 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 ">
       {isLoading && <Loader text={step === 'phone' ? 'Sending OTP...' : 'Verifying OTP...'} />}
 
-      <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between bg-card">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6 text-blue-600" />
           <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
@@ -164,11 +165,11 @@ const LoginForm = () => {
         </Link>
       </header>
 
-      <div className="flex-grow flex items-center justify-center m-4">
+      <div className="w-full px-2 max-w-md mx-auto flex-grow flex items-center justify-center m-4">
         {step === 'phone' ? (
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white backdrop-blur-sm">
             <CardHeader>
-              <CardTitle>Login</CardTitle>
+              <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>Enter your phone number to receive an OTP</CardDescription>
             </CardHeader>
             <form onSubmit={handleSendOTP}>
