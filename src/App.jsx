@@ -8,6 +8,7 @@ import RequiresAuth from './shared/RequiresAuth';
 import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost';
 import AptitudeExam from './pages/Aptitude';
+import InterviewReport from './pages/Report';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           path="/review"
           element={
             <RequiresAuth>
-              <InterviewReview />
+              <InterviewReport />
             </RequiresAuth>
           }
         />
