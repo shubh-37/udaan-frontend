@@ -6,6 +6,7 @@ import './index.css';
 import App from './App.jsx';
 import { ThemeProvider } from './components/theme-provider';
 import AptitudeProvider from './context/AptitudeContextProvider.jsx';
+import InterviewProvider from './context/InterviewContextProvider.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
           <AptitudeProvider>
-            <App />
+            <InterviewProvider>
+              <App />
+            </InterviewProvider>
           </AptitudeProvider>
         </ThemeProvider>
       </AuthProvider>
