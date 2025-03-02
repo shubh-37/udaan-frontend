@@ -67,7 +67,7 @@ export default function PerformanceMetrics({ isPremium }) {
         <div className={`space-y-6 ${!isPremium && 'blur-sm'}`}>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card p-6 rounded-xl">
+            <div className="bg-card rounded-xl">
               <h3 className="text-blue-500 text-lg font-semibold mb-4">Behavioral Analysis</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
@@ -87,8 +87,7 @@ export default function PerformanceMetrics({ isPremium }) {
               </ul>
             </div>
 
-            {/* Technical Proficiency */}
-            <div className="bg-card p-6 rounded-xl">
+            <div className="bg-card rounded-xl">
               <h3 className="text-orange-500 text-lg font-semibold mb-4">Technical Proficiency</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
@@ -109,8 +108,7 @@ export default function PerformanceMetrics({ isPremium }) {
               </ul>
             </div>
 
-            {/* Communication Skills */}
-            <div className="bg-card p-6 rounded-xl">
+            <div className="bg-card rounded-xl">
               <h3 className="text-green-500 text-lg font-semibold mb-4">Communication Skills</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={barData}>
