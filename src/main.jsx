@@ -7,7 +7,6 @@ import App from './App.jsx';
 import { ThemeProvider } from './components/theme-provider';
 import AptitudeProvider from './context/AptitudeContextProvider.jsx';
 import InterviewProvider from './context/InterviewContextProvider.jsx';
-import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 
 createRoot(document.getElementById('root')).render(
