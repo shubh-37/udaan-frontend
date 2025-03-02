@@ -9,17 +9,29 @@ export default function AuthProvider({ children }) {
   const [updateProfile, setUpdateProfile] = useState(false);
   async function signUpUser(user) {
     try {
-      const response = await axios.post(`${VITE_API_URL}/signup`, user, {
-        timeout: 10000,
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const response = await axios.post(`${VITE_API_URL}/user/signup`, user, {
+        timeout: 10000
       });
       if (response.status === 200) {
-        if (response.data.message) {
-          localStorage.setItem('token', response.data.message);
-          return 'success';
-        }
+        return 'success';
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+        return 'failure';
+      } else if (error.response.status === 400) {
+        return 'duplicate';
+      }
+    }
+  }
+
+  async function verifySignUpOtp(user) {
+    try {
+      const response = await axios.post(`${VITE_API_URL}/user/verifySignOtp`, user, {
+        timeout: 10000
+      });
+      if (response.status === 200) {
+        localStorage.setItem('token', response.data.token);
+        return 'success';
       }
     } catch (error) {
       if (error.response.status === 500) {
@@ -32,18 +44,11 @@ export default function AuthProvider({ children }) {
 
   async function loginUser(user) {
     try {
-      const response = await axios.post(
-       `${VITE_API_URL}/login`,
-        user,
-        {
-          timeout: 10000
-        }
-      );
+      const response = await axios.post(`${VITE_API_URL}/user/sendOtp`, user, {
+        timeout: 10000
+      });
       if (response.status === 200) {
-        if (response.data.message) {
-          localStorage.setItem('token', response.data.message);
-          return 'success';
-        }
+        return 'success';
       }
     } catch (error) {
       if (error.response.status === 500) {
@@ -53,9 +58,44 @@ export default function AuthProvider({ children }) {
       }
     }
   }
+  async function verifyLoginOtp(user) {
+    try {
+      const response = await axios.post(`${VITE_API_URL}/user/verifyOtp`, user, {
+        timeout: 10000
+      });
+      if (response.status === 200) {
+        localStorage.setItem('token', response.data.token);
+        return 'success';
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+        return 'failure';
+      } else if (error.response.status === 400) {
+        return 'duplicate';
+      }
+    }
+  }
+  async function resendOtp(user) {
+    try {
+      const response = await axios.post(`${VITE_API_URL}/user/resendOtp`, user, {
+        timeout: 10000
+      });
+      if (response.status === 200) {
+        return 'success';
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+        return 'failure';
+      } else if (error.response.status === 400) {
+        return 'duplicate';
+      }
+    }
+  }
 
   return (
-    <authContext.Provider value={{ signUpUser, loginUser, updateProfile, setUpdateProfile }}>
+    <authContext.Provider
+      value={{ signUpUser, loginUser, updateProfile, setUpdateProfile, verifySignUpOtp, verifyLoginOtp, resendOtp }}
+    >
       {children}
     </authContext.Provider>
   );
