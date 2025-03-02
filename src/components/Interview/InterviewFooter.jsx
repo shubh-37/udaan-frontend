@@ -30,8 +30,8 @@ export function Footer({ isOnline }) {
   };
 
   return (
-    <footer className="border-t lg:mb-0">
-      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between border-t bg-background mt-4 px-6 py-4 lg:sticky">
+    <footer className="hidden lg:block border-t lg:mb-0">
+      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between border-t bg-background mt-4 px-6 py-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           {isOnline ? (
             <>

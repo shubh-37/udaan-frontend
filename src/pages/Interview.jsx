@@ -49,8 +49,8 @@ const SpeechToText = () => {
       <InterviewInstructions />
       {isLoading && <Loader text={'Processing Interview...'} />}
       <Header onEndInterview={handleEndInterview} />
-      <main className="px-4 py-2">
-        <div className="container mx-auto grid max-w-7xl gap-6 p-6 lg:grid-cols-[1fr,400px]">
+      <div className="px-4 py-2">
+        <div className="w-full mx-auto grid max-w-7xl pt-6 gap-6 lg:grid-cols-[1fr,400px]">
           <div className="flex flex-col gap-4">
             <div className="relative w-full h-auto bg-gray-200 border-2 border-gray-300 rounded-lg overflow-hidden">
               <VideoPanel
@@ -65,7 +65,7 @@ const SpeechToText = () => {
 
           <InterviewQuestionPanel token={token} />
         </div>
-      </main>
+      </div>
 
       <Footer isOnline={isOnline} />
 

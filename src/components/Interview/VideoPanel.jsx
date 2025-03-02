@@ -80,8 +80,8 @@ const recordedChunksRef = useRef(null);
   };
 
   return (
-    <Card className="p-4 flex flex-col gap-4">
-      <div className="relative w-full h-[500px] bg-background border-2 border-gray-50 rounded-lg overflow-hidden">
+    <div className="p-4 flex flex-col gap-4">
+      <div className="relative w-full h-[200px] sm:h-[300px] md:h-[500px] bg-background border-2 border-gray-50 rounded-lg overflow-hidden">
         <video ref={ref} className="absolute w-full h-full object-cover" muted autoPlay playsInline />
         {siriLoader && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 w-32 h-8">
@@ -138,7 +138,7 @@ const recordedChunksRef = useRef(null);
       <div className="text-sm text-center text-muted-foreground">
         {isRecording ? 'Recording in progress...' : 'Ready to record'}
       </div>
-    </Card>
+    </div>
   );
 });
 
