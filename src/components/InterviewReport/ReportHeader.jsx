@@ -9,6 +9,7 @@ import { ShinyButton } from '../magicui/shiny-button';
 import { ScrollProgress } from '../ScrollProgress';
 import { ModeToggle } from '../mode-toggle';
 import { interviewContext } from '@/context/InterviewContextProvider';
+import { toast } from 'sonner';
 
 export default function ReportHeader({ isPremium, setIsPremium, containerRef }) {
   const headerRef = useRef(null);
@@ -22,8 +23,10 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
       const response = await handlePayment();
       // Add paid review API
     } catch (error) {
-      console.error('Payment Error:', error);
-      alert('Something went wrong.');
+      toast('Payment Error', {
+        variant: 'destructive',
+        description: 'Something went wrong.'
+      });
     } finally {
       setIsLoading(false);
     }

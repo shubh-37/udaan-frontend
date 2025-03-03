@@ -22,6 +22,7 @@ export function Footer({ isOnline }) {
       navigate('/review');
     } catch (error) {
       toast('Error', {
+        variant: 'destructive',
         description: 'An error occurred while submitting the interview. Please try again later.'
       });
     } finally {

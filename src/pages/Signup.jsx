@@ -9,18 +9,16 @@ import Loader from '../shared/Loader';
 import { Video, ArrowRight, LoaderIcon, Mail, User } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-// import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const SignupForm = () => {
   const { signUpUser, setUpdateProfile, verifySignUpOtp } = useContext(authContext);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  // const { toast } = useToast();
 
   const [step, setStep] = useState('details'); // 'details' or 'verify'
   const [formData, setFormData] = useState({
@@ -48,27 +46,24 @@ const SignupForm = () => {
 
   const validateDetails = () => {
     if (!formData.full_name.trim()) {
-      // toast({
-      //   variant: 'destructive',
-      //   title: 'Error',
-      //   description: 'Please enter your name'
-      // });
+      toast('Error', {
+        variant: 'destructive',
+        description: 'Please enter your name'
+      });
       return false;
     }
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      // toast({
-      //   variant: 'destructive',
-      //   title: 'Error',
-      //   description: 'Please enter a valid email address'
-      // });
+      toast( 'Error' ,{
+        variant: 'destructive',
+        description: 'Please enter a valid email address'
+      });
       return false;
     }
     if (!formData.phone || formData.phone.length < 10) {
-      // toast({
-      //   variant: 'destructive',
-      //   title: 'Error',
-      //   description: 'Please enter a valid phone number'
-      // });
+      toast('Error', {
+        variant: 'destructive',
+        description: 'Please enter a valid phone number'
+      });
       return false;
     }
     return true;
@@ -87,16 +82,14 @@ const SignupForm = () => {
         country_code: formData.phone.slice(0, 2)
       });
       setStep('verify');
-      // toast({
-      //   title: 'OTP Sent',
-      //   description: 'Please check your email and phone for verification codes'
-      // });
+      toast( 'OTP Sent' ,{
+        description: 'Please check your email and phone for verification codes'
+      });
     } catch (error) {
-      // toast({
-      //   variant: 'destructive',
-      //   title: 'Error',
-      //   description: 'Failed to send OTP. Please try again.'
-      // });
+      toast('Error' ,{
+        variant: 'destructive',
+        description: 'Failed to send OTP. Please try again.'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -106,11 +99,10 @@ const SignupForm = () => {
     try {
       e.preventDefault();
       if (!formData.emailOtp || !formData.phoneOtp) {
-        // toast({
-        //   variant: 'destructive',
-        //   title: 'Error',
-        //   description: 'Please enter both verification codes'
-        // });
+        toast( 'Error' ,{
+          variant: 'destructive',
+          description: 'Please enter both verification codes'
+        });
         return;
       }
 
@@ -126,24 +118,21 @@ const SignupForm = () => {
         navigate('/');
         setUpdateProfile(true);
       } else if (response === 'failure') {
-        // toast({
-        //   variant: 'destructive',
-        //   title: 'Error',
-        //   description: 'Error signing up, please try again.'
-        // });
+        toast( 'Error' ,{
+          variant: 'destructive',
+          description: 'Error signing up, please try again.'
+        });
       } else {
-        // toast({
-        //   variant: 'destructive',
-        //   title: 'Error',
-        //   description: 'Account already exists with this email or phone.'
-        // });
+        toast('Error' ,{
+          variant: 'destructive',
+          description: 'Account already exists with this email or phone.'
+        });
       }
     } catch (error) {
-      // toast({
-      //   variant: 'destructive',
-      //   title: 'Error',
-      //   description: 'An error occurred, please try again later.'
-      // });
+      toast( 'Error' ,{
+        variant: 'destructive',
+        description: 'An error occurred, please try again later.'
+      });
     } finally {
       setIsLoading(false);
     }

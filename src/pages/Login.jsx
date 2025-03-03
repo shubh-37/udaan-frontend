@@ -82,12 +82,15 @@ const LoginForm = () => {
       setIsLoading(true);
       // Replace with your actual OTP verification logic
       const response = await verifyLoginOtp({ mobile_number: phone.slice(2), country_code: phone.slice(0, 2), otp });
-
-      console.log(response);
+      toast('OTP Verified', {
+        description: `${response}`
+      });
       navigate('/');
     } catch (error) {
-      alert('Invalid OTP. Please try again.');
-      console.error(error);
+      toast('Invalid OTP. Please try again', {
+        variant: 'destructive',
+        description: error.message || 'An error occurred, please try again later.'
+      });
     } finally {
       setIsLoading(false);
     }

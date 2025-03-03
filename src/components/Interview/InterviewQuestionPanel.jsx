@@ -73,7 +73,8 @@ export function InterviewQuestionPanel({ token }) {
       setSiriLoader(false);
     } catch (error) {
       toast('Error in speakQuestion:', {
-        description: error
+        variant: 'destructive',
+        description: error.message || '',
       });
     }
   };

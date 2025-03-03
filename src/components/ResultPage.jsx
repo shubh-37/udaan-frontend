@@ -64,7 +64,10 @@ export default function ResultPage({ answers, questions, examType }) {
           score: totalScore
         });
       } catch (error) {
-        console.error('Error submitting test:', error);
+        toast('Error submitting test', {
+          variant: 'destructive',
+          description: error.message || 'An error occurred, please try again later.'
+        });
       }
     };
     submitResults();

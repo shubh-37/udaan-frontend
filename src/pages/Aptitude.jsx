@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { aptitudeContext } from '@/context/AptitudeContextProvider';
 
 export default function App() {
-  const [step, setStep] = useState('config'); // config, selection, exam, result
+  const [step, setStep] = useState('config');
   const { startQuickTest, startFullTest } = useContext(aptitudeContext);
   const [examConfig, setExamConfig] = useState(null);
   const [examType, setExamType] = useState(null);
@@ -42,7 +42,10 @@ export default function App() {
         const response = await startFullTest({ topics: selectedTopics });
         setQuestions(response);
       } catch (error) {
-        console.error(error);
+        toast('Error', {
+          variant: 'destructive',
+          description: error.message || 'An error occurred, please try again later.'
+        });
       }
     }
     setExamType(type);
