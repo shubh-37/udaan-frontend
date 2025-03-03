@@ -14,7 +14,6 @@ const SpeechToText = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [siriLoader, setSiriLoader] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
-  const token = localStorage.getItem('token');
 
   const handleEndInterview = () => {
     setShowEndDialog(true);
@@ -29,9 +28,10 @@ const SpeechToText = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           await videoRef.current.play();
-        } else {
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     initializeVideo();
@@ -63,7 +63,7 @@ const SpeechToText = () => {
             </div>
           </div>
 
-          <InterviewQuestionPanel token={token} />
+          <InterviewQuestionPanel setSiriLoader={setSiriLoader} />
         </div>
       </div>
 
