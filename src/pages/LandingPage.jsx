@@ -55,18 +55,15 @@ export default function LandingPage() {
           >
             Blogs
           </Link>
-          <Link
-            to="/profile"
-            className="font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4"
-          >
-            Profile
-          </Link>
+
           <ModeToggle />
           {token && (
             <div className="flex items-center gap-3">
               {' '}
               <Button onClick={logout}>Log out</Button>
-              <User onClick={() => setUpdateProfile(true)} className="h-6 w-6 text-blue-back cursor-pointer" />
+              <Link to="/profile">
+                <User className="h-6 w-6 text-blue-back cursor-pointer" />
+              </Link>
             </div>
           )}
           {!token && (
@@ -248,9 +245,6 @@ export default function LandingPage() {
             <p className="mx-auto max-w-[700px] text-lg mb-8">
               Join thousands of job seekers who have improved their interview skills with PrepSOM.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-primary">
-              <Link to="/interview">Start Practicing</Link>
-            </Button>
           </div>
         </section>
       </main>

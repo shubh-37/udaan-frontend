@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Interview from './pages/Interview';
-import InterviewReview from './pages/Review';
 import SignupForm from './pages/Signup';
 import LoginForm from './pages/Login';
 import RequiresAuth from './shared/RequiresAuth';
@@ -32,10 +31,24 @@ function App() {
             </RequiresAuth>
           }
         />
-        <Route path='/profile' element={<Profile/>}/>
-        <Route path='/aptitude' element={<AptitudeExam/>}/>
-        <Route path='/blogs' element={<Blogs/>}/>
-        <Route path="/blogs/:id" element={<BlogPost/>}/>
+        <Route
+          path="/profile"
+          element={
+            <RequiresAuth>
+              <Profile />
+            </RequiresAuth>
+          }
+        />
+        <Route
+          path="/aptitude"
+          element={
+            <RequiresAuth>
+              <AptitudeExam />
+            </RequiresAuth>
+          }
+        />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<BlogPost />} />
         <Route path="/sign-up" element={<SignupForm />} />
         <Route path="/login" element={<LoginForm />} />
       </Routes>

@@ -53,7 +53,7 @@ const SignupForm = () => {
       return false;
     }
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      toast( 'Error' ,{
+      toast('Error', {
         variant: 'destructive',
         description: 'Please enter a valid email address'
       });
@@ -82,11 +82,11 @@ const SignupForm = () => {
         country_code: formData.phone.slice(0, 2)
       });
       setStep('verify');
-      toast( 'OTP Sent' ,{
+      toast('OTP Sent', {
         description: 'Please check your email and phone for verification codes'
       });
     } catch (error) {
-      toast('Error' ,{
+      toast('Error', {
         variant: 'destructive',
         description: 'Failed to send OTP. Please try again.'
       });
@@ -99,7 +99,7 @@ const SignupForm = () => {
     try {
       e.preventDefault();
       if (!formData.emailOtp || !formData.phoneOtp) {
-        toast( 'Error' ,{
+        toast('Error', {
           variant: 'destructive',
           description: 'Please enter both verification codes'
         });
@@ -115,21 +115,20 @@ const SignupForm = () => {
       });
       console.log(response);
       if (response === 'success') {
-        navigate('/');
-        setUpdateProfile(true);
+        navigate('/profile');
       } else if (response === 'failure') {
-        toast( 'Error' ,{
+        toast('Error', {
           variant: 'destructive',
           description: 'Error signing up, please try again.'
         });
       } else {
-        toast('Error' ,{
+        toast('Error', {
           variant: 'destructive',
           description: 'Account already exists with this email or phone.'
         });
       }
     } catch (error) {
-      toast( 'Error' ,{
+      toast('Error', {
         variant: 'destructive',
         description: 'An error occurred, please try again later.'
       });
@@ -158,7 +157,7 @@ const SignupForm = () => {
         {step === 'details' ? (
           <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className='text-2xl'>Create Account</CardTitle>
+              <CardTitle className="text-2xl">Create Account</CardTitle>
               <CardDescription>Enter your details to get started</CardDescription>
             </CardHeader>
             <form onSubmit={handleSendOTP}>
