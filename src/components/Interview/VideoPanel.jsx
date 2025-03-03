@@ -1,16 +1,17 @@
 // components/VideoPanel.tsx
 'use client';
 
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useContext, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Mic, Square, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import { interviewContext } from '@/context/InterviewContextProvider';
 
 const VideoPanel = forwardRef(function VideoPanel({ isRecording, setIsRecording, isOnline, siriLoader }, ref) {
-const mediaRecorderRef = useRef(null);
-const recordedChunksRef = useRef(null);
+  const { transcribeResponse } = useContext(interviewContext);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef(null);
 
   const handleStartRecording = async () => {
     if (!isOnline) {
@@ -35,7 +36,7 @@ const recordedChunksRef = useRef(null);
       setIsRecording(true);
     } catch (error) {
       toast('Error accessing microphone:', {
-        description: error instanceof Error ? error.message : "Unknown error occurred"
+        description: error instanceof Error ? error.message : 'Unknown error occurred'
       });
     }
   };
@@ -49,21 +50,15 @@ const recordedChunksRef = useRef(null);
 
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
-
         try {
-          const response = await axios.post(`https://localhost:8000/transcribe`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setTranscript(response.data.transcript);
+          //question id pass here
+          await transcribeResponse(formData);
           toast('Response recorded', {
             description: 'Your response has been saved successfully.'
           });
         } catch (error) {
           toast('Error uploading audio:', {
-            description: error instanceof Error ? error.message : "Unknown error occurred"
+            description: error instanceof Error ? error.message : 'Unknown error occurred'
           });
         } finally {
           setIsRecording(false);
