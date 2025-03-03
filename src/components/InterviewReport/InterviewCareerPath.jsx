@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock } from 'lucide-react';
 import { Meteors } from '../ui/meteors';
-import { Grid } from '../grid-card-pattern';
+import { Grid } from '../GridCardPattern';
 
 
 const careerPaths = [

@@ -4,6 +4,9 @@
 
 @layer base {
   :root {
+    --brand: 221.2 83.2% 53.3%; /* blue-600 */
+    --brand-hover: 217.2 91.2% 59.8%; /* blue-500 */
+    --brand-foreground: 0 0% 0%;
     --background: 0 0% 100%; /* white */
     --foreground: 0 0% 0%; /* black */
     --card: 0 0% 98%; /* very light gray */
@@ -24,6 +27,7 @@
     --input: 0 0% 90%; /* light gray */
     --ring: 0 0% 20%; /* dark gray */
     --radius: 1rem;
+
   }
 
   .dark {
@@ -46,6 +50,9 @@
     --border: 0 0% 20%; /* dark gray */
     --input: 0 0% 15%; /* very dark gray */
     --ring: 0 0% 80%; /* light gray */
+
+    --brand: 221.2 83.2% 53.3%; /* blue-600 */
+    --brand-hover: 217.2 91.2% 59.8%; /* blue-500 */
   }
 }
 

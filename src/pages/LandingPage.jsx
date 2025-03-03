@@ -9,7 +9,7 @@ import InterviewForm from '../shared/InterviewForm';
 import Loader from '../shared/Loader';
 import { authContext } from '../context/AuthContextProvider';
 import UserProfileForm from '../shared/UserProfileForm';
-import { ModeToggle } from '@/components/mode-toggle';
+import { ModeToggle } from '@/components/ModeToggle';
 import companyLogo1 from '../assets/companylogo1.png';
 import companyLogo2 from '../assets/companyLogo2.png';
 import companyLogo3 from '../assets/companyLogo3.png';
@@ -29,7 +29,7 @@ export default function LandingPage() {
     navigate('/');
   }
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // Controls Drawer visibility
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {isOpen && <InterviewForm isOpen={isOpen} setIsOpen={setIsOpen} setIsLoading={setIsLoading} />}
@@ -42,24 +42,40 @@ export default function LandingPage() {
             PrepSOM
           </span>
         </Link>
-        <div className='flex items-center gap-4'>
-        <Link to = '/aptitude' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Aptitude</Link>
-        <Link to = '/blogs' className='font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4'>Blogs</Link>
-        <ModeToggle />
-        {token && (
-          <div className="flex items-center gap-3">
-            {' '}
-            <Button onClick={logout}>Log out</Button>
-            <User onClick={() => setUpdateProfile(true)} className="h-6 w-6 text-blue-back cursor-pointer" />
-          </div>
-        )}
-        {!token && (
-          <Link to="/login">
-            <Button size="lg" className="bg-black text-white">
-              Login{' '}
-            </Button>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/aptitude"
+            className="font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4"
+          >
+            Aptitude
           </Link>
-        )}
+          <Link
+            to="/blogs"
+            className="font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4"
+          >
+            Blogs
+          </Link>
+          <Link
+            to="/profile"
+            className="font-semibold hover:text-blue-600 hover:duration-300 hover:underline hover:underline-offset-4"
+          >
+            Profile
+          </Link>
+          <ModeToggle />
+          {token && (
+            <div className="flex items-center gap-3">
+              {' '}
+              <Button onClick={logout}>Log out</Button>
+              <User onClick={() => setUpdateProfile(true)} className="h-6 w-6 text-blue-back cursor-pointer" />
+            </div>
+          )}
+          {!token && (
+            <Link to="/login">
+              <Button size="lg" className="bg-black text-white">
+                Login{' '}
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
       <main className="flex-1 flex flex-col items-center">

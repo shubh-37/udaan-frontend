@@ -40,8 +40,8 @@ export function InterviewSummary({ isPremium }) {
   ]
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="space-y-6 overflow-y-auto">
+    <Card className="relative overflow-hidden">
+      <CardContent className="space-y-6 overflow-y-auto">
         <AnimatePresence>
           {!isPremium && (
             <motion.div
@@ -89,7 +89,7 @@ export function InterviewSummary({ isPremium }) {
             </div>
           ))}
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
