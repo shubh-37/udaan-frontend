@@ -47,11 +47,11 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
   return (
     <header
       ref={headerRef}
-      className="sm:fixed sm:top-0 sm:left-0 w-full z-50 bg-white/30 dark:bg-black/30 backdrop-blur-lg shadow-md transition-all"
+      className="sm:fixed sm:top-0 sm:left-0 w-full z-50 bg-white/30 dark:bg-black/30 backdrop-blur-lg sm:shadow-md transition-all"
     >
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-2">
-          <div className="flex flex-col md:flex-row md:gap-4 md:items-center">
+      <div className="container mx-0 py-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-2">
+          <div className="flex flex-col md:gap-2 md:items-start">
             <div className="flex gap-4">
               <div className="rounded-full border border-gray-50 self-start md:self-auto">
                 <UserRound className="w-8 h-8" />
@@ -78,25 +78,15 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
           </div>
 
           <div className="flex items-center gap-4">
-            {!isPremium && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-sm text-muted-foreground hidden md:block"
-              >
-                Unlock detailed analysis and resources
-              </motion.div>
-            )}
-
             <div className="flex items-center gap-3">
               <ModeToggle />
-              <div>
+              {/* <div>
                 <Switch
                   checked={isPremium}
                   onCheckedChange={setIsPremium}
                   className="data-[state=checked]:bg-gradient-to-r from-primary to-primary/80"
                 />
-              </div>
+              </div> */}
 
               <span className="text-sm font-medium">
                 {isPremium ? (

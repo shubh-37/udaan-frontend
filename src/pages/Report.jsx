@@ -15,10 +15,20 @@ import CareerPathRecommendations from '@/components/InterviewReport/InterviewCar
 import StrengthAndWeakness from '@/components/InterviewReport/StrengthsAndWeakness';
 import PersonalizedImprovementPlan from '@/components/InterviewReport/ImprovementPlan';
 import { SparklesText } from '@/components/magicui/sparkles-text';
+import { MultiStepLoader } from '@/components/ui/multi-step-loader';
+
+const loadingStates = [
+  { text: 'Analyzing your interview...' },
+  { text: 'Evaluating technical skills...' },
+  { text: 'Assessing communication...' },
+  { text: 'Generating personalized feedback...' },
+  { text: 'Finalizing your report...' }
+];
 
 export default function InterviewReport() {
   const [isPremium, setIsPremium] = useState(false);
   const containerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const parameters = [
     {
@@ -71,6 +81,14 @@ export default function InterviewReport() {
   );
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     const lenis = new Lenis();
     function raf(time) {
       lenis.raf(time);
@@ -81,63 +99,69 @@ export default function InterviewReport() {
 
   return (
     <div className="min-h-screen bg-background px-4 sm:px-6 lg:px-8">
-      <ReportHeader isPremium={isPremium} setIsPremium={setIsPremium} />
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        ref={containerRef}
-        className="max-w-7xl relative  mx-auto mt-12 sm:pt-12"
-      >
-        <div className="relative flex justify-center">
-          <div className="flex justify-between items-center w-full pb-4 border-b mb-8">
-            <div className="space-y-2">
-              <SparklesText text="Overall Score" className="text-4xl font-bold" />
-              <p className="test-gray-300 font-mono text-lg">Based on several parameters</p>
-            </div>
-            <CircularProgress value={overallScore} />
-          </div>
+      {isLoading ? (
+        <div className="h-screen flex items-center justify-center">
+          <MultiStepLoader loadingStates={loadingStates} loading={isLoading} duration={2000} />
         </div>
+      ) : (
+        <div>
+          <ReportHeader isPremium={isPremium} setIsPremium={setIsPremium} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            ref={containerRef}
+            className="max-w-7xl relative  mx-auto mt-12 sm:pt-12"
+          >
+            <div className="relative flex justify-center">
+              <div className="flex justify-between items-center w-full pb-4 border-b mb-8">
+                <div className="space-y-2">
+                  <SparklesText text="Overall Score" className="text-4xl font-bold" />
+                  <p className="test-gray-300 font-mono text-lg">Based on several parameters</p>
+                </div>
+                <CircularProgress value={overallScore} />
+              </div>
+            </div>
 
-        <SkillAnalysis parameters={parameters} />
+            <SkillAnalysis parameters={parameters} />
 
-        <Card className="mb-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <SparklesText text="Performanc Metrics" className="text-3xl font-bold pb-4" />
-          </CardHeader>
-          <CardContent>
-            <PerformanceMetrics isPremium={isPremium} />
-          </CardContent>
-        </Card>
+            <Card className="mb-8">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <SparklesText text="Performance Metrics" className="text-3xl font-bold pb-4" />
+              </CardHeader>
+              <CardContent>
+                <PerformanceMetrics isPremium={isPremium} />
+              </CardContent>
+            </Card>
 
-        <Card className="mb-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <SparklesText text="Questions by Question Analysis" className="text-3xl font-bold pb-4" />
-          </CardHeader>
-          <CardContent>
-            <InterviewSummary isPremium={isPremium} />
-          </CardContent>
-        </Card>
+            <Card className="mb-8">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <SparklesText text="Questions by Question Analysis" className="text-3xl font-bold pb-4" />
+              </CardHeader>
+              <CardContent>
+                <InterviewSummary isPremium={isPremium} />
+              </CardContent>
+            </Card>
 
-        <Card className="mb-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <SparklesText text="Career Path Recommendations" className="text-3xl font-bold pb-4" />
-          </CardHeader>
-          <CardContent>
-            <CareerPathRecommendations isPremium={isPremium} />
-          </CardContent>
-        </Card>
+            <Card className="mb-8">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <SparklesText text="Career Path Recommendations" className="text-3xl font-bold pb-4" />
+              </CardHeader>
+              <CardContent>
+                <CareerPathRecommendations isPremium={isPremium} />
+              </CardContent>
+            </Card>
 
-        <Card className="mb-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <SparklesText text="Strengths And Weaknesses Breakdown" className="text-3xl font-bold pb-4" />
-          </CardHeader>
-          <CardContent>
-            <StrengthAndWeakness isPremium={isPremium} />
-          </CardContent>
-        </Card>
+            <Card className="mb-8">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <SparklesText text="Strengths And Weaknesses Breakdown" className="text-3xl font-bold pb-4" />
+              </CardHeader>
+              <CardContent>
+                <StrengthAndWeakness isPremium={isPremium} />
+              </CardContent>
+            </Card>
 
-        {/* <Card className="mb-8">
+            {/* <Card className="mb-8">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-2xl font-bold">Personalized Improvement Plan</CardTitle>
           </CardHeader>
@@ -145,9 +169,11 @@ export default function InterviewReport() {
           <PersonalizedImprovementPlan isPremium={isPremium}/>
           </CardContent>
         </Card> */}
-        <TestimonialsDemo />
-        <FaqComponent />
-      </motion.div>
+            <TestimonialsDemo />
+            <FaqComponent />
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Loader from '../shared/Loader';
 import { Video, ArrowRight, LoaderIcon } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -40,7 +41,9 @@ const LoginForm = () => {
     try {
       e.preventDefault();
       if (!phone || phone.length < 10) {
-        alert('Please enter a valid phone number');
+        toast('Error', {
+          description: 'Please enter a valid phone number'
+        });
         return;
       }
 
@@ -49,7 +52,9 @@ const LoginForm = () => {
       setStep('otp');
       setResendDisabled(true);
     } catch (error) {
-      alert('Failed to send OTP. Please try again.');
+      toast('Error', {
+        description: 'Failed to send OTP. Please try again.'
+      });
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -63,7 +68,9 @@ const LoginForm = () => {
 
       setResendDisabled(true);
     } catch (error) {
-      alert('Failed to resend OTP. Please try again.');
+      toast('Error', {
+        description: 'Failed to send OTP. Please try again.'
+      });
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -74,7 +81,9 @@ const LoginForm = () => {
     try {
       e.preventDefault();
       if (!otp || otp.length !== 4) {
-        alert('Please enter a valid OTP');
+        toast('Error', {
+          description: 'Please enter a valid OTP'
+        });
         return;
       }
 
@@ -87,7 +96,6 @@ const LoginForm = () => {
       navigate('/');
     } catch (error) {
       toast('Invalid OTP. Please try again', {
-        variant: 'destructive',
         description: error.message || 'An error occurred, please try again later.'
       });
     } finally {
@@ -152,10 +160,10 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 ">
+    <div className="min-h-screen bg-background flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 dark:from-black dark:to-black">
       {isLoading && <Loader text={step === 'phone' ? 'Sending OTP...' : 'Verifying OTP...'} />}
 
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background dark:bg-black">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6 text-blue-600" />
           <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
@@ -169,7 +177,7 @@ const LoginForm = () => {
 
       <div className="w-full px-2 max-w-md mx-auto flex-grow flex items-center justify-center m-4">
         {step === 'phone' ? (
-          <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white backdrop-blur-sm">
+          <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white dark:bg-black dark:border-gray-900 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>Enter your phone number to receive an OTP</CardDescription>
@@ -188,25 +196,26 @@ const LoginForm = () => {
                           id: 'phone',
                           required: true,
                           className:
-                            'w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                            'w-full h-10 rounded-md border border-input bg-white dark:bg-black px-3 py-2 text-sm ring-offset-background file:border-0 file:text-sm file:font-medium placeholder:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
                         }}
                         containerClass="w-full"
-                        buttonClass="border rounded-l-md h-10 bg-background"
+                        buttonClass="border rounded-l-md h-10"
                         buttonStyle={{
+                          backgroundColor: 'white',
                           borderTopLeftRadius: '1rem',
                           borderBottomLeftRadius: '1rem',
                           borderTopRightRadius: '0',
                           borderBottomRightRadius: '0',
-                          transition: 'all 0.3s ease'
+                          transition: 'all 0.3s ease',
                         }}
-                        dropdownClass="bg-popover text-popover-foreground"
+                        dropdownClass="bg-white/90 text-card-foreground"
                       />
                     </div>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-black dark:text-black dark:bg-white" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
@@ -229,7 +238,7 @@ const LoginForm = () => {
             </form>
           </Card>
         ) : (
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white dark:bg-black dark:border-gray-900 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Verify OTP</CardTitle>
               <CardDescription>We've sent a 4-digit OTP to {phone}</CardDescription>
@@ -259,7 +268,7 @@ const LoginForm = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-3">
-                <Button type="submit" className="w-full" disabled={isLoading || otpValues.some((v) => !v)}>
+                <Button type="submit" variant='primary' className="w-full" disabled={isLoading || otpValues.some((v) => !v)}>
                   {isLoading ? (
                     <>
                       <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
@@ -274,7 +283,7 @@ const LoginForm = () => {
                   variant="outline"
                   onClick={handleResendOTP}
                   disabled={resendDisabled || isLoading}
-                  className="w-full"
+                  className="w-full bg-black dark:text-black dark:bg-white"
                 >
                   {resendDisabled ? `Resend OTP in ${countdown}s` : 'Resend OTP'}
                 </Button>

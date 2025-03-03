@@ -16,7 +16,7 @@ import {
   Legend
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Lock } from 'lucide-react';
 
 const radarData = [
@@ -44,7 +44,7 @@ const COLORS = ['#FF7300', '#FF9500', '#FFAA00'];
 export default function PerformanceMetrics({ isPremium }) {
   return (
     <Card className="relative overflow-hidden">
-      <CardContent className="space-y-6">
+      <CardContent className={`space-y-6 ${!isPremium ? 'max-h-[300px] sm:max-h-[400px] md:max-h-[500px]' : ''}`}>
         <AnimatePresence>
           {!isPremium && (
             <motion.div
@@ -55,8 +55,8 @@ export default function PerformanceMetrics({ isPremium }) {
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <Lock className="w-12 h-12 text-muted-foreground" />
-                <h3 className="text-xl font-semibold">Pay to unlock this detailed review</h3>
-                <p className="text-sm text-muted-foreground text-center max-w-md">
+                <h3 className="text-xl font-semibold text-center p-2">Pay to unlock this detailed review</h3>
+                <p className="text-sm text-muted-foreground text-center max-w-md px-2">
                   Unlock interview transcripts, correct solutions, and tips on how to answer each question.
                 </p>
               </div>
@@ -64,7 +64,7 @@ export default function PerformanceMetrics({ isPremium }) {
           )}
         </AnimatePresence>
 
-        <div className={`space-y-6 ${!isPremium && 'blur-sm'}`}>
+        <div className={`space-y-6 pt-6 ${!isPremium && 'blur-sm'}`}>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-card p-6 rounded-xl">

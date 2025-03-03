@@ -32,7 +32,7 @@ const careerPaths = [
 export default function CareerPathRecommendations({ isPremium }) {
   return (
     <Card className="relative overflow-hidden">
-      <CardContent className="space-y-6">
+      <CardContent className={`space-y-6 ${!isPremium ? 'max-h-[300px] sm:max-h-[400px] md:max-h-[500px]' : ''}`}>
         <AnimatePresence>
           {!isPremium && (
             <motion.div
@@ -43,8 +43,8 @@ export default function CareerPathRecommendations({ isPremium }) {
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <Lock className="w-12 h-12 text-muted-foreground" />
-                <h3 className="text-xl font-semibold">Pay to unlock this detailed review</h3>
-                <p className="text-sm text-muted-foreground text-center max-w-md">
+                <h3 className="text-xl font-semibold text-center px-2">Pay to unlock this detailed review</h3>
+                <p className="text-sm text-muted-foreground text-center max-w-md px-2">
                   Unlock interview transcripts, correct solutions, and tips on how to answer each question.
                 </p>
               </div>
@@ -52,7 +52,7 @@ export default function CareerPathRecommendations({ isPremium }) {
           )}
         </AnimatePresence>
 
-        <div className="p-6 max-w-6xl mx-auto text-foreground">
+        <div className=" pt-6 max-w-6xl mx-auto text-foreground">
         <Meteors number={40} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {careerPaths.map((path, index) => (
@@ -83,12 +83,10 @@ export default function CareerPathRecommendations({ isPremium }) {
                     </li>
                   ))}
                 </ul>
-                
               </Card>
             ))}
           </div>
         </div>
-       
       </CardContent>
     </Card>
   );

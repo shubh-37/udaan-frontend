@@ -41,7 +41,7 @@ export function InterviewSummary({ isPremium }) {
 
   return (
     <Card className="relative overflow-hidden">
-      <CardContent className="space-y-6 overflow-y-auto">
+      <CardContent className={`space-y-6 overflow-y-auto ${!isPremium ? 'max-h-[300px] sm:max-h-[400px] md:max-h-[500px]' : ''}`}>
         <AnimatePresence>
           {!isPremium && (
             <motion.div
@@ -52,8 +52,8 @@ export function InterviewSummary({ isPremium }) {
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <Lock className="w-12 h-12 text-muted-foreground" />
-                <h3 className="text-xl font-semibold">Pay to unlock this detailed review</h3>
-                <p className="text-sm text-muted-foreground text-center max-w-md">
+                <h3 className="text-xl font-semibold text-center p-2">Pay to unlock this detailed review</h3>
+                <p className="text-sm text-muted-foreground text-center max-w-md px-2">
                   Unlock interview transcripts, correct solutions, and tips on how to answer each question.
                 </p>
               </div>
@@ -89,7 +89,7 @@ export function InterviewSummary({ isPremium }) {
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

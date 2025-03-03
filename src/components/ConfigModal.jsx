@@ -23,7 +23,7 @@ export default function ConfigModal({ onSubmit }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 min-h-screen">
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-lg">
-        <Card className="w-full backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-t border-gray-200 dark:border-gray-800">
+        <Card className="w-full backdrop-blur-sm bg-card border-t border-gray-200 dark:border-gray-800">
           <CardHeader>
             <CardTitle>Configure Your Aptitude Test</CardTitle>
             <CardDescription>Please select your subjects</CardDescription>
@@ -50,7 +50,7 @@ export default function ConfigModal({ onSubmit }) {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 rounded-md border p-4 bg-muted">
+            <div className="flex items-center space-x-2 rounded-md border p-4 bg-input">
               <Checkbox
                 id="acknowledge"
                 checked={acknowledged}
@@ -66,7 +66,8 @@ export default function ConfigModal({ onSubmit }) {
           <CardFooter>
             <Button
               onClick={handleSubmit}
-              className="w-full bg-blue-600"
+              variant='primary'
+              className="w-full bg-blue-600 text-white/90"
               disabled={!Object.values(subjects).some(Boolean) || !acknowledged}
             >
               Continue to Test Selection

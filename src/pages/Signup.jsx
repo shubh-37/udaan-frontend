@@ -138,10 +138,10 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-background flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 dark:from-black dark:to-black">
       {isLoading && <Loader text={step === 'details' ? 'Sending OTP...' : 'Creating Account...'} />}
 
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background dark:bg-black">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6 text-blue-600" />
           <span className="ml-2 text-2xl font-bold bg-gradient-to-br from-blue-600 via-green-600 to-purple-600 text-transparent bg-clip-text">
@@ -155,7 +155,7 @@ const SignupForm = () => {
 
       <div className="w-full px-2 mx-auto flex-grow flex items-center justify-center m-4">
         {step === 'details' ? (
-          <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white backdrop-blur-sm">
+          <Card className="w-full max-w-md border-gray-50 shadow-lg bg-white dark:bg-black dark:border-gray-900 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-2xl">Create Account</CardTitle>
               <CardDescription>Enter your details to get started</CardDescription>
@@ -207,25 +207,26 @@ const SignupForm = () => {
                           id: 'phone',
                           required: true,
                           className:
-                            'w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                            'w-full h-10 rounded-md border border-input bg-white dark:bg-black px-3 py-2 text-sm ring-offset-background file:border-0 file:text-sm file:font-medium placeholder:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
                         }}
                         containerClass="w-full"
-                        buttonClass="border rounded-l-md h-10 bg-background"
+                        buttonClass="border rounded-l-md h-10"
                         buttonStyle={{
+                          backgroundColor: 'white',
                           borderTopLeftRadius: '1rem',
                           borderBottomLeftRadius: '1rem',
                           borderTopRightRadius: '0',
                           borderBottomRightRadius: '0',
                           transition: 'all 0.3s ease'
                         }}
-                        dropdownClass="bg-popover text-popover-foreground"
+                        dropdownClass="bg-white/90 text-card-foreground"
                       />
                     </div>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-black dark:text-black dark:bg-white" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
@@ -248,7 +249,7 @@ const SignupForm = () => {
             </form>
           </Card>
         ) : (
-          <Card className="w-full max-w-lg">
+          <Card className="w-full max-w-lg border-gray-50 shadow-lg bg-white dark:bg-black dark:border-gray-900 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Verify Your Account</CardTitle>
               <CardDescription>Enter the verification codes sent to your email and phone</CardDescription>
