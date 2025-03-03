@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 const SignupForm = () => {
-  const { signUpUser, setUpdateProfile, verifySignUpOtp } = useContext(authContext);
+  const { signUpUser, verifySignUpOtp } = useContext(authContext);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 

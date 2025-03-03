@@ -4,13 +4,10 @@ import { Video, BarChart, Briefcase, Users, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Marquee } from '@/components/ui/marquee';
 import bhartiAXA from '../assets/bhartiAXA.svg';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import InterviewForm from '../shared/InterviewForm';
 import Loader from '../shared/Loader';
-import { authContext } from '../context/AuthContextProvider';
-import UserProfileForm from '../shared/UserProfileForm';
 import { ModeToggle } from '@/components/ModeToggle';
-import companyLogo1 from '../assets/companylogo1.png';
 import companyLogo2 from '../assets/companyLogo2.png';
 import companyLogo3 from '../assets/companyLogo3.png';
 import companyLogo4 from '../assets/companyLogo4.png';
@@ -22,7 +19,6 @@ import companyLogo9 from '../assets/companyLogo9.png';
 
 export default function LandingPage() {
   const token = localStorage.getItem('token');
-  const { updateProfile, setUpdateProfile } = useContext(authContext);
   const navigate = useNavigate();
   function logout() {
     localStorage.removeItem('token');
@@ -34,7 +30,6 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen bg-background">
       {isOpen && <InterviewForm isOpen={isOpen} setIsOpen={setIsOpen} setIsLoading={setIsLoading} />}
       {isLoading && <Loader text={'Preparing Interview...'} />}
-      {updateProfile && <UserProfileForm isOpen={updateProfile} setIsOpen={setUpdateProfile} />}
       <header className="px-4 lg:px-6 h-14 flex items-center bg-background border-grey-500 justify-between">
         <Link className="flex items-center justify-center" to="/">
           <Video className="h-6 w-6 text-blue-600" />

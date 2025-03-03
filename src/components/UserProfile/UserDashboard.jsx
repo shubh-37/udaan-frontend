@@ -31,7 +31,9 @@ export default function UserProfileDashboard() {
           </motion.span>
         </h1>
         <div className="space-x-3">
-          <Button variant="outline">Attempt Aptitude Test</Button>
+          <Link to="/aptitude">
+            <Button variant="outline">Attempt Aptitude Test</Button>
+          </Link>
           {token ? (
             <Button size="lg" className="bg-blue-600 text-white" onClick={() => setIsOpen(true)}>
               Start New Interview

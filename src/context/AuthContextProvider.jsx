@@ -1,12 +1,11 @@
 import axios from 'axios';
-import { createContext, useState } from 'react';
+import { createContext } from 'react';
 
 export const authContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export default function AuthProvider({ children }) {
   const { VITE_API_URL } = import.meta.env;
-  const [updateProfile, setUpdateProfile] = useState(false);
   async function signUpUser(user) {
     try {
       const response = await axios.post(`${VITE_API_URL}/user/signup`, user, {
@@ -93,9 +92,7 @@ export default function AuthProvider({ children }) {
   }
 
   return (
-    <authContext.Provider
-      value={{ signUpUser, loginUser, updateProfile, setUpdateProfile, verifySignUpOtp, verifyLoginOtp, resendOtp }}
-    >
+    <authContext.Provider value={{ signUpUser, loginUser, verifySignUpOtp, verifyLoginOtp, resendOtp }}>
       {children}
     </authContext.Provider>
   );
