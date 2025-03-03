@@ -13,8 +13,8 @@ import ProfileProvider from './context/ProfileContextProvider.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
-      <AuthProvider>
-        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <AuthProvider>
           <ProfileProvider>
             <AptitudeProvider>
               <InterviewProvider>
@@ -23,8 +23,8 @@ createRoot(document.getElementById('root')).render(
               </InterviewProvider>
             </AptitudeProvider>
           </ProfileProvider>
-        </ThemeProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   </StrictMode>
 );
