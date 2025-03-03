@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { c } from 'framer-motion/dist/types.d-6pKw1mTI';
 import { createContext, useState } from 'react';
 
 export const interviewContext = createContext();
