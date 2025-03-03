@@ -46,16 +46,16 @@ const LoginForm = () => {
         });
         return;
       }
-
       setIsLoading(true);
       const response = await loginUser({ mobile_number: phone.slice(2), country_code: phone.slice(0, 2) });
-      setStep('otp');
-      setResendDisabled(true);
+      if (response === 'success') {
+        setStep('otp');
+        setResendDisabled(true);
+      }
     } catch (error) {
       toast('Error', {
         description: 'Failed to send OTP. Please try again.'
       });
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -65,8 +65,9 @@ const LoginForm = () => {
     try {
       setIsLoading(true);
       const response = await resendOtp({ mobile_number: phone.slice(2), country_code: phone.slice(0, 2) });
-
-      setResendDisabled(true);
+      if (response === 'success') {
+        setResendDisabled(true);
+      }
     } catch (error) {
       toast('Error', {
         description: 'Failed to send OTP. Please try again.'
@@ -86,9 +87,7 @@ const LoginForm = () => {
         });
         return;
       }
-
       setIsLoading(true);
-      // Replace with your actual OTP verification logic
       const response = await verifyLoginOtp({ mobile_number: phone.slice(2), country_code: phone.slice(0, 2), otp });
       toast('OTP Verified', {
         description: `${response}`
@@ -103,19 +102,14 @@ const LoginForm = () => {
     }
   };
 
-  // Function to handle OTP input
   const handleOtpChange = (index, value) => {
-    // Remove any non-digit characters
     value = value.replace(/\D/g, '');
-
-    // Only proceed if input is a digit or empty
     if (value.length <= 1) {
       const newOtpValues = [...otpValues];
       newOtpValues[index] = value;
       setOtpValues(newOtpValues);
-      setOtp(newOtpValues.join('')); // Update the main OTP state
+      setOtp(newOtpValues.join(''));
 
-      // If a digit was entered and there's a next input, focus it
       if (value && index < 3) {
         const nextInput = document.querySelector(`input[name=otp-${index + 1}]`);
         if (nextInput) {
@@ -206,7 +200,7 @@ const LoginForm = () => {
                           borderBottomLeftRadius: '1rem',
                           borderTopRightRadius: '0',
                           borderBottomRightRadius: '0',
-                          transition: 'all 0.3s ease',
+                          transition: 'all 0.3s ease'
                         }}
                         dropdownClass="bg-white/90 text-card-foreground"
                       />
@@ -268,7 +262,12 @@ const LoginForm = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-3">
-                <Button type="submit" variant='primary' className="w-full" disabled={isLoading || otpValues.some((v) => !v)}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-full"
+                  disabled={isLoading || otpValues.some((v) => !v)}
+                >
                   {isLoading ? (
                     <>
                       <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
