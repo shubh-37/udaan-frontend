@@ -1,11 +1,14 @@
 import axios from 'axios';
-import { createContext } from 'react';
+import { c } from 'framer-motion/dist/types.d-6pKw1mTI';
+import { createContext, useState } from 'react';
 
 export const interviewContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export default function InterviewProvider({ children }) {
   const { VITE_API_URL, VITE_RAZORPAY_KEY_ID } = import.meta.env;
+  const [questions, setQuestions] = useState([]);
+  const [imageLink, setImageLink] = useState('');
   async function handlePayment() {
     let verificationResponse;
     try {
@@ -84,5 +87,88 @@ export default function InterviewProvider({ children }) {
     }
   }
 
-  return <interviewContext.Provider value={{ handlePayment, checkReview }}>{children}</interviewContext.Provider>;
+  async function startInterview() {
+    try {
+      const response = await axios.get(`${VITE_API_URL}/interview/start_interview`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        localStorage.setItem('interview_id', response.data.interview_id);
+        return response.data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function textToSpeech(text) {
+    try {
+      const response = await axios.post(
+        `${VITE_API_URL}/interview/synthesize_speech`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
+          responseType: 'blob'
+        }
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function submitInterview(interviewId) {
+    try {
+      await axios.post(
+        `${VITE_API_URL}/interview/submit_interview`,
+        {
+          interview_id: interviewId
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function transcribeResponse(formData, question_id) {
+    const interviewId = localStorage.getItem('interview_id');
+    const url = `${VITE_API_URL}/interview/transcribe?question_id=${question_id}&interview_id=${interviewId}`;
+    try {
+      await axios.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return (
+    <interviewContext.Provider
+      value={{
+        handlePayment,
+        checkReview,
+        startInterview,
+        textToSpeech,
+        submitInterview,
+        questions,
+        setQuestions,
+        imageLink,
+        setImageLink,
+        transcribeResponse
+      }}
+    >
+      {children}
+    </interviewContext.Provider>
+  );
 }
