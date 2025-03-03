@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Video } from 'lucide-react';
-import { useState } from 'react';
+import { useContext } from 'react';
+import { interviewContext } from '@/context/InterviewContextProvider';
 
 export function Header({ onEndInterview }) {
-  const [imageLink, setImageLink] = useState(null);
-
+  const { imageLink } = useContext(interviewContext);
   return (
     <header className="px-4 lg:px-6 h-14 flex items-center border-b justify-between">
       {!imageLink ? (
