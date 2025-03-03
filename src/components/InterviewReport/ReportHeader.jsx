@@ -7,9 +7,9 @@ import { Switch } from '../ui/switch';
 import { PulsatingButton } from '../magicui/pulsating-button';
 import { ShinyButton } from '../magicui/shiny-button';
 import { ScrollProgress } from '../ScrollProgress';
-import { ModeToggle } from '../mode-toggle';
 import { interviewContext } from '@/context/InterviewContextProvider';
 import { toast } from 'sonner';
+import { ModeToggle } from '../ModeToggle';
 
 export default function ReportHeader({ isPremium, setIsPremium, containerRef }) {
   const headerRef = useRef(null);
