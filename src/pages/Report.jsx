@@ -124,7 +124,14 @@ export default function InterviewReport() {
             </div>
 
             <SkillAnalysis parameters={parameters} />
-
+            <Card className="mb-8">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <SparklesText text="Strengths And Weaknesses Breakdown" className="text-3xl font-bold pb-4" />
+              </CardHeader>
+              <CardContent>
+                <StrengthAndWeakness />
+              </CardContent>
+            </Card>
             <Card className="mb-8">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <SparklesText text="Performance Metrics" className="text-3xl font-bold pb-4" />
@@ -149,15 +156,6 @@ export default function InterviewReport() {
               </CardHeader>
               <CardContent>
                 <CareerPathRecommendations isPremium={isPremium} />
-              </CardContent>
-            </Card>
-
-            <Card className="mb-8">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <SparklesText text="Strengths And Weaknesses Breakdown" className="text-3xl font-bold pb-4" />
-              </CardHeader>
-              <CardContent>
-                <StrengthAndWeakness isPremium={isPremium} />
               </CardContent>
             </Card>
 
