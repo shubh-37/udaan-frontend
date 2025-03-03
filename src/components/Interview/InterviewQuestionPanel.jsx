@@ -1,72 +1,47 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { Button } from '../ui/button';
 import { Spinner } from '../ui/spinner';
+import { interviewContext } from '@/context/InterviewContextProvider';
+import { toast } from 'sonner';
 
 const TOTAL_QUESTIONS = 10;
 
-export function InterviewQuestionPanel({ token }) {
-    const { VITE_API_URL } = import.meta.env;
-  const [questions, setQuestions] = useState([]);
-  const [transcript, setTranscript] = useState('');
+export function InterviewQuestionPanel({ setSiriLoader }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isStart, setIsStart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [interviewId, setInterviewId] = useState(null);
-  const [answers, setAnswers] = useState([]);
-  const navigate = useNavigate();
 
+  const { submitInterview, textToSpeech, questions, startInterview, setQuestions, setImageLink } =
+    useContext(interviewContext);
+  const navigate = useNavigate();
   useEffect(() => {
-    getQuestions();
+    if (questions.length === 0) {
+      getQuestions();
+    }
     speakQuestion('Welcome to the AI Interview. Click on the start button to begin the interview.');
   }, []);
 
   const saveAnswer = () => {
-    const currentQuestion = questions[currentQuestionIndex];
-    setAnswers((prev) => [...prev, { question: currentQuestion, answer: transcript }]);
-    setTranscript('');
+    const currentQuestion =
+      questions.length > 0 ? (
+        typeof questions[currentQuestionIndex] === 'string' ? (
+          questions[currentQuestionIndex]
+        ) : (
+          questions[currentQuestionIndex]?.question || 'Loading question...'
+        )
+      ) : (
+        <Spinner key="ellipsis" variant="ellipsis" />
+      );
     askNextQuestion();
-  };
-
-  const getQuestions = async () => {
-    try {
-      const response = await axios.get(`${VITE_API_URL}/start_interview`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setImageLink(response.data.company_logo);
-      setQuestions(response.data.questions);
-      setInterviewId(response.data.interview_id);
-    } catch (error) {
-      if (error.response.status === 401) {
-        navigate('/login');
-      } else if (error.response.status === 422) {
-        alert(error.response.data.detail);
-      } else {
-        alert('Currently facing some issue, sorry for the inconvenience');
-        navigate('/');
-      }
-    }
   };
 
   const speakQuestion = async (text) => {
     try {
-      const response = await axios.post(
-        `https://localhost:8000/synthesize_speech`,
-        { text },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          responseType: 'blob'
-        }
-      );
-
-      const audioUrl = URL.createObjectURL(response.data);
+      const response = await textToSpeech(text);
+      const audioUrl = URL.createObjectURL(response);
       const audio = new Audio(audioUrl);
 
       audio.play();
@@ -74,7 +49,7 @@ export function InterviewQuestionPanel({ token }) {
     } catch (error) {
       toast('Error in speakQuestion:', {
         variant: 'destructive',
-        description: error.message || '',
+        description: error.message || ''
       });
     }
   };
@@ -92,25 +67,32 @@ export function InterviewQuestionPanel({ token }) {
     }
   };
 
-  const submitInterview = async () => {
+  const submit = async () => {
     setIsLoading(true);
     try {
-      await axios.post(
-        `${VITE_API_URL}/submit_interview`,
-        {
-          interview_id: interviewId,
-          qaa: answers
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      localStorage.setItem('interview_id', interviewId);
+      await submitInterview(localStorage.getItem('interview_id'));
       navigate('/review');
     } catch (error) {
       alert('An error occurred while submitting the interview. Please try again later.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getQuestions = async () => {
+    try {
+      const response = await startInterview();
+      setImageLink(response.company_logo);
+      setQuestions(response.questions);
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        navigate('/login');
+      } else if (error?.response?.status === 422) {
+        alert(error?.response?.data?.detail);
+      } else {
+        alert('Currently facing some issue, sorry for the inconvenience');
+        navigate('/');
+      }
     }
   };
 
@@ -141,7 +123,6 @@ export function InterviewQuestionPanel({ token }) {
           <li>Structure: Situation, Task, Action, Result</li>
         </ul>
       </div>
-
       <div className="flex flex-col gap-4 mt-6">
         {!isStart && (
           <Button
@@ -160,7 +141,7 @@ export function InterviewQuestionPanel({ token }) {
         {isStart && (
           <Button
             variant="primary"
-            onClick={submitInterview}
+            onClick={submit}
             className="bg-blue-600 text-white p-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer w-full gap-2"
           >
             Submit Interview
