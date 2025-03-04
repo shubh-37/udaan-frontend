@@ -11,6 +11,7 @@ import FormalImage from '../../assets/FormalImage.png';
 import { ProfileOverview } from './ProfileOverview';
 import ProfileSections from './ProfileFields';
 import { profileContext } from '@/context/ProfileContextProvider';
+import { UserRound } from 'lucide-react';
 
 export function SidebarDemo() {
   const [activeSection, setActiveSection] = useState('Dashboard');
@@ -80,13 +81,14 @@ export function SidebarDemo() {
                 label: profile?.name || 'John Doe',
                 href: '#',
                 icon: (
-                  <img
-                    src={FormalImage}
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
+                  // <img
+                  //   src={FormalImage}
+                  //   className="h-7 w-7 flex-shrink-0 rounded-full"
+                  //   width={50}
+                  //   height={50}
+                  //   alt="Avatar"
+                  // />
+                  <UserRound className='w-4 h-4' />
                 )
               }}
             />

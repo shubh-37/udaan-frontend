@@ -265,7 +265,7 @@ const LoginForm = () => {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="w-full"
+                  className="w-full bg-blue-600 text-white"
                   disabled={isLoading || otpValues.some((v) => !v)}
                 >
                   {isLoading ? (
@@ -279,10 +279,10 @@ const LoginForm = () => {
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="primary"
                   onClick={handleResendOTP}
                   disabled={resendDisabled || isLoading}
-                  className="w-full bg-black dark:text-black dark:bg-white"
+                  className="w-full bg-black text-white dark:text-black dark:bg-white"
                 >
                   {resendDisabled ? `Resend OTP in ${countdown}s` : 'Resend OTP'}
                 </Button>
@@ -294,7 +294,7 @@ const LoginForm = () => {
                     setOtpValues(['', '', '', '']);
                     setOtp('');
                   }}
-                  className="w-full"
+                  className="w-full "
                 >
                   Change Phone Number
                 </Button>

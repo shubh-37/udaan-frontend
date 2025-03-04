@@ -55,7 +55,7 @@ export default function LandingPage() {
           {token && (
             <div className="flex items-center gap-3">
               {' '}
-              <Button onClick={logout}>Log out</Button>
+              <Button variant='outline' onClick={logout}>Log out</Button>
               <Link to="/profile">
                 <User className="h-6 w-6 text-blue-back cursor-pointer" />
               </Link>

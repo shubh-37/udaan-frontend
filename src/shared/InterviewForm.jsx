@@ -1,15 +1,20 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
 import InterviewFormContent from './InterviewFormContent';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle
+} from '@/components/ui/sheet';
 import { profileContext } from '@/context/ProfileContextProvider';
 
 export default function InterviewForm({ isOpen, setIsOpen }) {
@@ -72,7 +77,7 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
     const requiredFields = ['job_role', 'organization', 'years_of_experience', 'resume_url', 'field'];
     const missing = requiredFields.filter((field) => {
       if (field === 'years_of_experience') {
-        return formData[field] <= 0; // if 0 is invalid
+        return formData[field] <= 0;
       }
       return !formData[field];
     });
@@ -86,26 +91,24 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
   };
 
   return (
-    <header className="flex justify-between items-center px-4 py-6 bg-background shadow-md gap-2">
+    <header className="flex justify-between items-center px-4 py-6 bg-background shadow-md gap-2 dark:bg-gray-900">
       {isSmallScreen ? (
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetContent side="bottom" className=" bg-gray-50">
+          <SheetContent side="bottom" className="bg-gray-50 dark:bg-gray-800 p-6 overflow-y-auto rounded-t-lg">
             <SheetHeader>
-              <SheetTitle>Review Your Details</SheetTitle>
-              <SheetDescription>
-                Review your details or update them before starting your interview.
-                <h5>
-                  <b>
-                    (Overall experience, organization, field, job role and resume is mandatory for interview to start**)
-                  </b>
-                </h5>
+              <SheetTitle className="dark:text-gray-200">Review Your Details</SheetTitle>
+              <SheetDescription className="dark:text-gray-400">
+                <p>Review your details or update them before starting your interview.</p>
+                <p className="mt-2 text-sm">
+                  <b>(Overall experience, organization, field, job role, and resume are mandatory for interview to start**)</b>
+                </p>
               </SheetDescription>
             </SheetHeader>
             <div className="mt-4 overflow-y-auto h-[calc(100%-80px)]">
               <InterviewFormContent formData={formData} readOnly={true} />
 
               {missingFields.length > 0 && (
-                <div className="mt-4 text-red-600 text-sm">
+                <div className="mt-4 text-red-600 dark:text-red-400 text-sm">
                   <p>The following fields are missing or invalid:</p>
                   <ul className="list-disc list-inside">
                     {missingFields.map((field) => (
@@ -117,16 +120,18 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
 
               <div className="flex justify-between mt-4">
                 <Link to="/profile">
-                  <button className="bg-blue-700 text-white px-4 py-2 rounded">Edit Details</button>
+                  <button className="bg-gray-300 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded-lg shadow hover:bg-gray-400 dark:hover:bg-gray-600 transition">
+                    Edit Profile
+                  </button>
                 </Link>
                 <button
-                  className={
-                    isInterviewValid
-                      ? 'bg-blue-700 text-white px-4 py-2 rounded'
-                      : 'bg-blue-200 text-white px-4 py-2 rounded'
-                  }
                   onClick={startInterview}
                   disabled={!isInterviewValid}
+                  className={`px-6 py-2 rounded-lg shadow transition ${
+                    isInterviewValid
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-400'
+                      : 'bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed'
+                  }`}
                 >
                   Start Interview
                 </button>
@@ -136,47 +141,44 @@ export default function InterviewForm({ isOpen, setIsOpen }) {
         </Sheet>
       ) : (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger></DialogTrigger>
-          <DialogContent className="bg-background max-w-lg p-6 rounded-lg">
+          <DialogTrigger asChild>
+            <button className="hidden">Open Form</button>
+          </DialogTrigger>
+          <DialogContent className="bg-gray-50 dark:bg-gray-800 p-6 max-h-[80vh] overflow-y-auto rounded-lg">
             <DialogHeader>
-              <DialogTitle>Review Your Details</DialogTitle>
-              <DialogDescription>
-                Review your details or update them before starting your interview.
-                <h5>
-                  <b>(Overall experience, company, job role and resume is mandatory for interview to start**)</b>
-                </h5>
-              </DialogDescription>
+              <DialogTitle className="dark:text-gray-200">Review Your Details</DialogTitle>
             </DialogHeader>
+              <InterviewFormContent formData={formData} readOnly={true} />
 
-            <InterviewFormContent formData={formData} readOnly={true} />
+              {missingFields.length > 0 && (
+                <div className="mt-4 text-red-600 dark:text-red-400 text-sm">
+                  <p>The following fields are missing or invalid:</p>
+                  <ul className="list-disc list-inside">
+                    {missingFields.map((field) => (
+                      <li key={field}>{field}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-            {missingFields.length > 0 && (
-              <div className="mt-4 text-red-600 text-sm">
-                <p>The following fields are missing or invalid:</p>
-                <ul className="list-disc list-inside">
-                  {missingFields.map((field) => (
-                    <li key={field}>{field}</li>
-                  ))}
-                </ul>
+              <div className="flex justify-between mt-4">
+                <Link to="/profile">
+                  <button className="bg-gray-300 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded-lg shadow hover:bg-gray-400 dark:hover:bg-gray-600 transition">
+                    Edit Profile
+                  </button>
+                </Link>
+                <button
+                  onClick={startInterview}
+                  disabled={!isInterviewValid}
+                  className={`px-6 py-2 rounded-lg shadow transition ${
+                    isInterviewValid
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-400'
+                      : 'bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  Start Interview
+                </button>
               </div>
-            )}
-
-            <div className="flex justify-between mt-4">
-              <Link to="/profile">
-                <button className="bg-blue-700 text-white px-4 py-2 rounded">Edit Details</button>
-              </Link>
-              <button
-                className={
-                  isInterviewValid
-                    ? 'bg-blue-700 text-white px-4 py-2 rounded'
-                    : 'bg-blue-200 text-white px-4 py-2 rounded'
-                }
-                onClick={startInterview}
-                disabled={!isInterviewValid}
-              >
-                Start Interview
-              </button>
-            </div>
           </DialogContent>
         </Dialog>
       )}
