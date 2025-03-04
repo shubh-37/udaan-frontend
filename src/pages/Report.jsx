@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircularProgress } from '@/components/CircularProgress';
 import { InterviewSummary } from '@/components/InterviewSummary';
@@ -17,6 +17,8 @@ import StrengthAndWeakness from '@/components/InterviewReport/StrengthsAndWeakne
 import PersonalizedImprovementPlan from '@/components/InterviewReport/ImprovementPlan';
 import { SparklesText } from '@/components/magicui/sparkles-text';
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
+import { interviewContext } from '@/context/InterviewContextProvider';
+import { toast } from 'sonner';
 
 const loadingStates = [
   { text: 'Analyzing your interview...' },
@@ -26,16 +28,65 @@ const loadingStates = [
   { text: 'Finalizing your report...' }
 ];
 
+const premiumLoadingStates = [
+  { text: 'Fetching premium insights...' },
+  { text: 'Crunching advanced metrics...' },
+  { text: 'Compiling personalized recommendations...' }
+];
+
 export default function InterviewReport() {
+  const { interviewId: routeInterviewId } = useParams();
   const navigate = useNavigate();
-  const [isPremium, setIsPremium] = useState(false);
   const containerRef = useRef(null);
+
+  const [isPremium, setIsPremium] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [reportData, setReportData] = useState(null);
 
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [loadingStartTime, setLoadingStartTime] = useState(null);
+
+  const { premiumReview } = useContext(interviewContext);
+  const localInterviewId = localStorage.getItem('interview_id');
+
   useEffect(() => {
-    const interviewId = localStorage.getItem('interview_id');
-    const storedData = localStorage.getItem(`interview_review_data_${interviewId}`);
+    if (!localInterviewId) {
+      navigate('/');
+    }
+  }, [localInterviewId, navigate]);
+
+  useEffect(() => {
+    async function fetchReport() {
+      try {
+        setIsLoading(true);
+        if (routeInterviewId) {
+          // Premium report: call premiumReview API using interviewId from URL
+          const premiumData = await premiumReview(routeInterviewId);
+          console.log(premiumData);
+          setReportData(premiumData);
+          setIsPremium(true);
+        } else {
+          // Free report: use the data stored in localStorage
+          const storedData = localStorage.getItem(`interview_review_data_${localInterviewId}`);
+          if (storedData) {
+            setReportData(JSON.parse(storedData));
+          } else {
+            toast.error('Report data not found.');
+            navigate('/');
+          }
+        }
+      } catch (error) {
+        toast.error('Error fetching report data.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchReport();
+  }, [routeInterviewId, localInterviewId, navigate]);
+
+  useEffect(() => {
+    const localInterviewId = localStorage.getItem('interview_id');
+    const storedData = localStorage.getItem(`interview_review_data_${localInterviewId}`);
     if (storedData) {
       setReportData(JSON.parse(storedData));
       setIsLoading(false);
@@ -44,6 +95,8 @@ export default function InterviewReport() {
       setIsLoading(false);
     }
   }, []);
+
+  const currentLoadingStates = isPremium ? premiumLoadingStates : loadingStates;
 
   const parameters = reportData
     ? [
@@ -125,17 +178,24 @@ export default function InterviewReport() {
       ]
     : [];
 
-  const overallScore = reportData
-    ? reportData.review.overall_score
-    : 0;
+  const overallScore = reportData ? reportData.review.overall_score : 0;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 10000);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     setLoadingStartTime(Date.now());
+  //     setIsLoaderVisible(true);
+  //   } else if (loadingStartTime) {
+  //     const elapsedTime = Date.now() - loadingStartTime;
+  //     const remainingTime = 10000 - elapsedTime;
 
-    return () => clearTimeout(timer);
-  }, []);
+  //     if (remainingTime > 0) {
+  //       const timeout = setTimeout(() => setIsLoaderVisible(false), remainingTime);
+  //       return () => clearTimeout(timeout);
+  //     } else {
+  //       setIsLoaderVisible(false);
+  //     }
+  //   }
+  // }, [isLoading]);
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -150,7 +210,7 @@ export default function InterviewReport() {
     <div className="min-h-screen bg-background px-4 sm:px-6 lg:px-8">
       {isLoading ? (
         <div className="h-screen flex items-center justify-center">
-          <MultiStepLoader loadingStates={loadingStates} loading={isLoading} duration={2000} />
+          <MultiStepLoader loadingStates={loadingStates} duration={2000} />
         </div>
       ) : (
         <div>
@@ -182,7 +242,7 @@ export default function InterviewReport() {
                 <StrengthAndWeakness />
               </CardContent>
             </Card>
-            
+
             <Card className="mb-8">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <SparklesText text="Performance Metrics" className="text-3xl font-bold pb-4" />

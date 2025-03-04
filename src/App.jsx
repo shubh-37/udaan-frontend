@@ -32,6 +32,14 @@ function App() {
           }
         />
         <Route
+          path="/review/:interviewId"
+          element={
+            <RequiresAuth>
+              <InterviewReport />
+            </RequiresAuth>
+          }
+        />
+        <Route
           path="/profile"
           element={
             <RequiresAuth>

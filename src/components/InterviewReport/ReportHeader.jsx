@@ -23,7 +23,7 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
   const initiatePayment = async () => {
     setIsLoading(true);
     try {
-      const response = await handlePayment();
+      const response = await handlePayment(interviewId);
       // Add paid review API
     } catch (error) {
       toast('Payment Error', {

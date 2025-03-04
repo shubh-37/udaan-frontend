@@ -11,7 +11,7 @@ import { ThemeProvider } from './context/ThemeContextProvider.jsx';
 import ProfileProvider from './context/ProfileContextProvider.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <Router>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <AuthProvider>
@@ -26,5 +26,5 @@ createRoot(document.getElementById('root')).render(
         </AuthProvider>
       </ThemeProvider>
     </Router>
-  </StrictMode>
+  // </StrictMode>
 );
