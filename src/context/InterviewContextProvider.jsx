@@ -124,15 +124,17 @@ export default function InterviewProvider({ children }) {
 
   async function submitInterview(interviewId) {
     try {
-      await axios.post(
+      const response = await axios.post(
         `${VITE_API_URL}/interview/submit_interview?interview_id=${interviewId}`,
         null,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }
       );
+      return response.data;
     } catch (error) {
-      console.log(error);
+      console.error('Error submitting interview:', error);
+      throw error;
     }
   }
 
