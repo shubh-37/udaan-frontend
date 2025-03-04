@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-
+import { useState, useEffect } from 'react';
 const feedback = {
   strengths: [
     {
@@ -38,6 +38,24 @@ const feedback = {
 };
 
 export default function StrengthAndWeakness() {
+  const interviewId = localStorage.getItem('interview_id');
+  const [feedback, setFeedback] = useState({ strengths: [], weaknesses: [] });
+
+  useEffect(() => {
+    const reviewData = JSON.parse(localStorage.getItem(`interview_review_data_${interviewId}`));
+    if (reviewData) {
+      const strengths = reviewData.review.strengths_and_weaknesses
+        .filter(item => item.type === 'strength')
+        .map(({ title, description }) => ({ title, description }));
+
+      const weaknesses = reviewData.review.strengths_and_weaknesses
+        .filter(item => item.type === 'weakness')
+        .map(({ title, description }) => ({ title, description }));
+
+      setFeedback({ strengths, weaknesses });
+    }
+  }, []);
+
   return (
     <Card className="relative overflow-hidden">
       <CardContent className={`space-y-6`}>

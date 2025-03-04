@@ -10,12 +10,15 @@ import { ScrollProgress } from '../ScrollProgress';
 import { interviewContext } from '@/context/InterviewContextProvider';
 import { toast } from 'sonner';
 import { ModeToggle } from '../ModeToggle';
+import { format } from "date-fns";
 
 export default function ReportHeader({ isPremium, setIsPremium, containerRef }) {
   const headerRef = useRef(null);
   const { handlePayment } = useContext(interviewContext);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const interviewId = localStorage.getItem('interview_id');
 
   const initiatePayment = async () => {
     setIsLoading(true);
@@ -31,6 +34,19 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const reviewData = JSON.parse(localStorage.getItem(`interview_review_data_${interviewId}`));
+    console.log(reviewData);
+    if (reviewData) {
+      setReportData({
+        ...reviewData,
+        date: reviewData.date
+          ? format(new Date(reviewData.date), "dd MMMM yyyy")
+          : 'Interview Date'
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const updateHeight = () => {
@@ -60,19 +76,19 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
             </div>
             <div className="space-y-1">
               <span className="text-sm text-muted-foreground flex md:hidden gap-2">
-                <span>John Doe</span>
+                <span>{reportData?.name || 'Candidate Name'}</span>
                 <span>•</span>
-                <span>Technical Interview</span>
+                <span>{reportData?.role || 'Interview Type'}</span>
                 <span>•</span>
-                <span>Feb 26, 2025</span>
+                <span>{reportData?.date || 'Interview Date'}</span>
               </span>
 
               <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-                <span>John Doe</span>
+                <span>{reportData?.name || 'Candidate Name'}</span>
                 <span>•</span>
-                <span>Technical Interview</span>
+                <span>{reportData?.role|| 'Interview Type'}</span>
                 <span>•</span>
-                <span>Feb 26, 2025</span>
+                <span>{reportData?.date || 'Interview Date'}</span>
               </div>
             </div>
           </div>

@@ -49,6 +49,7 @@ const SpeechToText = () => {
         questionRef.current = true;
         const response = await startInterview();
         setQuestions(response.questions);
+        console.log(response);
         console.log(questions);
       } catch (error) {
         if (error?.response?.status === 401) {
@@ -86,7 +87,7 @@ const SpeechToText = () => {
     };
   }, []);
 
-  const handleStartInterview = useCallback(async () => {
+  const handleStartInterview = async () => {
     try {
       setSiriLoader(true);
       askNextQuestion();
@@ -95,34 +96,31 @@ const SpeechToText = () => {
     } catch (error) {
       toast.error('Error starting interview');
     }
-  }, []);
+  };
 
-  const speakQuestion = useCallback(
-    async (text) => {
-      try {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
+  const speakQuestion = async (text) => {
+    try {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
 
-        if (currentAudioUrlRef.current) {
-          URL.revokeObjectURL(currentAudioUrlRef.current);
-        }
-
-        const response = await textToSpeech(text);
-        const audioUrl = URL.createObjectURL(response);
-        currentAudioUrlRef.current = audioUrl;
-        audioRef.current.src = audioUrl;
-        audioRef.current.play();
-        setSiriLoader(false);
-      } catch (error) {
-        toast('Error in speakQuestion:', {
-          description: error.message || ''
-        });
+      if (currentAudioUrlRef.current) {
+        URL.revokeObjectURL(currentAudioUrlRef.current);
       }
-    },
-    [textToSpeech]
-  );
 
-  const askNextQuestion = useCallback(() => {
+      const response = await textToSpeech(text);
+      const audioUrl = URL.createObjectURL(response);
+      currentAudioUrlRef.current = audioUrl;
+      audioRef.current.src = audioUrl;
+      audioRef.current.play();
+      setSiriLoader(false);
+    } catch (error) {
+      toast('Error in speakQuestion:', {
+        description: error.message || ''
+      });
+    }
+  };
+
+  const askNextQuestion = () => {
     if (!questions.length) return;
 
     const nextIndex = currentQuestionIndex + 1;
@@ -130,9 +128,9 @@ const SpeechToText = () => {
       setCurrentQuestionIndex(nextIndex);
       speakQuestion(questions[nextIndex].question);
     }
-  }, [questions, speakQuestion]);
+  };
 
-  const handleStartRecording = useCallback(async () => {
+  const handleStartRecording = async () => {
     if (!isOnline) {
       toast('No internet connection', {
         description: 'Please check your connection and try again.'
@@ -141,22 +139,18 @@ const SpeechToText = () => {
     }
 
     try {
-      // Request AUDIO-only stream (or we can re-use the video stream & just ignore video tracks).
       const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      // Store the audio stream reference so we can stop it later
       mediaStreamRef.current = audioStream;
 
-      // Create a new RecordRTC instance with WAV configuration
       recorderRef.current = new RecordRTC(audioStream, {
         type: 'audio',
-        mimeType: 'audio/wav', // or 'audio/wav'
-        recorderType: RecordRTC.StereoAudioRecorder, // needed for WAV
-        numberOfAudioChannels: 1, // 1 = mono (sufficient for speech)
-        sampleRate: 44100 // typical sample rate
+        mimeType: 'audio/wav',
+        recorderType: RecordRTC.StereoAudioRecorder,
+        numberOfAudioChannels: 1,
+        sampleRate: 44100
       });
 
-      // Start recording
       recorderRef.current.startRecording();
       setIsRecording(true);
     } catch (error) {
@@ -164,17 +158,14 @@ const SpeechToText = () => {
         description: error instanceof Error ? error.message : 'Unknown error occurred'
       });
     }
-  }, []);
+  };
 
   const handleStopRecording = () => {
     if (!recorderRef.current) return;
 
-    // Stop the RecordRTC instance
     recorderRef.current.stopRecording(async () => {
-      // Once stopped, get the audio blob (WAV)
       const audioBlob = recorderRef.current.getBlob();
 
-      // Stop the actual audio tracks
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
       }
@@ -202,7 +193,7 @@ const SpeechToText = () => {
     try {
       const interviewId = localStorage.getItem('interview_id');
       const interviewData = await submitInterview(interviewId);
-      localStorage.setItem(interviewId, JSON.stringify(interviewData));
+      localStorage.setItem(`interview_review_data_${interviewId}`, JSON.stringify(interviewData));
       navigate('/review');
     } catch (error) {
       toast('Error', {
@@ -235,7 +226,7 @@ const SpeechToText = () => {
       <Spinner key="ellipsis" variant="ellipsis" />
     );
 
-  console.log(currentQuestion);
+  console.log(questions);
 
   return (
     <div className="">

@@ -34,12 +34,13 @@ export default function InterviewReport() {
   const [reportData, setReportData] = useState(null);
 
   useEffect(() => {
-    const storedData = localStorage.getItem('interview_review_data');
+    const interviewId = localStorage.getItem('interview_id');
+    const storedData = localStorage.getItem(`interview_review_data_${interviewId}`);
     if (storedData) {
       setReportData(JSON.parse(storedData));
       setIsLoading(false);
     } else {
-      navigate('/');
+      // navigate('/');
       setIsLoading(false);
     }
   }, []);
@@ -172,6 +173,7 @@ export default function InterviewReport() {
             </div>
 
             <SkillAnalysis parameters={parameters} />
+
             <Card className="mb-8">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <SparklesText text="Strengths And Weaknesses Breakdown" className="text-3xl font-bold pb-4" />
@@ -180,6 +182,7 @@ export default function InterviewReport() {
                 <StrengthAndWeakness />
               </CardContent>
             </Card>
+            
             <Card className="mb-8">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <SparklesText text="Performance Metrics" className="text-3xl font-bold pb-4" />
