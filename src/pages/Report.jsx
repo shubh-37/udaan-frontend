@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircularProgress } from '@/components/CircularProgress';
 import { InterviewSummary } from '@/components/InterviewSummary';
@@ -26,59 +27,106 @@ const loadingStates = [
 ];
 
 export default function InterviewReport() {
+  const navigate = useNavigate();
   const [isPremium, setIsPremium] = useState(false);
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [reportData, setReportData] = useState(null);
 
-  const parameters = [
-    {
-      title: 'Technical Proficiency',
-      color: '#ff7300',
-      skills: [
-        { name: 'Problem Solving', score: 85, showBar: true },
-        { name: 'Code Quality', score: 92, showBar: true },
-        { name: 'System Design', score: 78, showBar: true }
-      ]
-    },
-    {
-      title: 'Communication Skills',
-      color: '#007bff',
-      skills: [
-        { name: 'Clarity', score: 88, showBar: true },
-        { name: 'Articulation', score: 90, showBar: true },
-        { name: 'Active Listening', score: 85, showBar: true }
-      ]
-    },
-    {
-      title: 'Speech Analysis',
-      color: '#28a745',
-      skills: [
-        { name: 'Speaking Rate', score: 145, unit: 'WPM', showBar: false },
-        { name: 'Confidence Level', score: 'High', showBar: false },
-        { name: 'Voice Clarity', score: 92, showBar: true }
-      ]
-    },
-    {
-      title: 'Time Management',
-      color: '#a855f7',
-      skills: [
-        { name: 'Average Response Time', score: '2.5 mins', showBar: false },
-        { name: 'Average Filler Words', score: 5, showBar: false },
-        { name: 'Question Completion Rate', score: 95, showBar: true }
-      ]
+  useEffect(() => {
+    const storedData = localStorage.getItem('interview_review_data');
+    if (storedData) {
+      setReportData(JSON.parse(storedData));
+      setIsLoading(false);
+    } else {
+      navigate('/');
+      setIsLoading(false);
     }
-  ];
+  }, []);
 
-  const overallScore = Math.round(
-    parameters.reduce((total, category) => {
-      const numericScores = category.skills.map((skill) => Number(skill.score)).filter((score) => !isNaN(score)); // Remove non-numeric values
+  const parameters = reportData
+    ? [
+        {
+          title: 'Communication Skills',
+          color: '#007bff',
+          skills: [
+            { name: 'Clarity', score: reportData.review.skill_analysis.communication_skills.clarity, showBar: true },
+            {
+              name: 'Articulation',
+              score: reportData.review.skill_analysis.communication_skills.articulation,
+              showBar: true
+            },
+            {
+              name: 'Active Listening',
+              score: reportData.review.skill_analysis.communication_skills.active_listening,
+              showBar: true
+            }
+          ]
+        },
+        {
+          title: 'Conceptual Understanding',
+          color: '#ff7300',
+          skills: [
+            {
+              name: 'Fundamental Concepts',
+              score: reportData.review.skill_analysis.conceptual_understanding.fundamental_concepts,
+              showBar: true
+            },
+            {
+              name: 'Theoretical Application',
+              score: reportData.review.skill_analysis.conceptual_understanding.theoretical_application,
+              showBar: true
+            },
+            {
+              name: 'Analytical Reasoning',
+              score: reportData.review.skill_analysis.conceptual_understanding.analytical_reasoning,
+              showBar: true
+            }
+          ]
+        },
+        {
+          title: 'Speech Analysis',
+          color: '#28a745',
+          skills: [
+            {
+              name: 'Avg Filler Words',
+              score: reportData.review.skill_analysis.speech_analysis.avg_filler_words_used,
+              showBar: false
+            },
+            {
+              name: 'Confidence Level',
+              score: reportData.review.skill_analysis.speech_analysis.avg_confidence_level,
+              showBar: false
+            },
+            {
+              name: 'Fluency Rate',
+              score: reportData.review.skill_analysis.speech_analysis.avg_fluency_rate,
+              showBar: true
+            }
+          ]
+        },
+        {
+          title: 'Time Management',
+          color: '#a855f7',
+          skills: [
+            {
+              name: 'Avg Response Time',
+              score: reportData.review.skill_analysis.time_management.average_response_time,
+              showBar: false
+            },
+            {
+              name: 'Question Completion Rate',
+              score: reportData.review.skill_analysis.time_management.question_completion_rate,
+              showBar: true
+            }
+          ]
+        }
+      ]
+    : [];
 
-      return total + numericScores.reduce((sum, score) => sum + score, 0);
-    }, 0) /
-      parameters.reduce((count, category) => {
-        return count + category.skills.filter((skill) => !isNaN(Number(skill.score))).length;
-      }, 0)
-  );
+  const overallScore = reportData
+    ? reportData.review.overall_score
+    : 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
