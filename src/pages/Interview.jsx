@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import { interviewContext } from '@/context/InterviewContextProvider';
 import { TextAnimate } from '@/components/magicui/text-animate';
+import RecordRTC from 'recordrtc';
 
 const TOTAL_QUESTIONS = 10;
 
@@ -33,7 +34,8 @@ const SpeechToText = () => {
   const recordedChunksRef = useRef([]);
   const videoref = useRef(null);
   const questionRef = useRef(false);
-
+  const recorderRef = useRef(null);
+  const mediaStreamRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,7 +57,6 @@ const SpeechToText = () => {
       }
     };
     getQuestions();
-
   }, []);
 
   useEffect(() => {
@@ -123,18 +124,25 @@ const SpeechToText = () => {
       });
       return;
     }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      recordedChunksRef.current = [];
+      // Request AUDIO-only stream (or we can re-use the video stream & just ignore video tracks).
+      const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          recordedChunksRef.current.push(event.data);
-        }
-      };
+      // Store the audio stream reference so we can stop it later
+      mediaStreamRef.current = audioStream;
 
-      mediaRecorderRef.current.start();
+      // Create a new RecordRTC instance with WAV configuration
+      recorderRef.current = new RecordRTC(audioStream, {
+        type: 'audio',
+        mimeType: 'audio/wav', // or 'audio/wav'
+        recorderType: RecordRTC.StereoAudioRecorder, // needed for WAV
+        numberOfAudioChannels: 1, // 1 = mono (sufficient for speech)
+        sampleRate: 44100 // typical sample rate
+      });
+
+      // Start recording
+      recorderRef.current.startRecording();
       setIsRecording(true);
     } catch (error) {
       toast('Error accessing microphone:', {
@@ -144,33 +152,36 @@ const SpeechToText = () => {
   };
 
   const handleStopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop();
+    if (!recorderRef.current) return;
 
-      const tracks = mediaRecorderRef.current.stream.getTracks();
-      tracks.forEach((track) => track.stop());
+    // Stop the RecordRTC instance
+    recorderRef.current.stopRecording(async () => {
+      // Once stopped, get the audio blob (WAV)
+      const audioBlob = recorderRef.current.getBlob();
 
-      mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(recordedChunksRef.current, { type: 'audio/webm' });
-        recordedChunksRef.current = [];
+      // Stop the actual audio tracks
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
 
-        const formData = new FormData();
-        formData.append('audio', audioBlob, 'recording.webm');
-        try {
-          await transcribeResponse(formData, questions[currentQuestionIndex].question_id);
-          toast('Response recorded', {
-            description: 'Your response has been saved successfully.'
-          });
-          askNextQuestion();
-        } catch (error) {
-          toast('Error uploading audio:', {
-            description: error.message || 'Unknown error occurred'
-          });
-        } finally {
-          setIsRecording(false);
-        }
-      };
-    }
+      // Reset
+      setIsRecording(false);
+
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.wav');
+
+      try {
+        await transcribeResponse(formData, questions[currentQuestionIndex].question_id);
+        toast('Response recorded', {
+          description: 'Your response has been saved successfully.'
+        });
+        askNextQuestion();
+      } catch (error) {
+        toast('Error uploading audio:', {
+          description: error.message || 'Unknown error occurred'
+        });
+      }
+    });
   };
 
   const submit = async () => {
