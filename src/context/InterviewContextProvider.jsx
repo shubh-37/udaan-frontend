@@ -10,8 +10,6 @@ export default function InterviewProvider({ children }) {
   const [questions, setQuestions] = useState([]);
   const [imageLink, setImageLink] = useState('');
   const navigate = useNavigate();
-  const interviewId = localStorage.getItem('interview_id');
-
 
   async function handlePayment(interviewId) {
     let verificationResponse;
@@ -35,7 +33,7 @@ export default function InterviewProvider({ children }) {
         handler: async function (response) {
           try {
             const verifyRes = await axios.post(
-              `${VITE_API_URL}/interview/verify_order`,
+              `${VITE_API_URL}/interview/verify_order?interview_id=${interviewId}`,
               {
                 order_id: response.razorpay_order_id,
                 payment_id: response.razorpay_payment_id,
@@ -157,18 +155,15 @@ export default function InterviewProvider({ children }) {
 
   async function premiumReview(interviewId) {
     try {
-      const response = await axios.get(
-        `${VITE_API_URL}/interview/paid`,
-        {
-          params: { interview_id: interviewId},
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-      );
+      const response = await axios.get(`${VITE_API_URL}/interview/paid`, {
+        params: { interview_id: interviewId },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
       return response.data;
     } catch (error) {
       if (error.response?.status === 403) {
         setTimeout(() => {
-          toast("Payment is not recieved");
+          toast('Payment is not recieved');
           navigate('/review');
         }, 2000);
       }
