@@ -125,10 +125,8 @@ export default function InterviewProvider({ children }) {
   async function submitInterview(interviewId) {
     try {
       await axios.post(
-        `${VITE_API_URL}/interview/submit_interview`,
-        {
-          interview_id: interviewId
-        },
+        `${VITE_API_URL}/interview/submit_interview?interview_id=${interviewId}`,
+        null,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }
