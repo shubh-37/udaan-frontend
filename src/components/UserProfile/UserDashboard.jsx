@@ -7,6 +7,7 @@ import InterviewForm from '../..//shared/InterviewForm';
 import { Link } from 'react-router-dom';
 import Loader from '@/shared/Loader';
 import { profileContext } from '@/context/ProfileContextProvider';
+import { ModeToggle } from '../ModeToggle';
 
 export default function UserProfileDashboard() {
   const [wave, setWave] = useState(false);
@@ -30,6 +31,7 @@ export default function UserProfileDashboard() {
             👋
           </motion.span>
         </h1>
+        <ModeToggle />
         <div className="space-x-3">
           <Link to="/aptitude">
             <Button variant="outline">Attempt Aptitude Test</Button>
@@ -49,13 +51,12 @@ export default function UserProfileDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <InsightCard icon={Users} title="Total Interviews" value="12" trend="+2 this week" />
-        <InsightCard icon={TrendingUp} title="Average Score" value="78%" trend="+5% improvement" />
+        <InsightCard icon={Users} title="Total Interviews" value="12"/>
+        <InsightCard icon={TrendingUp} title="Average Score" value="78%"/>
         <InsightCard
           icon={Bolt}
           title="Profile Strength"
           value={profileCompletion + '%'}
-          trend={profileCompletion > 90 ? 'Profile Strength is high' : 'Complete your profile'}
         />
       </div>
     </div>
@@ -65,7 +66,7 @@ export default function UserProfileDashboard() {
 function InsightCard({ icon: Icon, title, value, trend }) {
   return (
     <Card className="p-4 pr-0 pb-0 bg-card flex items-center space-x-4">
-      <Icon className="text-black w-10 h-10" />
+      <Icon className="text-foreground w-10 h-10" />
       <CardContent className="flex-1">
         <p className="text-card-foreground">{title}</p>
         <h3 className="text-2xl font-bold">{value}</h3>
