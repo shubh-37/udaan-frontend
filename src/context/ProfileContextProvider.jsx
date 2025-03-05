@@ -7,6 +7,8 @@ export const profileContext = createContext();
 export default function ProfileProvider({ children }) {
   const { VITE_API_URL } = import.meta.env;
   const [profile, setProfile] = useState(null);
+  const [aptitudeScores, setAptitudeScores] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null); 
   const [profileCompletion, setProfileCompletion] = useState(0);
   useEffect(() => {
     if (!profile) return;
@@ -42,7 +44,7 @@ export default function ProfileProvider({ children }) {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
-      console.log(response);
+      console.log({"Get Profile" : response});
       if (response.status === 200) {
         setProfile(response.data);
       }
@@ -68,8 +70,10 @@ export default function ProfileProvider({ children }) {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
+      console.log({"Dashboard data" : response});
 
       if (response.status === 200) {
+        setDashboardData(response.data); 
         return response.data;
       }
     } catch (error) {
@@ -83,7 +87,7 @@ export default function ProfileProvider({ children }) {
 
   async function getAptitudeScores(data) {
     try {
-      const response = await axios.get(`${VITE_API_URL}/aptitude/profile`, {
+      const response = await axios.get(`${VITE_API_URL}/aptitude/scores`, {
         data,
         timeout: 10000,
         headers: {
@@ -91,8 +95,10 @@ export default function ProfileProvider({ children }) {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
+      console.log({"Aptitude Scores" : response});
 
       if (response.status === 200) {
+        setAptitudeScores(response.data); 
         return response.data;
       }
     } catch (error) {
@@ -199,6 +205,8 @@ export default function ProfileProvider({ children }) {
         getAptitudeScores,
         getDashboardData,
         profile,
+        aptitudeScores,
+        dashboardData,
         setProfile,
         getCompanies,
         updateResume,

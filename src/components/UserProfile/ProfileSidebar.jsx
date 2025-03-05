@@ -19,21 +19,35 @@ export function SidebarDemo() {
   const profileRef = useRef(false);
   const { getProfile, getAptitudeScores, getDashboardData, profile } = useContext(profileContext);
 
+  function logout() {
+    localStorage.removeItem('token');
+    navigate('/');
+  }
+
   useEffect(() => {
-    const getUserProfile = async () => {
-      if (profileRef.current) return;
+    if (profileRef.current) return;
+    const fetchData = async () => {
       try {
         profileRef.current = true;
-        await getProfile();
+        const profilePromise = getProfile();
+        const aptitudeScoresPromise = getAptitudeScores();
+        const dashboardDataPromise = getDashboardData({ topics: [] }); 
+
+        await Promise.all([
+          profilePromise,
+          aptitudeScoresPromise,
+          dashboardDataPromise,
+        ]);
+
       } catch (error) {
-        console.error('Error submitting test:', error);
+        toast.error('Error submitting test');
       }
       return () => {
         console.log('ResultPage component unmounting, submission status:', profileRef.current);
       };
     };
-    getUserProfile();
-  }, []);
+    fetchData();
+  }, [getProfile, getAptitudeScores, getDashboardData]);
   const links = [
     {
       label: 'Dashboard',
@@ -52,7 +66,7 @@ export function SidebarDemo() {
     // },
     {
       label: 'Logout',
-      onClick: () => console.log('Logout clicked'),
+      onClick: logout,
       icon: <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     }
   ];
@@ -81,13 +95,6 @@ export function SidebarDemo() {
                 label: profile?.name || 'John Doe',
                 href: '#',
                 icon: (
-                  // <img
-                  //   src={FormalImage}
-                  //   className="h-7 w-7 flex-shrink-0 rounded-full"
-                  //   width={50}
-                  //   height={50}
-                  //   alt="Avatar"
-                  // />
                   <UserRound className='w-4 h-4' />
                 )
               }}

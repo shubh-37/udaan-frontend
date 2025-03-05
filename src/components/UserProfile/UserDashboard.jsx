@@ -12,9 +12,10 @@ import { ModeToggle } from '../ModeToggle';
 export default function UserProfileDashboard() {
   const [wave, setWave] = useState(false);
   const token = localStorage.getItem('token');
-  const { profile, profileCompletion } = useContext(profileContext);
+  const { profile, profileCompletion, dashboardData } = useContext(profileContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const avgInterviewScore = Math.round(dashboardData?.avg_interview_score * 10) || 0;
   useEffect(() => {
     const interval = setInterval(() => setWave((prev) => !prev), 1000);
     return () => clearInterval(interval);
@@ -31,7 +32,6 @@ export default function UserProfileDashboard() {
             👋
           </motion.span>
         </h1>
-        <ModeToggle />
         <div className="space-x-3">
           <Link to="/aptitude">
             <Button variant="outline">Attempt Aptitude Test</Button>
@@ -51,8 +51,8 @@ export default function UserProfileDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <InsightCard icon={Users} title="Total Interviews" value="12"/>
-        <InsightCard icon={TrendingUp} title="Average Score" value="78%"/>
+        <InsightCard icon={Users} title="Total Interviews" value={dashboardData?.total_interviews}/>
+        <InsightCard icon={TrendingUp} title="Average Score" value={avgInterviewScore}/>
         <InsightCard
           icon={Bolt}
           title="Profile Strength"

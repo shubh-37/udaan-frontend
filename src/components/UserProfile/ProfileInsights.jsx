@@ -1,8 +1,38 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { profileContext } from '@/context/ProfileContextProvider';
+import { useContext, useState, useEffect } from 'react';
 
 export default function InsightsSection() {
+  const { dashboardData, aptitudeData } = useContext(profileContext);
+  const [chartData, setChartData] = useState([]);
+
+  const confidenceMapping = {
+    Low: 50,  // Example values, adjust as needed
+    Medium: 65,
+    High: 80,
+  };
+
+  const confidence = confidenceMapping[dashboardData?.avg_confidence] || 0;
+  const speechClarity = Math.round(dashboardData?.avg_speech_clarity * 10) || 0;
+  const technicalAccuracy = Math.round(dashboardData?.avg_technical_accuracy * 10) || 0;
+
+  useEffect(() => {
+    if (!dashboardData || !dashboardData.past_aptitude_scores) {
+      return;
+    }
+
+    const lastFiveScores = dashboardData.past_aptitude_scores.slice(-5);
+
+    const newChartData = lastFiveScores.map((score, index) => ({
+      label: `Test ${index + 1}`,
+      value: score
+    }));
+
+    setChartData(newChartData);
+  }, [dashboardData]);
+
   return (
     <div className="p-6 pt-0 bg-background max-h-2xl w-full">
       <Card>
@@ -11,13 +41,12 @@ export default function InsightsSection() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card> 
+            <Card>
               <CardContent className="p-6">
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Average Aptitude Score</h3>
                   <div className="flex items-end gap-2">
-                    <span className="text-3xl font-bold">78</span>
-                    <span className="text-sm text-green-600 dark:text-green-400">+5% from last month</span>
+                    <span className="text-3xl font-bold">{dashboardData?.avg_aptitude_score}</span>
                   </div>
                   <div className="h-[60px] w-full">
                     <div className="relative h-full w-full">
@@ -26,31 +55,18 @@ export default function InsightsSection() {
                       <div className="absolute bottom-[60px] left-0 right-0 h-[1px] bg-gray-200 dark:bg-gray-700 opacity-50"></div>
 
                       <div className="flex h-full items-end justify-between">
-                        <div className="group relative h-[40%] w-2 bg-primary rounded-t">
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
-                            65
+                        {chartData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="group relative w-2 bg-primary rounded-t"
+                            style={{ height: `${(item.value / 10) * 100}%` }}
+                          >
+                            {' '}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
+                              {item.value}
+                            </div>
                           </div>
-                        </div>
-                        <div className="group relative h-[55%] w-2 bg-primary rounded-t">
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
-                            75
-                          </div>
-                        </div>
-                        <div className="group relative h-[70%] w-2 bg-primary rounded-t">
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
-                            82
-                          </div>
-                        </div>
-                        <div className="group relative h-[60%] w-2 bg-primary rounded-t">
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
-                            78
-                          </div>
-                        </div>
-                        <div className="group relative h-[80%] w-2 bg-primary rounded-t">
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
-                            90
-                          </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -66,7 +82,7 @@ export default function InsightsSection() {
                     <div>
                       <div className="flex justify-between text-sm">
                         <span>Confidence</span>
-                        <span>72%</span>
+                        <span>{confidence}</span>
                       </div>
                       <div className="mt-1 h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <div className="bg-blue-500 h-full rounded-full" style={{ width: '72%' }}></div>
@@ -75,7 +91,7 @@ export default function InsightsSection() {
                     <div>
                       <div className="flex justify-between text-sm">
                         <span>Speech Clarity</span>
-                        <span>85%</span>
+                        <span>{speechClarity}</span>
                       </div>
                       <div className="mt-1 h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <div className="bg-green-500 h-full rounded-full" style={{ width: '85%' }}></div>
@@ -84,7 +100,7 @@ export default function InsightsSection() {
                     <div>
                       <div className="flex justify-between text-sm">
                         <span>Technical Accuracy</span>
-                        <span>68%</span>
+                        <span>{technicalAccuracy}</span>
                       </div>
                       <div className="mt-1 h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <div className="bg-yellow-500 h-full rounded-full" style={{ width: '68%' }}></div>
@@ -137,93 +153,6 @@ export default function InsightsSection() {
                 </div>
               </CardContent>
             </Card>
-            {/* 
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">AI-Generated Insights</h3>
-                  <ul className="space-y-2">
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 border-none"
-                      >
-                        Improve
-                      </Badge>
-                      <span className="text-sm">System design explanations need more clarity</span>
-                    </li>
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 border-none"
-                      >
-                        Strength
-                      </Badge>
-                      <span className="text-sm">Excellent problem-solving approach</span>
-                    </li>
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 border-none"
-                      >
-                        Tip
-                      </Badge>
-                      <span className="text-sm">Practice more behavioral questions for leadership roles</span>
-                    </li>
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 border-none"
-                      >
-                        Trend
-                      </Badge>
-                      <span className="text-sm">Your technical scores have improved 15% in the last 3 months</span>
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card> */}
-
-            {/* <Card>
-              <CardContent className="p-6">
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Peer Benchmarking Insights</h3>
-                  <ul className="space-y-2">
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 border-none"
-                      >
-                        Top Performer
-                      </Badge>
-                      <span className="text-sm">
-                        Your problem-solving skills are among the top 20% of candidates in your field.
-                      </span>
-                    </li>
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 border-none"
-                      >
-                        Communication
-                      </Badge>
-                      <span className="text-sm">Your communication skills match closely with industry benchmarks.</span>
-                    </li>
-                    <li className="grid grid-cols-[max-content_auto] gap-2">
-                      <Badge
-                        variant="outline"
-                        className="mt-0.5 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300 border-none"
-                      >
-                        Growth
-                      </Badge>
-                      <span className="text-sm">
-                        Focusing on system design can further elevate your ranking among peers.
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card> */}
           </div>
         </CardContent>
       </Card>

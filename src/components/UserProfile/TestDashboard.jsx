@@ -1,80 +1,91 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { Eye, Lock, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { profileContext } from '@/context/ProfileContextProvider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '../ui/badge';
+import { Pagination } from '../Pagination';
+import { interviewContext } from '@/context/InterviewContextProvider';
+import { toast } from 'sonner';
 
 export default function PerformanceDashboard() {
   const [activeTab, setActiveTab] = useState('aptitude');
+  const [aptitudeTests, setAptitudeTests] = useState([]);
+  const [mockInterviews, setMockInterviews] = useState([]);
+  const { handlePayment } = useContext(interviewContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const { dashboardData, aptitudeScores } = useContext(profileContext);
+  const [currentPageAptitude, setCurrentPageAptitude] = useState(1);
+  const [currentPageInterview, setCurrentPageInterview] = useState(1);
+  const rowsPerPage = 5;
 
-  const aptitudeTests = [
-    {
-      id: 'APT001',
-      date: '2023-10-15',
-      score: 85,
-      performance: 'Excellent',
-      isPremium: true,
-      sections: ['verbal', 'quant', 'logical']
-    },
-    {
-      id: 'APT002',
-      date: '2023-09-28',
-      score: 72,
-      performance: 'Good',
-      isPremium: true,
-      sections: ['verbal', 'quant']
-    },
-    {
-      id: 'APT003',
-      date: '2023-09-10',
-      score: 68,
-      performance: 'Average',
-      isPremium: false,
-      sections: ['verbal', 'logical']
-    },
-    {
-      id: 'APT004',
-      date: '2023-08-22',
-      score: 91,
-      performance: 'Excellent',
-      isPremium: false,
-      sections: ['verbal']
-    }
-  ];
+  const sortByDateTime = (a, b) => {
+    const dateA = new Date(a.created_at).getTime();
+    const dateB = new Date(b.created_at).getTime();
+    return dateB - dateA;
+  };
 
-  const mockInterviews = [
-    {
-      id: 'MI001',
-      date: '2023-10-18',
-      topic: 'System Design',
-      summary: 'Good understanding of scalability concepts',
-      isPremium: true
-    },
-    {
-      id: 'MI002',
-      date: '2023-10-05',
-      topic: 'Data Structures',
-      summary: 'Strong problem-solving skills, needs improvement in time complexity analysis',
-      isPremium: true
-    },
-    {
-      id: 'MI003',
-      date: '2023-09-20',
-      topic: 'Behavioral',
-      summary: 'Excellent communication, could improve on specific examples',
-      isPremium: false
-    },
-    {
-      id: 'MI004',
-      date: '2023-09-01',
-      topic: 'Frontend Development',
-      summary: 'Strong React knowledge, needs improvement in CSS architecture',
-      isPremium: false
+  const initiatePayment = async (interviewId) => {
+    setIsLoading(true);
+    try {
+      const response = await handlePayment(interviewId);
+      // Add paid review API
+    } catch (error) {
+      toast.error('Payment Error', {
+        description: 'Something went wrong.'
+      });
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    if (aptitudeScores) {
+      let formattedAptitudeTests = aptitudeScores?.map((test, index) => ({
+        id: `APT00${index + 1}`,
+        date: test.created_at,
+        score: test.score,
+        performance: test.score >= 80 ? 'Excellent' : test.score >= 50 ? 'Average' : 'Poor',
+        sections: test.topics || []
+      }));
+      formattedAptitudeTests = [...formattedAptitudeTests].sort(sortByDateTime);
+      setAptitudeTests(formattedAptitudeTests);
+    }
+  }, [aptitudeScores]);
+
+  useEffect(() => {
+    if (dashboardData && dashboardData.interviews) {
+      let sortedMockInterviews = [...dashboardData.interviews].sort(sortByDateTime);
+      setMockInterviews(sortedMockInterviews);
+    }
+  }, [dashboardData]);
+
+  const sortedAptitudeTests = useMemo(() => {
+    return [...aptitudeTests].sort(sortByDateTime);
+  }, [aptitudeTests]);
+  
+  const sortedMockInterviews = useMemo(() => {
+    return [...mockInterviews].sort(sortByDateTime);
+  }, [mockInterviews]);
+
+  const indexOfLastAptitude = currentPageAptitude * rowsPerPage;
+  const indexOfFirstAptitude = indexOfLastAptitude - rowsPerPage;
+  const currentAptitudeTests = aptitudeTests.slice(indexOfFirstAptitude, indexOfLastAptitude);
+
+  const handleAptitudePageChange = (pageNumber) => {
+    setCurrentPageAptitude(pageNumber);
+  };
+
+  const indexOfLastInterview = currentPageInterview * rowsPerPage;
+  const indexOfFirstInterview = indexOfLastInterview - rowsPerPage;
+  const currentMockInterviews = mockInterviews.slice(indexOfFirstInterview, indexOfLastInterview);
+
+  const handleInterviewPageChange = (pageNumber) => {
+    setCurrentPageInterview(pageNumber);
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -130,14 +141,12 @@ export default function PerformanceDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {aptitudeTests.map((test, index) => (
+                      {currentAptitudeTests.map((test, index) => (
                         <tr
-                          key={test.id}
-                          className={`border-t border-gray-200 dark:border-gray-700 ${
-                            index % 2 === 1 ? 'bg-gray-50 dark:bg-gray-900/50' : ''
-                          }`}
+                          key={test._id}
+                          className={`border-t border-gray-200 dark:border-gray-700 ${index % 2 === 1 ? 'bg-gray-50 dark:bg-gray-900/50' : ''}`}
                         >
-                          <td className="px-4 py-3">{formatDate(test.date)}</td>
+                          <td className="px-4 py-3">{formatDate(test.created_at)}</td>
                           <td className="px-4 py-3">{test.id}</td>
                           <td className="px-4 py-3">{test.score}/100</td>
                           <td className="px-4 py-3">
@@ -150,9 +159,9 @@ export default function PerformanceDashboard() {
                             </span>
                           </td>
                           <td className="px-4 py-3 flex flex-wrap gap-2">
-                            {test.sections.map((section, idx) => (
+                            {test.topics?.map((topic, idx) => (
                               <Badge key={idx} className="text-xs px-2 py-1">
-                                {section}
+                                {topic}
                               </Badge>
                             ))}
                           </td>
@@ -160,6 +169,12 @@ export default function PerformanceDashboard() {
                       ))}
                     </tbody>
                   </table>
+                  <Pagination
+                    currentPage={currentPageAptitude}
+                    totalItems={aptitudeTests.length}
+                    rowsPerPage={rowsPerPage}
+                    onPageChange={handleAptitudePageChange}
+                  />
                 </div>
               </div>
             </TabsContent>
@@ -178,17 +193,15 @@ export default function PerformanceDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {mockInterviews.map((interview, index) => (
+                      {currentMockInterviews.map((interview, index) => (
                         <tr
-                          key={interview.id}
-                          className={`border-t border-gray-200 dark:border-gray-700 ${
-                            index % 2 === 1 ? 'bg-gray-50 dark:bg-gray-900/50' : ''
-                          }`}
+                          key={interview._id}
+                          className={`border-t border-gray-200 dark:border-gray-700 ${index % 2 === 1 ? 'bg-gray-50 dark:bg-gray-900/50' : ''}`}
                         >
-                          <td className="px-4 py-3">{formatDate(interview.date)}</td>
-                          <td className="px-4 py-3">{interview.id}</td>
-                          <td className="px-4 py-3">{interview.topic}</td>
-                          <td className="px-4 py-3 max-w-xs truncate">{interview.summary}</td>
+                          <td className="px-4 py-3">{formatDate(interview.created_at)}</td>
+                          <td className="px-4 py-3">{interview._id}</td>
+                          <td className="px-4 py-3">{interview.job_role || '-'} </td>
+                          <td className="px-4 py-3 max-w-xs truncate">{interview.overall_summary || '-'}</td>
                           <td className="px-4 py-3">
                             {interview.isPremium ? (
                               <div className="flex gap-2">
@@ -200,7 +213,7 @@ export default function PerformanceDashboard() {
                             ) : (
                               <Button variant="outline" size="sm" className="h-8 gap-1">
                                 <Lock className="h-3 w-3" />
-                                <span>Upgrade for Full Report</span>
+                                <span onClick={() => initiatePayment(interview._id)}>Upgrade for Full Report</span>
                               </Button>
                             )}
                           </td>
@@ -208,6 +221,12 @@ export default function PerformanceDashboard() {
                       ))}
                     </tbody>
                   </table>
+                  <Pagination
+                    currentPage={currentPageInterview}
+                    totalItems={mockInterviews.length}
+                    rowsPerPage={rowsPerPage}
+                    onPageChange={handleInterviewPageChange}
+                  />
                 </div>
               </div>
             </TabsContent>
