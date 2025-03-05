@@ -27,6 +27,7 @@ const SpeechToText = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1);
   const [isStart, setIsStart] = useState(false);
   const [isInterviewStarted, setIsInterviewStarted] = useState(false);
+  const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false);
 
   const { questions, setQuestions } = useContext(interviewContext);
   const { startInterview, textToSpeech, submitInterview, transcribeResponse } = useContext(interviewContext);
@@ -111,12 +112,21 @@ const SpeechToText = () => {
       const audioUrl = URL.createObjectURL(response);
       currentAudioUrlRef.current = audioUrl;
       audioRef.current.src = audioUrl;
+
+      setIsAssistantSpeaking(true);
+
       audioRef.current.play();
       setSiriLoader(false);
+
+      audioRef.current.onended = () => {
+        setIsAssistantSpeaking(false);
+      };
+
     } catch (error) {
       toast('Error in speakQuestion:', {
         description: error.message || ''
       });
+      setIsAssistantSpeaking(false);
     }
   };
 
@@ -162,28 +172,25 @@ const SpeechToText = () => {
 
   const handleStopRecording = () => {
     if (!recorderRef.current) return;
-
+  
+    setIsRecording(false);
+  
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+    }
     recorderRef.current.stopRecording(async () => {
       const audioBlob = recorderRef.current.getBlob();
-
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      }
-
+      
       const formData = new FormData();
       formData.append('audio', audioBlob, 'recording.webm');
+      
       try {
         await transcribeResponse(formData, questions[currentQuestionIndex].question_id);
-        toast('Response recorded', {
-          description: 'Your response has been saved successfully.'
-        });
         askNextQuestion();
       } catch (error) {
         toast('Error uploading audio:', {
           description: error.message || 'Unknown error occurred'
         });
-      } finally {
-        setIsRecording(false);
       }
     });
   };
@@ -275,7 +282,8 @@ const SpeechToText = () => {
 
                 <div className="flex gap-2 justify-center">
                   {!isRecording ? (
-                    <Button onClick={handleStartRecording} className="w-full dark:bg-white">
+                    <Button onClick={handleStartRecording} 
+                    disabled={isAssistantSpeaking || isLoading}className="w-full dark:bg-white">
                       <Mic className="mr-2 h-4 w-4" />
                       Start Response
                     </Button>
