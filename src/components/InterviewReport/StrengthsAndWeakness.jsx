@@ -57,8 +57,8 @@ export default function StrengthAndWeakness() {
   }, []);
 
   return (
-    <Card className="relative overflow-hidden">
-      <CardContent className={`space-y-6`}>
+    <div className="relative overflow-hidden">
+      <div className={`space-y-6`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
           <div>
             <h3 className="text-xl font-bold mb-4 text-green-600">Strengths</h3>
@@ -79,7 +79,7 @@ export default function StrengthAndWeakness() {
             ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

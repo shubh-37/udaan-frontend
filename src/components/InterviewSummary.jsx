@@ -4,40 +4,25 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Lock } from "lucide-react"
 
-export function InterviewSummary({ isPremium }) {
-  const questions = [
+export function InterviewSummary({ isPremium , questionAnalysis = [] }) {
+  const dummyQuestions = [
     {
       question: "Explain the concept of recursion and provide an example.",
-      answer:
-        "Recursion is when a function calls itself. For example, calculating factorial using recursion would involve multiplying a number by factorial of (n-1).",
-      analysis:
-        "The explanation was basic but correct. Could have provided more details about base cases and stack implications.",
-      responseAnalysis: {
-        timeSpent: "3:20 mins",
-        confidenceLevel: "80%",
-      },
-      speechAnalysis: {
-        clarity: "90%",
-        speakingRate: "130 WPM",
-        technicalTerms: "10 used",
-      },
+      answer: "Recursion is when a function calls itself. For example, calculating factorial using recursion would involve multiplying a number by factorial of (n-1).",
+      analysis: "The explanation was basic but correct. Could have provided more details about base cases and stack implications.",
+      responseAnalysis: { timeSpent: "3:20 mins", confidenceLevel: "80%" },
+      speechAnalysis: { clarity: "90%", speakingRate: "130 WPM", technicalTerms: "10 used" },
     },
     {
       question: "What are the benefits of using TypeScript over JavaScript?",
       answer: "TypeScript adds type safety and better IDE support. It helps catch errors during development.",
-      analysis:
-        "Good mention of key benefits but could have elaborated on interface support and other advanced features.",
-      responseAnalysis: {
-        timeSpent: "2:45 mins",
-        confidenceLevel: "85%",
-      },
-      speechAnalysis: {
-        clarity: "92%",
-        speakingRate: "140 WPM",
-        technicalTerms: "12 used",
-      },
+      analysis: "Good mention of key benefits but could have elaborated on interface support and other advanced features.",
+      responseAnalysis: { timeSpent: "2:45 mins", confidenceLevel: "85%" },
+      speechAnalysis: { clarity: "92%", speakingRate: "140 WPM", technicalTerms: "12 used" },
     },
-  ]
+  ];
+
+  const questionsToShow = isPremium ? questionAnalysis : dummyQuestions;
 
   return (
     <Card className="relative overflow-hidden">
@@ -62,28 +47,29 @@ export function InterviewSummary({ isPremium }) {
         </AnimatePresence>
 
         <div className={`space-y-6 ${!isPremium && "blur-sm"} pt-6`}>
-          {questions.map((q, i) => (
+          {questionsToShow.map((q, i) => (
             <div key={i} className="space-y-4 p-4 bg-card text-card-foreground border rounded-md">
               <h3 className="font-semibold text-orange-400">Question {i + 1}: {q.question}</h3>
-              <p className="text-sm text-card-foreground">Your Answer:</p>
+              <p className="text-sm text-card-foreground">Answer:</p>
               <p className="text-sm text-card-foreground bg-card p-2 rounded">{q.answer}</p>
               <div className="border-l-4 border-green-500 pl-4 bg-gray-100 dark:bg-gray-900 rounded-md p-4">
-                <p className="text-sm text-green-400">Analysis:</p>
-                <p className="text-sm text-card-foreground">{q.analysis}</p>
+                <p className="text-sm text-green-400">Details:</p>
+                <p className="text-sm text-card-foreground">{q.quick_analysis}</p>
               </div>
 
               {/* Response & Speech Analysis */}
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-lg">
                   <h4 className="text-green-400 font-medium">Response Analysis</h4>
-                  <p className="text-sm">Time Spent: {q.responseAnalysis.timeSpent}</p>
-                  <p className="text-sm">Confidence Level: {q.responseAnalysis.confidenceLevel}</p>
+                  <p className="text-sm">Time Spent: {q.time_seconds}</p>
+                  <p className="text-sm">Confidence Level: {q.confidenceLevel}</p>
+                  <p className="text-sm">Filler Words: {q.fillerWords?.join(', ')}</p>
                 </div>
                 <div className="p-3 bg-slate-100 dark:bg-slate-900 rounded-lg">
                   <h4 className="text-purple-400 font-medium">Speech Analysis</h4>
-                  <p className="text-sm">Clarity: {q.speechAnalysis.clarity}</p>
-                  <p className="text-sm">Speaking Rate: {q.speechAnalysis.speakingRate}</p>
-                  <p className="text-sm">Technical Terms: {q.speechAnalysis.technicalTerms}</p>
+                  <p className="text-sm">Clarity: {q.clarity_score}</p>
+                  <p className="text-sm">Speaking Rate: {q.confidence_score}</p>
+                  <p className="text-sm">Technical Terms: {q.fluency_score}</p>
                 </div>
               </div>
             </div>

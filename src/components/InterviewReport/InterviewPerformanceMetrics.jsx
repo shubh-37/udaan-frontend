@@ -19,7 +19,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Lock } from 'lucide-react';
 
-const radarData = [
+const COLORS = ['#FF7300', '#FF9500', '#FFAA00'];
+
+const dummyRadarData = [
   { subject: 'Body Language', value: 88 },
   { subject: 'Eye Contact', value: 92 },
   { subject: 'Professionalism', value: 95 },
@@ -27,21 +29,45 @@ const radarData = [
   { subject: 'Confidence', value: 90 }
 ];
 
-const pieData = [
+const dummyPieData = [
   { name: 'Code Quality', value: 85 },
   { name: 'Problem Solving', value: 90 },
   { name: 'System Design', value: 82 }
 ];
 
-const barData = [
+const dummyBarData = [
   { name: 'Articulation', value: 92 },
   { name: 'Technical Terms', value: 88 },
   { name: 'Active Listening', value: 94 }
 ];
 
-const COLORS = ['#FF7300', '#FF9500', '#FFAA00'];
+export default function PerformanceMetrics({ isPremium, performanceMetrics }) {
+  const radarData = isPremium
+    ? [
+        { subject: 'Active Listening', value: performanceMetrics?.active_listening || 0 }, // Provide default value
+        { subject: 'Adaptability', value: performanceMetrics?.adaptability || 0 },
+        { subject: 'Critical Thinking', value: performanceMetrics?.critical_thinking || 0 },
+        { subject: 'Creativity', value: performanceMetrics?.creativity || 0 },
+        { subject: 'Articulation', value: performanceMetrics?.articulation || 0 }
+      ]
+    : dummyRadarData;
 
-export default function PerformanceMetrics({ isPremium }) {
+  const pieData = isPremium
+    ? [
+        { name: 'Technical Terms', value: performanceMetrics?.technical_terms || 0 },
+        { name: 'Advanced Concepts', value: performanceMetrics?.advanced_concepts || 0 },
+        { name: 'Foundational Knowledge', value: performanceMetrics?.foundational_knowledge || 0 }
+      ]
+    : dummyPieData;
+
+  const barData = isPremium
+    ? [
+        { name: 'Problem Solving', value: performanceMetrics?.problem_solving || 0 },
+        { name: 'Logical Reasoning', value: performanceMetrics?.logical_reasoning || 0 },
+        { name: 'Practical Application', value: performanceMetrics?.practical_application || 0 }
+      ]
+    : dummyBarData;
+    
   return (
     <Card className="relative overflow-hidden">
       <CardContent className={`space-y-6 ${!isPremium ? 'max-h-[300px] sm:max-h-[400px] md:max-h-[500px]' : ''}`}>
@@ -65,8 +91,7 @@ export default function PerformanceMetrics({ isPremium }) {
         </AnimatePresence>
 
         <div className={`space-y-6 pt-6 ${!isPremium && 'blur-sm'}`}>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <div className="bg-card p-6 rounded-xl">
               <h3 className="text-blue-500 text-lg font-semibold mb-4">Behavioral Analysis</h3>
               <ResponsiveContainer width="100%" height={250}>

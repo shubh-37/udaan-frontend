@@ -5,31 +5,29 @@ import { Meteors } from '../ui/meteors';
 import { Grid } from '../GridCardPattern';
 
 
-const careerPaths = [
+const dummyCareerPaths = [
   {
-    title: 'Senior Software Architect',
-    skillMatch: 92,
-    color: 'orange',
-    bestMatch: true,
+    recommended_role: 'Senior Software Architect',
+    skill_match: 92,
     skills: ['Strong system design skills', 'Technical leadership potential', 'Excellent problem solving']
   },
   {
-    title: 'Lead Backend Developer',
-    skillMatch: 88,
-    color: 'blue',
-    bestMatch: false,
+    recommended_role: 'Lead Backend Developer',
+    skill_match: 88,
     skills: ['Strong backend expertise', 'Database optimization skills', 'Team collaboration']
   },
   {
-    title: 'Technical Team Lead',
-    skillMatch: 85,
-    color: 'green',
-    bestMatch: false,
+    recommended_role: 'Technical Team Lead',
+    skill_match: 85,
     skills: ['Leadership qualities', 'Communication skills', 'Project management']
   }
 ];
 
-export default function CareerPathRecommendations({ isPremium }) {
+export default function CareerPathRecommendations({ isPremium, careerRecommendations = [] }) {
+
+  const recommendationsToShow = isPremium ? careerRecommendations : dummyCareerPaths;
+  const colors = ['orange', 'blue', 'green'];
+  const highestSkillMatch = Math.max(...recommendationsToShow.map(rec => rec.skill_match));
   return (
     <Card className="relative overflow-hidden">
       <CardContent className={`space-y-6 ${!isPremium ? 'max-h-[300px] sm:max-h-[400px] md:max-h-[500px]' : ''}`}>
@@ -55,38 +53,41 @@ export default function CareerPathRecommendations({ isPremium }) {
         <div className=" pt-6 max-w-6xl mx-auto text-foreground">
         <Meteors number={40} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {careerPaths.map((path, index) => (
-              <Card key={`path-${index}`} className="relative bg-card p-6 rounded-2xl shadow-lg overflow-hidden">
-                {path.bestMatch && (
-                    <div className="absolute top-0 right-0 bg-orange-500 text-foreground text-xs px-2 py-1 rounded-bl rounded-tr">
-                    Best Match
-                  </div>
-                )}
-                <Grid size={20} />
-                <h3 className="text-xl font-bold mb-3">{path.title}</h3>
-                <div className="mb-4">
-                  <p className="text-sm font-medium">Skill Match</p>
-                  <div className="relative w-full bg-card h-2 rounded-full mt-1">
-                    <div
-                      className={`absolute top-0 left-0 h-full bg-${path.color}-500 rounded-full`}
-                      style={{ width: `${path.skillMatch}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-sm mt-1">{path.skillMatch}%</p>
+          {recommendationsToShow.map((recommendation, index) => (
+            <Card
+              key={isPremium ? (recommendation.id || recommendation.recommended_role) : index} // Key based on isPremium
+              className="relative bg-card p-6 rounded-2xl shadow-lg overflow-hidden"
+            >
+              {recommendation.skill_match === highestSkillMatch && (
+                <div className="absolute top-0 right-0 bg-orange-500 text-foreground text-xs px-2 py-1 rounded-bl rounded-tr">
+                  Best Match
                 </div>
-                
-                <ul className="text-sm space-y-1">
-                  {path.skills.map((skill, i) => (
-                    <li key={i} className="flex items-center space-x-2">
-                      <span className="text-green-400">✔</span>
-                      <span>{skill}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            ))}
-          </div>
+              )}
+              <Grid size={20} />
+              <h3 className="text-xl font-bold mb-3">{recommendation.recommended_role}</h3>
+              <div className="mb-4">
+                <p className="text-sm font-medium">Skill Match</p>
+                <div className="relative w-full bg-card h-2 rounded-full mt-1">
+                  <div
+                    className={`absolute top-0 left-0 h-full bg-${colors[index % colors.length]}-500 rounded-full`} // Cycle through colors
+                    style={{ width: `${recommendation.skill_match}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm mt-1">{recommendation.skill_match}%</p>
+              </div>
+
+              <ul className="text-sm space-y-1">
+                {recommendation.skills.map((skill, i) => (
+                  <li key={i} className="flex items-center space-x-2">
+                    <span className="text-green-400">✔</span>
+                    <span>{skill}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          ))}
         </div>
+      </div>
       </CardContent>
     </Card>
   );
