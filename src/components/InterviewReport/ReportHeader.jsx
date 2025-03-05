@@ -63,7 +63,7 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
   return (
     <header
       ref={headerRef}
-      className="sm:fixed sm:top-0 sm:left-0 w-full z-50 bg-white/30 dark:bg-black/30 backdrop-blur-lg sm:shadow-md transition-all"
+      className="sm:fixed sm:top-0 sm:left-0 w-full z-50 bg-white/30 dark:bg-black/30 backdrop-blur-lg sm:shadow-md transition-all mx-auto flex justify-center"
     >
       <div className="container mx-0 py-2">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-2">
@@ -96,14 +96,6 @@ export default function ReportHeader({ isPremium, setIsPremium, containerRef }) 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <ModeToggle />
-              {/* <div>
-                <Switch
-                  checked={isPremium}
-                  onCheckedChange={setIsPremium}
-                  className="data-[state=checked]:bg-gradient-to-r from-primary to-primary/80"
-                />
-              </div> */}
-
               <span className="text-sm font-medium">
                 {isPremium ? (
                   <motion.div className="flex items-center gap-1" layout>

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { CircularProgress } from '@/components/CircularProgress';
 import { InterviewSummary } from '@/components/InterviewSummary';
 import ReportHeader from '@/components/InterviewReport/ReportHeader';
@@ -12,7 +12,6 @@ import { FaqComponent } from '@/components/InterviewReport/InterviewFaq';
 import Lenis from '@studio-freight/lenis';
 import CareerPathRecommendations from '@/components/InterviewReport/InterviewCareerPath';
 import StrengthAndWeakness from '@/components/InterviewReport/StrengthsAndWeakness';
-import PersonalizedImprovementPlan from '@/components/InterviewReport/ImprovementPlan';
 import { SparklesText } from '@/components/magicui/sparkles-text';
 import { MultiStepLoader } from '@/components/ui/multi-step-loader';
 import { interviewContext } from '@/context/InterviewContextProvider';
@@ -40,6 +39,7 @@ export default function InterviewReport() {
   const [isPremium, setIsPremium] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [reportData, setReportData] = useState(null);
+  const [currentLoadingStates, setCurrentLoadingStates] = useState(freeLoadingStates); 
   
   const { premiumReview } = useContext(interviewContext);
   const localInterviewId = localStorage.getItem('interview_id');
@@ -55,12 +55,12 @@ export default function InterviewReport() {
 
   useEffect(() => {
     let loadingStartTime = 0;
-    console.log(loadingStartTime);
     async function fetchReport() {
       loadingStartTime = performance.now();
       try {
         setIsLoading(true);
         if (routeInterviewId) {
+          setCurrentLoadingStates(premiumLoadingStates);
           const premiumData = await premiumReview(routeInterviewId);
           const storedData = localStorage.getItem(`interview_review_data_${localInterviewId}`);
           let mergedData = { ...premiumData };
@@ -73,6 +73,7 @@ export default function InterviewReport() {
           setReportData(mergedData);
           setIsPremium(true);
         } else {
+          setCurrentLoadingStates(freeLoadingStates);
           const storedData = localStorage.getItem(`interview_review_data_${localInterviewId}`);
           if (storedData) {
             setReportData(JSON.parse(storedData));
@@ -93,7 +94,7 @@ export default function InterviewReport() {
       }
     }
     fetchReport();
-  }, []);
+  }, [routeInterviewId, navigate]);
 
   const parameters = reportData
     ? [
@@ -176,8 +177,6 @@ export default function InterviewReport() {
     : [];
 
   const overallScore = reportData ? reportData.review.overall_score : 0;
-  const currentLoadingStates = isPremium ? premiumLoadingStates : freeLoadingStates;
-  console.log(reportData);
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -252,15 +251,6 @@ export default function InterviewReport() {
                 <CareerPathRecommendations isPremium={isPremium} careerRecommendations={reportData?.paid_review?.career_path_recommendations || []}/>
               </CardContent>
             </Card>
-
-            {/* <Card className="mb-8">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-bold">Personalized Improvement Plan</CardTitle>
-          </CardHeader>
-          <CardContent>
-          <PersonalizedImprovementPlan isPremium={isPremium}/>
-          </CardContent>
-        </Card> */}
             <TestimonialsDemo />
             <FaqComponent />
           </motion.div>

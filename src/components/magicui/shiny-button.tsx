@@ -37,16 +37,17 @@ export const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>
         ref={ref}
         className={cn(
           'relative rounded-lg px-6 py-2 font-medium transition-shadow duration-300 ease-in-out',
-          'bg-gradient-to-r from-blue-500 to-blue-600 text-neutral-100 shadow-md',
+          'bg-gradient-to-l from-slate-800 to-black text-yellow-400 shadow-md',
           'hover:shadow-lg hover:brightness-110',
-          'dark:from-blue-600 dark:to-blue-700 dark:hover:brightness-125',
+          'dark:hover:brightness-125',
+          'cursor-default',
           className
         )}
         {...animationProps}
         {...props}
       >
         <span
-          className="relative block size-full text-sm uppercase tracking-wide text-neutral-100"
+          className="relative block size-full text-sm uppercase tracking-wide text-gradient-to-r from-yellow-100 to-yellow-300"
           style={{
             maskImage:
               'linear-gradient(-75deg,hsl(var(--primary)) calc(var(--x) + 20%),transparent calc(var(--x) + 30%),hsl(var(--primary)) calc(var(--x) + 100%))'
