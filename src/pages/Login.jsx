@@ -6,7 +6,8 @@ import { Video, ArrowRight, LoaderIcon } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast } from 'sonner';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,6 +23,10 @@ const LoginForm = () => {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(30);
   const [otpValues, setOtpValues] = useState(['', '', '', '']);
+
+  const notifySuccess = (message) => toast.success(message);
+  const notifyError = (message) => toast.error(message);
+  const notifyWarning = (message) => toast.warn(message);
 
   // Handle countdown for resend OTP
   useEffect(() => {
@@ -41,9 +46,7 @@ const LoginForm = () => {
     try {
       e.preventDefault();
       if (!phone || phone.length < 10) {
-        toast('Error', {
-          description: 'Please enter a valid phone number'
-        });
+        notifyError('Please enter a valid phone number');
         return;
       }
       setIsLoading(true);
@@ -53,9 +56,7 @@ const LoginForm = () => {
         setResendDisabled(true);
       }
     } catch (error) {
-      toast('Error', {
-        description: 'Failed to send OTP. Please try again.'
-      });
+      notifyError('Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -69,9 +70,7 @@ const LoginForm = () => {
         setResendDisabled(true);
       }
     } catch (error) {
-      toast('Error', {
-        description: 'Failed to send OTP. Please try again.'
-      });
+      notifyError('Failed to send OTP. Please try again.');
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -82,21 +81,15 @@ const LoginForm = () => {
     try {
       e.preventDefault();
       if (!otp || otp.length !== 4) {
-        toast('Error', {
-          description: 'Please enter a valid OTP'
-        });
+        notifyError('Please enter a valid OTP');
         return;
       }
       setIsLoading(true);
       const response = await verifyLoginOtp({ mobile_number: phone.slice(2), country_code: phone.slice(0, 2), otp });
-      toast('OTP Verified', {
-        description: `${response}`
-      });
+      notifySuccess('OTP Verified');
       navigate('/');
     } catch (error) {
-      toast('Invalid OTP. Please try again', {
-        description: error.message || 'An error occurred, please try again later.'
-      });
+      notifyError('Please enter a valid OTP');
     } finally {
       setIsLoading(false);
     }
@@ -303,6 +296,7 @@ const LoginForm = () => {
           </Card>
         )}
       </div>
+        <ToastContainer autoClose={3000} position="top-right" />
     </div>
   );
 };

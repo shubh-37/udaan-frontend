@@ -13,12 +13,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import { toast } from 'sonner';
 
 const SignupForm = () => {
   const { signUpUser, verifySignUpOtp } = useContext(authContext);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const notifySuccess = (message) => toast.success(message);
+  const notifyError = (message) => toast.error(message);
+  const notifyWarning = (message) => toast.warn(message);
 
   const [step, setStep] = useState('details'); // 'details' or 'verify'
   const [formData, setFormData] = useState({
@@ -46,24 +52,15 @@ const SignupForm = () => {
 
   const validateDetails = () => {
     if (!formData.full_name.trim()) {
-      toast('Error', {
-        variant: 'destructive',
-        description: 'Please enter your name'
-      });
+      notifyError('Please Enter your name.');
       return false;
     }
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      toast('Error', {
-        variant: 'destructive',
-        description: 'Please enter a valid email address'
-      });
+      notifyError('Please enter a valid email address');
       return false;
     }
     if (!formData.phone || formData.phone.length < 10) {
-      toast('Error', {
-        variant: 'destructive',
-        description: 'Please enter a valid phone number'
-      });
+      notifyError('Please enter a valid phone number');
       return false;
     }
     return true;
@@ -82,14 +79,12 @@ const SignupForm = () => {
         country_code: formData.phone.slice(0, 2)
       });
       setStep('verify');
-      toast('OTP Sent', {
-        description: 'Please check your email and phone for verification codes'
-      });
+      notifySuccess('OTP Sent');
+      // toast('OTP Sent', {
+      //   description: 'Please check your email and phone for verification codes'
+      // });
     } catch (error) {
-      toast('Error', {
-        variant: 'destructive',
-        description: 'Failed to send OTP. Please try again.'
-      });
+      notifyError('Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -99,10 +94,7 @@ const SignupForm = () => {
     try {
       e.preventDefault();
       if (!formData.emailOtp || !formData.phoneOtp) {
-        toast('Error', {
-          variant: 'destructive',
-          description: 'Please enter both verification codes'
-        });
+        notifyError('Please enter both verification codes');
         return;
       }
 
@@ -117,21 +109,12 @@ const SignupForm = () => {
       if (response === 'success') {
         navigate('/profile');
       } else if (response === 'failure') {
-        toast('Error', {
-          variant: 'destructive',
-          description: 'Error signing up, please try again.'
-        });
+        notifyError('Error signing up, please try again.');
       } else {
-        toast('Error', {
-          variant: 'destructive',
-          description: 'Account already exists with this email or phone.'
-        });
+        notifyError('Account already exists with this email or phone.');
       }
     } catch (error) {
-      toast('Error', {
-        variant: 'destructive',
-        description: 'An error occurred, please try again later.'
-      });
+      notifyError('An error occurred, please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -396,6 +379,7 @@ const SignupForm = () => {
           </Card>
         )}
       </div>
+      <ToastContainer autoClose={3000} position="top-right" />
     </div>
   );
 };
