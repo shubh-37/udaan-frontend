@@ -7,7 +7,7 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { aptitudeContext } from '@/context/AptitudeContextProvider';
 
-export default function ResultPage({ answers, questions, examType }) {
+export default function ResultPage({ answers, questions, examType, examConfig }) {
   const { submitTest } = useContext(aptitudeContext);
   // Use a ref instead of state to track submission
   const submissionRef = useRef(false);
@@ -57,11 +57,19 @@ export default function ResultPage({ answers, questions, examType }) {
 
       try {
         submissionRef.current = true;
-
+        const topicMap = {
+          verbal: 'Verbal & Reading Comprehension',
+          quant: 'Numerical Reasoning',
+          logical: 'Logical Reasoning'
+        };
+        const selectedTopics = Object.keys(examConfig.subjects)
+          .filter((key) => examConfig.subjects[key])
+          .map((key) => topicMap[key]);
         await submitTest({
           correct_no_of_questions: correctCount,
           wrong_no_of_answers: wrongCount,
-          score: totalScore
+          score: totalScore,
+          topics: selectedTopics
         });
       } catch (error) {
         toast('Error submitting test', {

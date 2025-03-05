@@ -105,7 +105,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            <ResultPage answers={answers} examType={examType} questions={questions} />
+            <ResultPage answers={answers} examType={examType} questions={questions} examConfig={examConfig} />
           </motion.div>
         )}
       </AnimatePresence>
