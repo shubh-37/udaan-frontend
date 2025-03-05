@@ -9,6 +9,7 @@ import BlogPost from './pages/BlogPost';
 import AptitudeExam from './pages/Aptitude';
 import InterviewReport from './pages/Report';
 import Profile from './pages/Profile';
+import ProtectedRoute from './components/Interview/ProtectedInterviewRoute';
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
           path="/interview"
           element={
             <RequiresAuth>
-              <Interview />
+              <ProtectedRoute>
+                <Interview />
+              </ProtectedRoute>
             </RequiresAuth>
           }
         />
