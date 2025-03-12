@@ -63,13 +63,13 @@ export default function PerformanceDashboard() {
     }
   }, [dashboardData]);
 
-  const sortedAptitudeTests = useMemo(() => {
-    return [...aptitudeTests].sort(sortByDateTime);
-  }, [aptitudeTests]);
+  // const sortedAptitudeTests = useMemo(() => {
+  //   return [...aptitudeTests].sort(sortByDateTime);
+  // }, [aptitudeTests]);
   
-  const sortedMockInterviews = useMemo(() => {
-    return [...mockInterviews].sort(sortByDateTime);
-  }, [mockInterviews]);
+  // const sortedMockInterviews = useMemo(() => {
+  //   return [...mockInterviews].sort(sortByDateTime);
+  // }, [mockInterviews]);
 
   const indexOfLastAptitude = currentPageAptitude * rowsPerPage;
   const indexOfFirstAptitude = indexOfLastAptitude - rowsPerPage;
@@ -163,7 +163,7 @@ export default function PerformanceDashboard() {
                               <Badge key={idx} className="text-xs px-2 py-1">
                                 {topic}
                               </Badge>
-                            ))}
+                            )) || '-'}
                           </td>
                         </tr>
                       ))}

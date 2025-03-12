@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect, useContext, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import InterviewInstructions from '../shared/Instructions';
 import Loader from '../shared/Loader';
 import { EndInterviewDialog } from '@/components/Interview/EndInterviewDialog';
 import { Header } from '@/components/Interview/InterviewHeader';
-import { Footer } from '@/components/Interview/InterviewFooter';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -31,8 +30,6 @@ const SpeechToText = () => {
 
   const { questions, setQuestions } = useContext(interviewContext);
   const { startInterview, textToSpeech, submitInterview, transcribeResponse } = useContext(interviewContext);
-  const mediaRecorderRef = useRef(null);
-  const recordedChunksRef = useRef([]);
   const videoref = useRef(null);
   const questionRef = useRef(false);
   const recorderRef = useRef(null);
@@ -45,13 +42,10 @@ const SpeechToText = () => {
   useEffect(() => {
     const getQuestions = async () => {
       if (questionRef.current) return;
-      console.log('called');
       try {
         questionRef.current = true;
         const response = await startInterview();
         setQuestions(response.questions);
-        console.log(response);
-        console.log(questions);
       } catch (error) {
         if (error?.response?.status === 401) {
           navigate('/login');
@@ -74,6 +68,8 @@ const SpeechToText = () => {
           videoref.current.srcObject = stream;
           await videoref.current.play();
         }
+        const welcomeMessage = "Welcome to the interview! Please click 'Start Interview' to begin.";
+        await speakQuestion(welcomeMessage);
       } catch (err) {
         toast.error('Error accessing camera');
       }
@@ -109,6 +105,10 @@ const SpeechToText = () => {
       }
 
       const response = await textToSpeech(text);
+      if (!response) {
+        throw new Error('Failed to fetch audio for the question.');
+      }
+
       const audioUrl = URL.createObjectURL(response);
       currentAudioUrlRef.current = audioUrl;
       audioRef.current.src = audioUrl;
@@ -121,7 +121,6 @@ const SpeechToText = () => {
       audioRef.current.onended = () => {
         setIsAssistantSpeaking(false);
       };
-
     } catch (error) {
       toast('Error in speakQuestion:', {
         description: error.message || ''
@@ -172,40 +171,71 @@ const SpeechToText = () => {
 
   const handleStopRecording = () => {
     if (!recorderRef.current) return;
-  
     setIsRecording(false);
-  
     if (mediaStreamRef.current) {
       mediaStreamRef.current.getTracks().forEach((track) => track.stop());
     }
-    recorderRef.current.stopRecording(async () => {
-      const audioBlob = recorderRef.current.getBlob();
-      
-      const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.webm');
-      
-      try {
-        await transcribeResponse(formData, questions[currentQuestionIndex].question_id);
-        askNextQuestion();
-      } catch (error) {
-        toast('Error uploading audio:', {
-          description: error.message || 'Unknown error occurred'
-        });
-      }
+    console.log(recorderRef.current);
+    const audioBlob = recorderRef.current?.getBlob();
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    console.log(audioBlob);
+    askNextQuestion();
+    processAnswer(audioBlob).then(() => {
+      askNextQuestion();
     });
+  };
+
+  const processAnswer = async (audioBlob) => {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recoring.webm');
+
+    try {
+      await transcribeResponse(formData, questions[currentQuestionIndex].question_id);
+      askNextQuestion();
+    } catch (error) {
+      toast('Error uploading audio:', {
+        description: error.message || 'Unknown error occurred'
+      });
+    }
   };
 
   const submit = async () => {
     setIsLoading(true);
     try {
+      if (videoref.current?.srcObject) {
+        videoref.current.srcObject.getTracks().forEach((track) => track.stop());
+      }
+
+      if (recorderRef.current) {
+        recorderRef.current.stopRecording();
+        if (mediaStreamRef.current) {
+          mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+        }
+      }
+
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+
+      if (isAssistantSpeaking) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        setIsAssistantSpeaking(false);
+      }
+
       const interviewId = localStorage.getItem('interview_id');
       const interviewData = await submitInterview(interviewId);
       localStorage.setItem(`interview_review_data_${interviewId}`, JSON.stringify(interviewData));
       navigate('/review');
     } catch (error) {
-      toast('Error', {
-        description: 'An error occurred while submitting the interview. Please try again later.'
-      });
+      toast.error('An error occurred while submitting the interview. Please try again later.');
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -232,8 +262,6 @@ const SpeechToText = () => {
     ) : (
       <Spinner key="ellipsis" variant="ellipsis" />
     );
-
-  console.log(questions);
 
   return (
     <div className="">
@@ -282,8 +310,11 @@ const SpeechToText = () => {
 
                 <div className="flex gap-2 justify-center">
                   {!isRecording ? (
-                    <Button onClick={handleStartRecording} 
-                    disabled={isAssistantSpeaking || isLoading}className="w-full dark:bg-white">
+                    <Button
+                      onClick={handleStartRecording}
+                      disabled={isAssistantSpeaking || isLoading}
+                      className="w-full dark:bg-white"
+                    >
                       <Mic className="mr-2 h-4 w-4" />
                       Start Response
                     </Button>

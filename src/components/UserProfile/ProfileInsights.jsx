@@ -9,14 +9,14 @@ export default function InsightsSection() {
   const [chartData, setChartData] = useState([]);
 
   const confidenceMapping = {
-    Low: 50,  // Example values, adjust as needed
+    Low: 50,
     Medium: 65,
     High: 80,
   };
 
   const confidence = confidenceMapping[dashboardData?.avg_confidence] || 0;
-  const speechClarity = Math.round(dashboardData?.avg_speech_clarity * 10) || 0;
-  const technicalAccuracy = Math.round(dashboardData?.avg_technical_accuracy * 10) || 0;
+  const speechClarity = Math.round(dashboardData?.avg_speech_clarity) || 0;
+  const technicalAccuracy = Math.round(dashboardData?.avg_technical_accuracy) || 0;
 
   useEffect(() => {
     if (!dashboardData || !dashboardData.past_aptitude_scores) {
@@ -59,7 +59,7 @@ export default function InsightsSection() {
                           <div
                             key={index}
                             className="group relative w-2 bg-primary rounded-t"
-                            style={{ height: `${(item.value / 10) * 100}%` }}
+                            style={{ height: `${(item.value)}%` }}
                           >
                             {' '}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs py-1 px-2 rounded">
